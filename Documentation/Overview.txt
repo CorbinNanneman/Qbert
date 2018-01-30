@@ -1,0 +1,20 @@
+/------------------------------\
+		     Q*Bert
+\------------------------------/
+
+Q*Bert is a classic arcade game, made for large box arcade machines in 1982.
+The goal of our program is to recreate this game in C++, utilizing the SFML graphics library.
+
+The goal of Q*Bert is to beat every level through changing the colors of the blocks in the level.
+The color of a block is changed when Q*Bert, controlled by the player, lands on it.
+There are 5 levels, and 4 rounds per level. The colors change in a different manner in each level.
+Q*Bert loses a live when he falls off of the map or runs into certain enemies.
+There are several objects, like discs, and the magic ball, which cause special effects.
+
+Authors:
+  Corbin Nanneman
+  Greg Francis
+  Ben Lastname
+
+Original Concept:
+  Gottlieb

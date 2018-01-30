@@ -1,0 +1,43 @@
+/------------------------------\
+		 Game Elements
+\------------------------------/
+
+This is a list of all elements of the game and their explanations.
+
+/------------------------------\
+		  Characters
+\------------------------------/
+
+All characters are able to move in only two directions,
+except for Q*Bert and Coily.
+
+Unless otherwise specified, characters cause Q*Bert to lose a life.
+
+Q*Bert
+  The protagonist of the game.
+  The user controls Q*Bert in order to change the colors on the map.
+  Unlike most characters, Q*Bert is able to move in any direction
+
+Coily/Purple Ball
+  Coily begins life as a purple ball, which acts like any other ball.
+  But instead of bouncing off of the world, the purple ball hatches into Coily.
+  Coily follows the player, and is able to move in any direction.
+  The only way for coily to fall off the world is to trick him into jumping after Q*Bert when Q*Bert jumps on a disc.
+
+Red Ball
+  The red ball falls into the top of the map, then bounces down in random directions.
+
+Magic Ball
+  The magic ball acts like a red ball, but does not cause Q*Bert to lose a life upon hitting him.
+  Instead, it freezes all other enemies, and allows Q*Bert to
+
+Slick
+  Slick starts at the top of the map, and 
+
+Sam
+
+Wrongway
+
+Ugg
+
+
