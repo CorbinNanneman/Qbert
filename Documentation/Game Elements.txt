@@ -1,11 +1,11 @@
 /------------------------------\
-		 Game Elements
+		     Game Elements
 \------------------------------/
 
 This is a list of all elements of the game and their explanations.
 
 /------------------------------\
-		  Characters
+		      Characters
 \------------------------------/
 
 All characters are able to move in only two directions,
@@ -29,15 +29,24 @@ Red Ball
 
 Magic Ball
   The magic ball acts like a red ball, but does not cause Q*Bert to lose a life upon hitting him.
-  Instead, it freezes all other enemies, and allows Q*Bert to
+  Instead, it freezes all other enemies, and allows Q*Bert to move freely for a few seconds.
 
 Slick
-  Slick starts at the top of the map, and 
+  Slick starts at the top of the map and acts like a ball, jumping down either left or right.
+  When he lands on a block, he reverts it back to its original color.
+  When Q*Bert lands on Slick, Slick is UTTERLY DESTROYED, and is crushed beyond existance.
 
 Sam
+  Sam acts much like Slick, but changes the block back to the previous color rather than the original.
+  Sam, like slick, also gets COMPLETELY SQUISHED when he comes into contact with Q*Bert.
 
 Wrongway
+  Wrong way acts like a ball, but for him, down is the right side of the screen.
+  He jumps on the sides of blocks, and stands on the left and bottom sides of the map and falls off the right.
 
 Ugg
+  Wrong way is a lot like Ugg, except he can stand on the right and bottom sides of the map, and falls off the left side instead.
 
-
+/------------------------------\
+              Map
+\------------------------------/
