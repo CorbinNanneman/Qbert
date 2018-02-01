@@ -1,5 +1,5 @@
 /------------------------------\
-		     Q*Bert
+             Q*Bert
 \------------------------------/
 
 Q*Bert is a classic arcade game, made for large box arcade machines in 1982.
@@ -11,10 +11,13 @@ There are 5 levels, and 4 rounds per level. The colors change in a different man
 Q*Bert loses a live when he falls off of the map or runs into certain enemies.
 There are several objects, like discs, and the magic ball, which cause special effects.
 
-Authors:
+Project Manager:
   Corbin Nanneman
+
+Contributors:
   Greg Francis
+  Corbin Nanneman
   Ben Lastname
 
-Original Concept:
+Original Concept & Author:
   Gottlieb

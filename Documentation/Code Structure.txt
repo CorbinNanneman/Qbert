@@ -2,4 +2,11 @@
         Code Structure
 \------------------------------/
 
-This is a 
+This is a detailed description of all source code files.
+Unless stated as a .cpp or a .h file, any file name can be assumed to be a class with both a .h and .cpp file.
+
+main.cpp
+| Acts as a driver for the program, but doesn't host any of the game/display logic.
+| 
+| +int main()
+|   Holds the game loop. Makes calls to StateManager

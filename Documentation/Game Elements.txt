@@ -1,5 +1,5 @@
 /------------------------------\
-         Game Elements
+          Game Elements
 \------------------------------/
 
 This is a list of all elements of the game and their explanations.
