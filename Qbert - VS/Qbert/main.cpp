@@ -7,42 +7,34 @@ BLah blah
 
 int main()
 {
+	double screenWidth = 800, 
+		   screenHeight = screenWidth;
+
+	sf::Texture t;
+	t.loadFromFile("./images/blueBlue.png");
 	// Map creation/allocation
-	char **map = new char*[7];
+	sf::Sprite **map = new sf::Sprite*[7];
 	for (int i = 0; i < 7; i++)
-		map[i] = new char[i + 1];
+		map[i] = new sf::Sprite[i + 1];
 
 	// Map loopthrough
-	for (int i = 0; i < 7; i++)
-	{
-		for (int j = 0; j < i + 1; j++)
-		{
-			map[i][j] = '0';
-			std::cout << map[i][j];
-		}
-		std::cout << '\n';
-	}
+	int scale = 3, texWidth = 32 * scale;
 
-	// Map deletion
-	for (int i = 0; i < 7; i++)
-		delete[] map[i];
-	delete[] map;
-
-	system( "PAUSE" );
-
-	int x, y, screenWidth, texWidth;
-	// Map drawing (assume textures are centered
 	for (int row = 0; row < 7; row++)
 	{
 		for (int index = 0; index < row + 1; index++)
 		{
-			x = row * texWidth * -.5 + index * texWidth + screenWidth / 2;
-			texWidth * (row * -.5 + index) + screenWidth / 2;
-			y = row * texWidth * .75 + 100;
+			map[row][index].setTexture(t);
+			map[row][index].setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(texWidth / scale, texWidth / scale)));
+			// origin code here
+			// Map coordinate calculations
+			map[row][index].setScale(scale, scale);
+			int x = row * texWidth * -.5 + index * texWidth + screenWidth / 2;
+			// texWidth * (row * -.5 + index) + screenWidth / 2;
+			int y = row * texWidth * .75 + 100;
+			map[row][index].setPosition(x, y);
 		}
 	}
-
-	system( "PAUSE" );
 
 	// SFML Code
 	sf::RenderWindow window(sf::VideoMode(800, 800), "Cubert");
@@ -59,12 +51,21 @@ int main()
 				window.close();
 		}
 
-		window.clear(sf::Color::Green);
+		window.clear(sf::Color::Black);
 
-		window.draw(c);
+		for (int row = 0; row < 7; row++)
+		{
+			for (int index = 0; index < row + 1; index++)
+				window.draw(map[row][index]);
+		}
 
 		window.display();
 	}
+
+	// Map deletion
+	for (int i = 0; i < 7; i++)
+		delete[] map[i];
+	delete[] map;
 
 	return 0;
 }

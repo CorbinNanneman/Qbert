@@ -1,11 +1,11 @@
 /------------------------------\
-		     Game Elements
+         Game Elements
 \------------------------------/
 
 This is a list of all elements of the game and their explanations.
 
 /------------------------------\
-		      Characters
+          Characters
 \------------------------------/
 
 All characters are able to move in only two directions,
