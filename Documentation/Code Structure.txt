@@ -4,9 +4,36 @@
 
 This is a detailed description of all source code files.
 Unless stated as a .cpp or a .h file, any file name can be assumed to be a class with both a .h and .cpp file.
+A - before a variable or function signifies that a function is private, while a + signifies it is public.
 
 main.cpp
 | Acts as a driver for the program, but doesn't host any of the game/display logic.
 | 
 | +int main()
-|   Holds the game loop. Makes calls to StateManager
+|   Holds the game loop. Makes calls to StateManager to drive the program.
+|____
+
+
+StateManager
+| Does the bulk of the game logic calculations.
+|
+| Includes:
+|   <vector>
+|
+| -enum screen
+| | title = 0
+| | load = 1
+| | game = 2
+| | leaderboard = 3
+| |____
+|
+| Data Members:
+|   -double screenWidth
+|   -double screenHeight
+|   -int frame
+|   -sf::RenderWindow window
+|   -std::vector<GameObject*> objects
+|   -Platform platform
+|
+| Member Functions:
+|   

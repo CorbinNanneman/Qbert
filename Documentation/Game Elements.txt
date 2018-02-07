@@ -11,7 +11,7 @@ This is a list of all elements of the game and their explanations.
 All characters are able to move in only two directions,
 except for Q*Bert and Coily.
 
-Unless otherwise specified, characters cause Q*Bert to lose a life.
+Unless otherwise specified, characters cause Q*Bert to lose a life upon contact.
 
 Q*Bert
   The protagonist of the game.
@@ -23,6 +23,7 @@ Coily/Purple Ball
   But instead of bouncing off of the world, the purple ball hatches into Coily.
   Coily follows the player, and is able to move in any direction.
   The only way for coily to fall off the world is to trick him into jumping after Q*Bert when Q*Bert jumps on a disc.
+  If coily falls off the map, all enemies are removed from the map, and the player is rewarded with 500 points.
 
 Red Ball
   The red ball falls into the top of the map, then bounces down in random directions.
@@ -47,6 +48,44 @@ Wrongway
 Ugg
   Wrong way is a lot like Ugg, except he can stand on the right and bottom sides of the map, and falls off the left side instead.
 
+
 /------------------------------\
               Map
 \------------------------------/
+
+Platform
+  The platform is what all characters jump on.
+  The platform consists of 28 blocks.
+  The first row (at the top) has 1 block, the next row has 2, and so on until the last row (at the bottom) which has 7 blocks.
+
+  When all blocks match the target color, the player wins the round.
+  After the player wins the fourth round, the player moves to the next level,
+  where the color pattern changes and the game becomes more difficult.
+
+Block
+  Blocks are what make up the platform.
+  When Q*Bert lands on a block, he changes it's color.
+  When Slick or Sam land on a block, they change it's color.
+
+Disc
+  The discs are objects which Q*Bert can jump onto to ride to the top of the map.
+  They can be used to trick coily into jumping off the map if he is close behind.
+  There is at least 2 in every level.
+
+
+/------------------------------\
+      Information Overlay
+\------------------------------/
+
+The information overlay consists of the extra elements on screen which give the player information on score, lives, etc.
+
+Player
+  Displayed in the top left corner of the screen.
+  Displays player 1 or 2, depending on which player is playing.
+
+Score
+  Displayed under player.
+  Tells the player how many points they have earned.
+
+Target Color
+  Tells the player which color to change all blocks to.
