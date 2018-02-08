@@ -14,12 +14,13 @@ public:
 	Platform();
 
 	bool win();
+	Cube** getCubes();
 
 	void createMap(char* newTexStrings[3], double screenWidth, int scale);
 	void deleteMap();
 
 	~Platform();
 private:
-	char* texStrings[3];
+	char* texStrings[3]; // File paths for appropriate textures
 	Cube **map;
 };
