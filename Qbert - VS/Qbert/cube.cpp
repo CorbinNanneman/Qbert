@@ -3,8 +3,6 @@
 Cube::Cube()
 {
 	colorState = 0;
-	texRectWidth = 32;
-	texRectHeight = 32;
 }
 
 

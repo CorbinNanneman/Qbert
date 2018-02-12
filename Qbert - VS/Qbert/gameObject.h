@@ -23,13 +23,11 @@ public:
 	int getY();
 
 	sf::Sprite* getSprite();
-	void setTexture(char* texPath);
+	void setTexture(char* texPath, uint8_t texWidth, uint8_t texHeight);
 
 	~GameObject();
-protected:
-	int texRectWidth, texRectHeight;
 private:
-	double x, y, vX, vY;
+	float x, y, vX, vY;
 	sf::Texture texture;
 	sf::Sprite sprite;
 };

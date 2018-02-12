@@ -8,8 +8,6 @@ GameObject::GameObject()
 	y = 0;
 	vX = 0;
 	vY = 0;
-	texRectWidth = 8;
-	texRectHeight = 8;
 }
 
 
@@ -68,8 +66,9 @@ sf::Sprite* GameObject::getSprite()
 }
 
 
-void GameObject::setTexture(char* texPath, //texture stuff here)
+void GameObject::setTexture(char* texPath, uint8_t texWidth, uint8_t texHeight)
 {
 	texture.loadFromFile(texPath);
-	sprite.se
+	sprite.setTexture(texture);
+	sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(32, 32)));
 }
