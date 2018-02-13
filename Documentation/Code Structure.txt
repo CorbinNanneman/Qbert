@@ -19,7 +19,10 @@ main.cpp
 | | Holds the game loop. Makes calls to StateManager to drive the program.
 | |
 | | Variables:
-| |   game : StateManager - Game instance
+| |   game() : StateManager - Game instance
+| |
+| | Return:
+| |   int : 0 on program exit
 | |
 | |____
 |
@@ -29,7 +32,7 @@ main.cpp
 StateManager
 |
 | Does the bulk of the game logic calculations.
-| Handles all objects, events, and display operations.
+| Handles all moving objects, events, and display operations.
 |
 | Includes:
 |   <SFML/Graphics.hpp>
@@ -38,27 +41,64 @@ StateManager
 |   "platform.h"
 |
 | -enum screen
-| |
-| | title = 0
-| | load = 1
-| | game = 2
-| | leaderboard = 3
-| |____
+| {
+|   title = 0
+|   load = 1
+|   game = 2
+|   leaderboard = 3
+| }
+|
 |
 | Data Members:
 |   -screenWidth  : double - Width of viewport
 |   -screenHeight : double - Height of viewport
 |   -frame        : int - Tracks what frame of second game loop is currently on
-|   -window       : sf::RenderWindow - Target for drawing game objects
-|   -objects      : std::vector<GameObject*> - Stores access to all currently active objects
-|   -platform     : Platform - Map/Cube controller
+|   -window()     : sf::RenderWindow - Target for drawing game objects
+|   -objects()    : std::vector<GameObject*> - Stores access to all currently active objects
+|   -platform()   : Platform - Map/Cube controller
 |
-| +closed() : bool
+|
+| +clear() : void
 | |
+| | Clears the window with a static color.
+| |____
+|
+|
+| +update() : void
+| |
+| | Calls updates on all objects, calls stateLogic(), and updates frame counters.
+| |____
+|
+|
+| +draw() : void
+| |
+| | Draws all GameObjects to window buffer, then displays buffer.
+| |____
+| 
+|
+| +isClosed() : bool
+| |
+| | Returns true if window has closed, false if not.
+| |
+| | Variables:
+| |   closed = false : bool - return value
+| | 
+| | Return:
+| |   bool : closed
+| |____
+|
+|
+| -stateLogic() : void
+| |
+| | Does special operations based on current screen.
+| |____
 |   
 |____
 
 GameObject
 |
+| Anything that gets drawn to the window.
+|
+|
 | 
-|_
+|____
