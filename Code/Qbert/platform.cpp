@@ -1,7 +1,5 @@
 #include "platform.h"
 
-#include <iostream>
-
 Platform::Platform()
 {
 }
@@ -41,8 +39,7 @@ void Platform::createMap(char* newTexStrings[3], double screenWidth, int scale)
 		{
 			// Initialize textures
 			map[row][index].setTexture(texStrings[0], 32, 32);
-			map[row][index].getSprite()->setOrigin(16, 16);
-
+			
 			// Map coordinate calculations
 			map[row][index].getSprite()->setScale(scale, scale);
 			int x = 32 * scale * (row * -.5 + index) + screenWidth / 2;
@@ -50,7 +47,6 @@ void Platform::createMap(char* newTexStrings[3], double screenWidth, int scale)
 
 			map[row][index].setX(x);
 			map[row][index].setY(y);
-			map[row][index].update(NULL);
 		}
 	}
 }

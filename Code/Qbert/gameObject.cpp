@@ -27,12 +27,14 @@ void GameObject::update(int frame)
 void GameObject::setX(int newX)
 {
 	x = newX;
+	sprite.setPosition( sf::Vector2f( x, y ) );
 }
 
 
 void GameObject::setY(int newY)
 {
 	y = newY;
+	sprite.setPosition( sf::Vector2f( x, y ) );
 }
 
 
@@ -70,5 +72,6 @@ void GameObject::setTexture(char* texPath, uint8_t texWidth, uint8_t texHeight)
 {
 	texture.loadFromFile(texPath);
 	sprite.setTexture(texture);
-	sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(32, 32)));
+	sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(texWidth, texHeight)));
+	sprite.setOrigin( texWidth / 2, texHeight / 2 );
 }

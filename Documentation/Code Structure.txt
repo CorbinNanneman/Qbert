@@ -37,3 +37,11 @@ StateManager
 |
 | Member Functions:
 |   
+
+
+
+
+Character
+|
+| 
+\_
