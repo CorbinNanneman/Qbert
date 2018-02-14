@@ -1,7 +1,0 @@
-﻿  gameObject.cpp
-c:\users\18gef02\documents\github\qbert\qbert - vs\qbert\gameobject.cpp(11): error C2065: 'texSize': undeclared identifier
-c:\users\18gef02\documents\github\qbert\qbert - vs\qbert\gameobject.cpp(25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\18gef02\documents\github\qbert\qbert - vs\qbert\gameobject.cpp(55): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
-c:\users\18gef02\documents\github\qbert\qbert - vs\qbert\gameobject.cpp(61): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
-  cube.cpp
-  Generating Code...
