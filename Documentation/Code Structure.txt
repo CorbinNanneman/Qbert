@@ -93,12 +93,3 @@ StateManager
 | | Does special operations based on current screen.
 | |____
 |   
-|____
-
-GameObject
-|
-| Anything that gets drawn to the window.
-|
-|
-| 
-|____
