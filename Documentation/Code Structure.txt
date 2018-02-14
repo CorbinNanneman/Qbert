@@ -3,45 +3,93 @@
 \------------------------------/
 
 This is a detailed description of all source code files.
-Unless stated as a .cpp or a .h file, any file name can be assumed to be a class with both a .h and .cpp file.
-A - before a variable or function signifies that a function is private, while a + signifies it is public.
+Unless specified as a .cpp or a .h file, any file name can be assumed to be a class with both a .h and .cpp file.
+Files names are lowercase.
+A '-' before a variable or function signifies that a function is private, while a '+' signifies it is public.
 
 main.cpp
-| Acts as a driver for the program, but doesn't host any of the game/display logic.
+|
+| Acts as a driver for the program, but doesn't host any of the game or display logic.
 | 
+| Includes:
+|   "statemanager.h"
+|
 | +int main()
-|   Holds the game loop. Makes calls to StateManager to drive the program.
+| |
+| | Holds the game loop. Makes calls to StateManager to drive the program.
+| |
+| | Variables:
+| |   game() : StateManager - Game instance
+| |
+| | Return:
+| |   int : 0 on program exit
+| |
+| |____
+|
 |____
 
 
 StateManager
+|
 | Does the bulk of the game logic calculations.
+| Handles all moving objects, events, and display operations.
 |
 | Includes:
+|   <SFML/Graphics.hpp>
 |   <vector>
+|   "gameobject.h"
+|   "platform.h"
 |
 | -enum screen
-| | title = 0
-| | load = 1
-| | game = 2
-| | leaderboard = 3
-| |____
+| {
+|   title = 0
+|   load = 1
+|   game = 2
+|   leaderboard = 3
+| }
+|
 |
 | Data Members:
-|   -double screenWidth
-|   -double screenHeight
-|   -int frame
-|   -sf::RenderWindow window
-|   -std::vector<GameObject*> objects
-|   -Platform platform
+|   -screenWidth  : double - Width of viewport
+|   -screenHeight : double - Height of viewport
+|   -frame        : int - Tracks what frame of second game loop is currently on
+|   -window()     : sf::RenderWindow - Target for drawing game objects
+|   -objects()    : std::vector<GameObject*> - Stores access to all currently active objects
+|   -platform()   : Platform - Map/Cube controller
 |
-| Member Functions:
-|   
-
-
-
-
-Character
 |
+| +clear() : void
+| |
+| | Clears the window with a static color.
+| |____
+|
+|
+| +update() : void
+| |
+| | Calls updates on all objects, calls stateLogic(), and updates frame counters.
+| |____
+|
+|
+| +draw() : void
+| |
+| | Draws all GameObjects to window buffer, then displays buffer.
+| |____
 | 
-\_
+|
+| +isClosed() : bool
+| |
+| | Returns true if window has closed, false if not.
+| |
+| | Variables:
+| |   closed = false : bool - return value
+| | 
+| | Return:
+| |   bool : closed
+| |____
+|
+|
+| -stateLogic() : void
+| |
+| | Does special operations based on current screen.
+| |____
+|   
