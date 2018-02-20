@@ -12,22 +12,26 @@ Date Last Modified:
 class GameObject
 {
 public:
-	GameObject();
+	GameObject( );
 
-	virtual void update(int frame);
-	void setX(int newX);
-	void setY(int newY);
-	void setVX(int newVX);
-	void setVY(int newVY);
-	int getX();
-	int getY();
+	virtual void update( );
 
-	sf::Sprite* getSprite();
-	void setTexture(char* texPath, uint8_t texWidth, uint8_t texHeight);
+	void setX( int newX );
+	void setY( int newY );
+	void setVX( int newVX );
+	void setVY( int newVY );
+	int getX( );
+	int getY( );
+
+	sf::Sprite* getSprite( );
+	void setTexture( char* texPath, uint8_t texWidth, uint8_t texHeight );
 
 	~GameObject();
 private:
-	float x, y, vX, vY;
+	float x, 
+		  y, 
+		  vX, 
+		  vY;
 	sf::Texture texture;
 	sf::Sprite sprite;
 };

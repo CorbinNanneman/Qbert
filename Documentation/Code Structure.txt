@@ -1,11 +1,30 @@
 /------------------------------\
         Code Structure
 \------------------------------/
+Modified: February 20th, 2018
 
 This is a detailed description of all source code files.
 Unless specified as a .cpp or a .h file, any file name can be assumed to be a class with both a .h and .cpp file.
 Files names are lowercase.
-A '-' before a variable or function signifies that a function is private, while a '+' signifies it is public.
+A '-' before a variable or function signifies that it is private, while a '+' signifies that it is public.
+
+TODO:
+  main.cpp (complete)
+  StateManager (partially complete)
+  GameObject (complete)
+    Overlay
+    Cube
+    Disc
+    Character
+      Qbert
+      Coily
+      Red Ball
+      Magic Ball
+      Slick
+      Sam
+      Wrongway
+      Ugg
+  Platform
 
 main.cpp
 |
@@ -23,10 +42,8 @@ main.cpp
 | |
 | | Return:
 | |   int : 0 on program exit
-| |
-| |____
-|
-|____
+| \_
+\_
 
 
 StateManager
@@ -40,7 +57,7 @@ StateManager
 |   "gameobject.h"
 |   "platform.h"
 |
-| -enum screen
+| -enum Screen
 | {
 |   title = 0
 |   load = 1
@@ -48,8 +65,8 @@ StateManager
 |   leaderboard = 3
 | }
 |
-|
 | Data Members:
+|   -screen       : Screen - Current screen
 |   -screenWidth  : double - Width of viewport
 |   -screenHeight : double - Height of viewport
 |   -frame        : int - Tracks what frame of second game loop is currently on
@@ -57,25 +74,21 @@ StateManager
 |   -objects()    : std::vector<GameObject*> - Stores access to all currently active objects
 |   -platform()   : Platform - Map/Cube controller
 |
-|
 | +clear() : void
 | |
-| | Clears the window with a static color.
-| |____
-|
+| | Clears the window based on screen
+| \_
 |
 | +update() : void
 | |
 | | Calls updates on all objects, calls stateLogic(), and updates frame counters.
-| |____
-|
+| \_
 |
 | +draw() : void
 | |
 | | Draws all GameObjects to window buffer, then displays buffer.
-| |____
+| \_
 | 
-|
 | +isClosed() : bool
 | |
 | | Returns true if window has closed, false if not.
@@ -85,11 +98,106 @@ StateManager
 | | 
 | | Return:
 | |   bool : closed
-| |____
-|
+| \_
 |
 | -stateLogic() : void
 | |
 | | Does special operations based on current screen.
-| |____
-|   
+| \_
+\_
+
+
+GameObject
+|
+| Any part of the game that is displayed to the screen.
+| Contains basic display functionalities like position and image.
+|
+| Includes:
+|   <SFML/Graphics/Texture.hpp>
+|   <SFML/Graphics/Sprite.hpp>
+|
+| Data Members:
+|   -x       : float - horizontal position coordinate
+|   -y       : float - vertical position coordinate
+|   -vX      : float - horizontal velocity
+|   -vY      : float - vertical velocity
+|   -texture : sf::Texture - Refers to image file to be used by sprite
+|   -sprite  : sf::Sprite - Manage the image drawn to screen for the object
+|
+| +update( ) : void
+| |
+| | Applies velocity changes, then updates sprite position.
+| \_
+|
+| +setX( float newX ) : void
+| |
+| | Sets the horizontal position to specified value.
+| \_
+|
+| +setY( float newY ) : void
+| |
+| | Sets the vertical position to the specified value.
+| \_
+|
+| +setVX( float newVX ) : void
+| |
+| | Sets the horizontal velocity to the specified value.
+| \_
+|
+| +setVY( float newVY ) : void
+| |
+| | Sets the vertical velocity to the specified value.
+| \_
+|
+| +getX( ) : float
+| |
+| | Returns the horizontal position value.
+| |
+| | Return:
+| |  int : x
+| \_
+|
+| +getY( ) : float
+| |
+| | Returns the vertical position value.
+| |
+| | Return:
+| |   int : y
+| \_
+|
+| +getVX( ) : float
+| |
+| | Returns the horizontal velocity value.
+| |
+| | Return:
+| |   int : vX
+| \_
+|
+| +getVY( ) : float
+| |
+| | Returns the vertical velocity value.
+| |
+| | Return:
+| |   int : vY
+| \_
+|
+| +getSprite( ) : sf::Sprite*
+| |
+| | Returns a reference to the sprite.
+| |
+| | Return:
+| |   sf::Sprite* - &sprite
+| \_
+|
+| +setTexture( char* texPath, __int16 texWidth, __int16 texHeight ) : void
+| |
+| | Loads a new texture from an image file.
+| | texWidth and texHeight refer to the dimensions of the part of the texture displayed to the screen, 
+| | not the entire texture.
+| |
+| | Loads the texture from file, 
+| | sets the texture of the sprite to the texture (?), 
+| | sets the texture rectangle of the sprite with dimensions texWidth and texHeight,
+| | and sets the origin of the sprite.
+| \_
+\_

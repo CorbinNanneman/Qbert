@@ -1,4 +1,0 @@
-﻿  main.cpp
-c:\users\18gef02\documents\github\qbert\code\qbert\main.cpp(36): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
-  Qbert.vcxproj -> C:\Users\18gef02\Documents\GitHub\Qbert\Code\Debug\Qbert.exe
-  Qbert.vcxproj -> C:\Users\18gef02\Documents\GitHub\Qbert\Code\Debug\Qbert.pdb (Partial PDB)

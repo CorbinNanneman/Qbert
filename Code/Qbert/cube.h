@@ -13,10 +13,10 @@ class Cube : public GameObject
 public:
 	Cube();
 
-	void setState(uint8_t newState);
-	uint8_t getState();
+	void setState( __int8 newState );
+	__int8 getState();
 
 	~Cube();
 private:
-	uint8_t colorState;
+	__int8 colorState;
 };

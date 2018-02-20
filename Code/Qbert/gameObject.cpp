@@ -1,5 +1,4 @@
 #include "gameObject.h"
-
 #include <SFML\Graphics.hpp>
 
 GameObject::GameObject()
@@ -16,7 +15,7 @@ GameObject::~GameObject()
 }
 
 
-void GameObject::update(int frame)
+void GameObject::update( )
 {
 	x += vX;
 	y += vY;
@@ -72,6 +71,6 @@ void GameObject::setTexture(char* texPath, uint8_t texWidth, uint8_t texHeight)
 {
 	texture.loadFromFile(texPath);
 	sprite.setTexture(texture);
-	sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(texWidth, texHeight)));
+	sprite.setTextureRect( sf::IntRect( sf::Vector2i( 0, 0 ), sf::Vector2i( texWidth, texHeight ) ) );
 	sprite.setOrigin( texWidth / 2, texHeight / 2 );
 }

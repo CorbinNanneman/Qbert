@@ -35,8 +35,10 @@ int main()
 	// SFML Code
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Q*bert");
 	window.setFramerateLimit( 60 );
-	int scale = 1;
+	__int8 scale = 1;
 
+	
+	
 	unsigned int frame = 0;
 	
 	Platform platform;
@@ -58,27 +60,34 @@ int main()
 			else if ( e.key.code == sf::Keyboard::Escape )
 				window.close( );
 			else if ( e.key.code == sf::Keyboard::D )
-				q.moveUR( );
+				q.move( 0, scale );
+			else if( e.key.code == sf::Keyboard::C )
+				q.move( 1, scale );
+			else if( e.key.code == sf::Keyboard::Z )
+				q.move( 2, scale );
+			else if( e.key.code == sf::Keyboard::S )
+				q.move( 3, scale );
 		}
 
 		window.clear(sf::Color::Black);
 
-		q.update( ++frame );
+		frame = ( frame + 1 ) % 60; //Keeps frame cycling from 0 to 59
+		q.update( frame );
 
 		// MAP DRAW
-		Cube** map = platform.getCubes();
-		for (int row = 0; row < 7; row++)
+		Cube** map = platform.getCubes( );
+		for( int row = 0; row < 7; row++ )
 		{
-			for (int index = 0; index < row + 1; index++)
-				window.draw(*map[row][index].getSprite());
+			for( int index = 0; index < row + 1; index++ )
+				window.draw( *map[row][index].getSprite( ) );
 		}
 
 		window.draw( *q.getSprite( ) );
 
-		window.display();
+		window.display( );
 	}
 
-	platform.deleteMap();
+	platform.deleteMap( );
 
 	return 0;
 }
