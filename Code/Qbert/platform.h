@@ -11,16 +11,16 @@ Feburary 1st, 2018 | 12:04PM
 class Platform
 {
 public:
-	Platform();
+	Platform( );
 
-	bool win();
-	Cube** getCubes();
+	void createMap( char* newTexStrings[ 3 ], double screenWidth, int scale );
+	void deleteMap( );
 
-	void createMap(char* newTexStrings[3], double screenWidth, int scale);
-	void deleteMap();
+	bool win( );
+	Cube*** getCubes( );
 
 	~Platform();
 private:
+	Cube** map;
 	char* texStrings[3]; // File paths for appropriate textures
-	Cube **map;
 };

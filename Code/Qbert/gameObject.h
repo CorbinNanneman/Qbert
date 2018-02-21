@@ -14,24 +14,23 @@ class GameObject
 public:
 	GameObject( );
 
-	virtual void update( );
+	void update( );
 
-	void setX( int newX );
-	void setY( int newY );
-	void setVX( int newVX );
-	void setVY( int newVY );
-	int getX( );
-	int getY( );
+	void setX( float newX );
+	void setY( float newY );
+	void setVX( float newVX );
+	void setVY( float newVY );
+	float getX( );
+	float getY( );
+	float getVX( );
+	float getVY( );
 
 	sf::Sprite* getSprite( );
-	void setTexture( char* texPath, uint8_t texWidth, uint8_t texHeight );
+	void setTexture( char* texPath, __int16 texWidth, __int16 texHeight );
 
-	~GameObject();
+	~GameObject( );
 private:
-	float x, 
-		  y, 
-		  vX, 
-		  vY;
+	float x, y, vX, vY;
 	sf::Texture texture;
 	sf::Sprite sprite;
 };
