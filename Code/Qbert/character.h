@@ -22,8 +22,7 @@ public:
 
 	~Character();
 private:
-	__int8 row, 
-			index;
+	__int8 row, index, jumpDirection;
 	unsigned int jumpTimer;
 	bool isOOB;
 };

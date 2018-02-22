@@ -36,7 +36,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Q*bert");
 	window.setFramerateLimit( 60 );
 
-	__int8 scale = 2;
+	__int8 scale = 3;
 	
 	// FPS Tracking variables
 	unsigned int frame = 0;
@@ -76,17 +76,18 @@ int main()
 
 		// FPS Tracking (for game stabilization)
 		frame++;
-		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
+		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 199 )
 		{
-			fps = frame;
+			fps = frame * 5;
 			frame = 0;
 			fpsTimer.restart( );
+			std::cout << (int)fps << '\n';
 		}
 
 		q.update( frame, fps, screenWidth, scale );
 
 		// MAP DRAW
-		Cube** const &map = platform.getCubes( );
+		Cube** map = platform.getCubes( );
 		for( int row = 0; row < 7; row++ )
 		{
 			for( int index = 0; index < row + 1; index++ )

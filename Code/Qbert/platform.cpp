@@ -53,7 +53,7 @@ bool Platform::win( )
 }
 
 
-Cube** const &Platform::getCubes( )
+Cube** Platform::getCubes( )
 {
 	return map;
 }
