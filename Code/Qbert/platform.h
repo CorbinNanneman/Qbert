@@ -17,7 +17,7 @@ public:
 	void deleteMap( );
 
 	bool win( );
-	Cube*** getCubes( );
+	Cube** const &getCubes( );
 
 	~Platform();
 private:

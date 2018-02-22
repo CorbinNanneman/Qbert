@@ -1,24 +1,24 @@
-/*
-
-Program: Qbert
-
-Breif: Classic arcade game recreated in C++
-
-------------------------------------------------------------------------
-
-File: main.cpp
-
-Purpose: Drive the program without performing any of the main logic
-
-------------------------------------------------------------------------
-
-Author: Greg Francis
-
-Date Created: February 12th, 2018
-
-Date Last Modified: Feburary 12th, 2018 | 12:57 PM
-
-*/
+/*==============================================================*\
+|                                                                |
+| Program: Qbert                                                 |
+|                                                                |
+| Breif: Classic arcade game recreated in C++                    |
+|                                                                |
+| -------------------------------------------------------------- |
+|                                                                |
+| File: main.cpp                                                 |
+|                                                                |
+| Purpose: Drive the program without hosting any specific logic  |
+|                                                                |
+| -------------------------------------------------------------- |
+|                                                                |
+| Author: Greg Francis                                           |
+|                                                                |
+| Date Created: February 12th, 2018                              |
+|                                                                |
+| Date Last Modified: Feburary 21th, 2018 | 7:32 PM              |
+|                                                                |
+\*==============================================================*/
 
 #include <SFML/Graphics.hpp>
 
@@ -35,9 +35,7 @@ int main()
 	// SFML Code
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Q*bert");
 	window.setFramerateLimit( 60 );
-	__int8 scale = 1;
-
-	
+	__int8 scale = 2;
 	
 	unsigned int frame = 0;
 	
@@ -49,13 +47,13 @@ int main()
 	platform.createMap(texStrings, screenWidth, scale);
 	
 	// Game Loop
-	while (window.isOpen())
+	while ( window.isOpen( ) )
 	{
 		// EVENTS
 		sf::Event e;
-		while (window.pollEvent(e))
+		while ( window.pollEvent( e ) )
 		{
-			if (e.type == sf::Event::Closed)
+			if ( e.type == sf::Event::Closed )
 				window.close();
 			else if ( e.key.code == sf::Keyboard::Escape )
 				window.close( );
@@ -75,7 +73,7 @@ int main()
 		q.update( frame );
 
 		// MAP DRAW
-		Cube** map = platform.getCubes( );
+		Cube** const &map = platform.getCubes( );
 		for( int row = 0; row < 7; row++ )
 		{
 			for( int index = 0; index < row + 1; index++ )
