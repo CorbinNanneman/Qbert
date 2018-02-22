@@ -32,13 +32,18 @@ int main()
 	double screenWidth = 800, 
 		   screenHeight = screenWidth;
 
-	// SFML Code
+	// SFML Window
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Q*bert");
 	window.setFramerateLimit( 60 );
+
 	__int8 scale = 2;
 	
+	// FPS Tracking variables
 	unsigned int frame = 0;
+	__int8 fps = 60;
+	sf::Clock fpsTimer;
 	
+	// Map/Character creation
 	Platform platform;
 	Character q( 6, 0, scale, screenWidth );
 
@@ -58,19 +63,27 @@ int main()
 			else if ( e.key.code == sf::Keyboard::Escape )
 				window.close( );
 			else if ( e.key.code == sf::Keyboard::D )
-				q.move( 0, scale );
+				q.move( 0, scale, fps );
 			else if( e.key.code == sf::Keyboard::C )
-				q.move( 1, scale );
+				q.move( 1, scale, fps );
 			else if( e.key.code == sf::Keyboard::Z )
-				q.move( 2, scale );
+				q.move( 2, scale, fps );
 			else if( e.key.code == sf::Keyboard::S )
-				q.move( 3, scale );
+				q.move( 3, scale, fps );
 		}
 
 		window.clear(sf::Color::Black);
 
-		frame = ( frame + 1 ) % 60; //Keeps frame cycling from 0 to 59
-		q.update( frame );
+		// FPS Tracking (for game stabilization)
+		frame++;
+		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
+		{
+			fps = frame;
+			frame = 0;
+			fpsTimer.restart( );
+		}
+
+		q.update( frame, fps, screenWidth, scale );
 
 		// MAP DRAW
 		Cube** const &map = platform.getCubes( );

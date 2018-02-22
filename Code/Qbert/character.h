@@ -13,11 +13,11 @@ Date Last Modified:
 class Character : public GameObject
 {
 public:
-	Character( __int8 startRow, __int8 startIndex, __int8 scale, float screenWidth );
+	Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth );
 
-	void update( int frame );
+	void update( int frame, __int8 fps, __int16 screenWidth, float scale );
 
-	void move( __int8 direction, __int8 scale );
+	void move( __int8 direction, float scale, __int8 fps );
 	void checkOOB( );
 
 	~Character();

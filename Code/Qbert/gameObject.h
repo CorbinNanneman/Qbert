@@ -13,6 +13,7 @@ class GameObject
 {
 public:
 	GameObject( );
+	GameObject( float scale );
 
 	void update( );
 

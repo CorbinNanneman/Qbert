@@ -1,12 +1,22 @@
 #include "gameObject.h"
 #include <SFML\Graphics.hpp>
 
+GameObject::GameObject( float scale )
+{
+	x = 0;
+	y = 0;
+	vX = 0;
+	vY = 0;
+	sprite.setScale( scale, scale );
+}
+
 GameObject::GameObject( )
 {
 	x = 0;
 	y = 0;
 	vX = 0;
 	vY = 0;
+	sprite.setScale( 1, 1 );
 }
 
 
