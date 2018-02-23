@@ -76,9 +76,9 @@ int main()
 
 		// FPS Tracking (for game stabilization)
 		frame++;
-		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 199 )
+		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 499 )
 		{
-			fps = frame * 5;
+			fps = frame * 2;
 			frame = 0;
 			fpsTimer.restart( );
 			std::cout << (int)fps << '\n';
