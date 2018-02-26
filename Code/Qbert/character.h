@@ -13,19 +13,16 @@ Date Last Modified:
 class Character : public GameObject
 {
 public:
-	Character( uint8_t startRow, uint8_t startIndex, int scale, double screenWidth );
+	Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth );
 
-	void update( int frame ) override;
-	void moveUR();
-	void moveDR();
-	void moveDL();
-	void moveUL();
-	bool moveOOB( uint8_t row, uint8_t index );
+	void update( int frame, __int8 fps, __int16 screenWidth, float scale );
+
+	void move( __int8 direction, float scale, __int8 fps );
+	void checkOOB( );
 
 	~Character();
 private:
-	uint8_t row, 
-			index;
+	__int8 row, index, jumpDirection;
 	unsigned int jumpTimer;
 	bool isOOB;
 };

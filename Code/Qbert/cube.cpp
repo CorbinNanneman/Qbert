@@ -11,13 +11,13 @@ Cube::~Cube()
 }
 
 
-void Cube::setState(uint8_t newState)
+void Cube::setState(__int8 newState)
 {
 	colorState = newState;
 }
 
 
-uint8_t Cube::getState()
+__int8 Cube::getState()
 {
 	return colorState;
 }

@@ -1,77 +1,98 @@
 #include "gameObject.h"
-
 #include <SFML\Graphics.hpp>
 
-GameObject::GameObject()
+GameObject::GameObject( float scale )
 {
 	x = 0;
 	y = 0;
 	vX = 0;
 	vY = 0;
+	sprite.setScale( scale, scale );
 }
 
-
-GameObject::~GameObject()
+GameObject::GameObject( )
 {
+	x = 0;
+	y = 0;
+	vX = 0;
+	vY = 0;
+	sprite.setScale( 1, 1 );
 }
 
 
-void GameObject::update(int frame)
+GameObject::~GameObject( )
+{ }
+
+
+void GameObject::update( )
 {
 	x += vX;
 	y += vY;
-	sprite.setPosition(x, y);
+	sprite.setPosition( x, y );
 }
 
 
-void GameObject::setX(int newX)
+void GameObject::setX( float newX )
 {
 	x = newX;
 	sprite.setPosition( sf::Vector2f( x, y ) );
 }
 
 
-void GameObject::setY(int newY)
+void GameObject::setY( float newY )
 {
 	y = newY;
 	sprite.setPosition( sf::Vector2f( x, y ) );
 }
 
 
-void GameObject::setVX(int newVX)
+void GameObject::setVX( float newVX )
 {
 	vX = newVX;
 }
 
 
-void GameObject::setVY(int newVY)
+void GameObject::setVY( float newVY )
 {
 	vY = newVY;
 }
 
 
-int GameObject::getX()
+float GameObject::getX( )
 {
 	return x;
 }
 
 
-int GameObject::getY()
+float GameObject::getY( )
 {
 	return y;
 }
 
 
-sf::Sprite* GameObject::getSprite()
+float GameObject::getVX( )
+{
+	return vX;
+}
+
+
+float GameObject::getVY( )
+{
+	return vY;
+}
+
+
+
+sf::Sprite* GameObject::getSprite( )
 {
 	return &sprite;
 }
 
 
-void GameObject::setTexture(char* texPath, uint8_t texWidth, uint8_t texHeight)
+void GameObject::setTexture( char* texPath, __int16 texWidth, __int16 texHeight)
 {
-	texture.loadFromFile(texPath);
-	sprite.setTexture(texture);
-	sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(texWidth, texHeight)));
+	texture.loadFromFile( texPath );
+	sprite.setTexture( texture );
+	sprite.setTextureRect( sf::IntRect( sf::Vector2i(0, 0), sf::Vector2i(texWidth, texHeight) ) );
 	sprite.setOrigin( texWidth / 2, texHeight / 2 );
 }

@@ -1,11 +1,36 @@
 /------------------------------\
         Code Structure
 \------------------------------/
+Modified: February 20th, 2018
 
 This is a detailed description of all source code files.
+
 Unless specified as a .cpp or a .h file, any file name can be assumed to be a class with both a .h and .cpp file.
-Files names are lowercase.
-A '-' before a variable or function signifies that a function is private, while a '+' signifies it is public.
+Source code file names are full lowercase.
+
+A '-' before a variable or function signifies that it is private, while a '+' signifies that it is public.
+A '*' next to a file or class indicates that its documentation is not yet completed.
+
+Contents:
+  main.cpp
+  StateManager *
+  GameObject
+    CurrentPlayer *
+    Score *
+    TargetCube *
+    Life *
+    Cube *
+    Disc *
+    Character *
+      Qbert *
+      Coily *
+      Red Ball *
+      Magic Ball *
+      Slick *
+      Sam *
+      Wrongway *
+      Ugg *
+  Platform *
 
 main.cpp
 |
@@ -23,13 +48,11 @@ main.cpp
 | |
 | | Return:
 | |   int : 0 on program exit
-| |
-| |____
-|
-|____
+| \_
+\_
 
 
-StateManager
+StateManager *
 |
 | Does the bulk of the game logic calculations.
 | Handles all moving objects, events, and display operations.
@@ -40,7 +63,7 @@ StateManager
 |   "gameobject.h"
 |   "platform.h"
 |
-| -enum screen
+| -enum Screen
 | {
 |   title = 0
 |   load = 1
@@ -48,48 +71,156 @@ StateManager
 |   leaderboard = 3
 | }
 |
-|
 | Data Members:
-|   -screenWidth  : double - Width of viewport
-|   -screenHeight : double - Height of viewport
+|   -screen       : Screen - Current screen
+|   -screenWidth  : __int16 - Width of viewport
+|   -screenHeight : __int16 - Height of viewport
+|   -scale        : float - Scales all GameObjects, calculated by screenWidth
 |   -frame        : int - Tracks what frame of second game loop is currently on
 |   -window()     : sf::RenderWindow - Target for drawing game objects
 |   -objects()    : std::vector<GameObject*> - Stores access to all currently active objects
 |   -platform()   : Platform - Map/Cube controller
 |
-|
 | +clear() : void
 | |
-| | Clears the window with a static color.
-| |____
-|
+| | Clears the window based on screen
+| \_
 |
 | +update() : void
 | |
 | | Calls updates on all objects, calls stateLogic(), and updates frame counters.
-| |____
-|
+| \_
 |
 | +draw() : void
 | |
 | | Draws all GameObjects to window buffer, then displays buffer.
-| |____
+| \_
 | 
-|
 | +isClosed() : bool
 | |
 | | Returns true if window has closed, false if not.
-| |
-| | Variables:
-| |   closed = false : bool - return value
-| | 
-| | Return:
-| |   bool : closed
-| |____
-|
+| \_
 |
 | -stateLogic() : void
 | |
 | | Does special operations based on current screen.
-| |____
-|   
+| \_
+\_
+
+
+GameObject
+|
+| Any part of the game that is displayed to the screen.
+| Contains basic display functionalities like position and image.
+|
+| Includes:
+|   <SFML/Graphics/Texture.hpp>
+|   <SFML/Graphics/Sprite.hpp>
+|
+| Data Members:
+|   -x       : float - horizontal position coordinate
+|   -y       : float - vertical position coordinate
+|   -vX      : float - horizontal velocity
+|   -vY      : float - vertical velocity
+|   -texture : sf::Texture - Refers to image file to be used by sprite
+|   -sprite  : sf::Sprite - Manage the image drawn to screen for the object
+|
+| +update( ) : void
+| |
+| | Applies velocity changes, then updates sprite position.
+| \_
+|
+| +setX( float newX ) : void
+| |
+| | Sets x to specified value.
+| \_
+|
+| +setY( float newY ) : void
+| |
+| | Sets y to the specified value.
+| \_
+|
+| +setVX( float newVX ) : void
+| |
+| | Sets vX to the specified value.
+| \_
+|
+| +setVY( float newVY ) : void
+| |
+| | Sets vY to the specified value.
+| \_
+|
+| +getX( ) : float
+| |
+| | Returns x.
+| \_
+|
+| +getY( ) : float
+| |
+| | Returns y.
+| \_
+|
+| +getVX( ) : float
+| |
+| | Returns vX.
+| \_
+|
+| +getVY( ) : float
+| |
+| | Returns vY.
+| \_
+|
+| +getSprite( ) : sf::Sprite*
+| |
+| | Returns a reference to the sprite.
+| \_
+|
+| +setTexture( char* texPath, __int16 texWidth, __int16 texHeight ) : void
+| |
+| | Loads a new texture from an image file.
+| | texWidth and texHeight refer to the dimensions of the part of the texture displayed to the screen, 
+| | not the entire texture.
+| |
+| | Loads the texture from file, 
+| | sets the texture of the sprite to the texture (?), 
+| | sets the texture rectangle of the sprite with dimensions texWidth and texHeight,
+| | and sets the origin of the sprite.
+| \_
+\_
+
+Platform
+|
+| Handles cube objects and corresponding logic.
+| 
+| Includes:
+|   "cube.h"
+|
+| Data Members:
+|   map        : Cube** - Triangular 2D storage for all cubes
+|   texStrings : char*[3] - File paths for cube texture changes. 
+|                         - texStrings[0] holds the intial Cube texture.
+|                         - texStrings[1] holds in the intermediate cube texture, or NULL if there is no intermediate texture
+|                         - texStrings[2] holds the target Cube texture.
+|
+| +createMap( char* newTexStrings[3], __int16 screenWidth, float scale ) : void
+| |
+| | Allocates space for the map in the form of Cube*[7], 
+| | where each index of the map contains an array of index + 1 Cubes.
+| | Creates and positions each cube as well.
+| \_
+|
+| +deleteMap( ) : void
+| |
+| | Deallocates the map.
+| \_
+|
+| +cubes( ) : Cube***
+| |
+| | Returns a a pointer to the map.
+| \_
+|
+| +complete( ) : bool
+| |
+| | Returns true if all cubes match the target texture.
+| \_
+\_
