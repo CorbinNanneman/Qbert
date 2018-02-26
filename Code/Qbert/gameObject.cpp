@@ -7,6 +7,8 @@ GameObject::GameObject( float scale )
 	y = 0;
 	vX = 0;
 	vY = 0;
+	texWidth = 0;
+	texHeight = 0;
 	sprite.setScale( scale, scale );
 }
 
@@ -89,10 +91,15 @@ sf::Sprite* GameObject::getSprite( )
 }
 
 
-void GameObject::setTexture( char* texPath, __int16 texWidth, __int16 texHeight)
+void GameObject::setTexture( char* texPath, __int16 newTexWidth, __int16 newTexHeight)
 {
+
 	texture.loadFromFile( texPath );
 	sprite.setTexture( texture );
-	sprite.setTextureRect( sf::IntRect( sf::Vector2i(0, 0), sf::Vector2i(texWidth, texHeight) ) );
+	texWidth = newTexWidth;
+	texHeight = newTexHeight;
+
+	sprite.setTextureRect( sf::IntRect( sf::Vector2i(0, 0), 
+		sf::Vector2i(texWidth, texHeight) ) );
 	sprite.setOrigin( texWidth / 2, texHeight / 2 );
 }

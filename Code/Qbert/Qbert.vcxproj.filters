@@ -33,6 +33,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="redball.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="platform.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qbert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="redball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

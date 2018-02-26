@@ -25,10 +25,13 @@
 #include <iostream>
 #include "cube.h"
 #include "platform.h"
-#include "character.h"
+#include "qbert.h"
+#include "redball.h"
 	
 int main()
 {
+	srand( time( NULL ) );
+
 	double screenWidth = 800, 
 		   screenHeight = screenWidth;
 
@@ -45,7 +48,8 @@ int main()
 	
 	// Map/Character creation
 	Platform platform;
-	Character q( 6, 0, scale, screenWidth );
+	Qbert q( 6, 0, scale, screenWidth );
+	RedBall r( scale, screenWidth );
 
 	// Platform initialization
 	char* texStrings[3] = { "./images/blueBlue.png", NULL, "./images/blueTiedye1.png" };
@@ -86,6 +90,12 @@ int main()
 
 		q.update( frame, fps, screenWidth, scale );
 
+		// Draw behind map when OOB
+		if( q.isOOB( ) )
+			window.draw( *q.getSprite( ) );
+		if( r.isOOB( ) )
+			window.draw( *r.getSprite( ) );
+
 		// MAP DRAW
 		Cube** map = platform.getCubes( );
 		for( int row = 0; row < 7; row++ )
@@ -94,7 +104,11 @@ int main()
 				window.draw( *map[row][index].getSprite( ) );
 		}
 
-		window.draw( *q.getSprite( ) );
+		// Draw in front of map when in bounds
+		if( !q.isOOB( ) )
+			window.draw( *q.getSprite( ) );
+		if( !r.isOOB( ) )
+			window.draw( *r.getSprite( ) );
 
 		window.display( );
 	}

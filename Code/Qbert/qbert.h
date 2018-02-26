@@ -1,14 +1,13 @@
 #pragma once
-/*
-Date Created:
-	February 14th, 2018
-Date Last Modified:
-	February 14th, 2018 | 10:48 am
-*/
-class Qbert
+
+#include "character.h"
+
+class Qbert : public Character
 {
 public:
-	Qbert( );
+	Qbert( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth );
+
+	void moveAnimate( __int8 state ) override;
 
 	~Qbert( );
 };

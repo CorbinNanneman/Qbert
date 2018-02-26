@@ -18,11 +18,12 @@ public:
 	void update( int frame, __int8 fps, __int16 screenWidth, float scale );
 
 	void move( __int8 direction, float scale, __int8 fps );
-	void checkOOB( );
+	bool isOOB( );
+	virtual void moveAnimate( __int8 direction ) = 0;
 
 	~Character();
 private:
 	__int8 row, index, jumpDirection;
 	unsigned int jumpTimer;
-	bool isOOB;
+	bool OOB;
 };

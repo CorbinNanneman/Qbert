@@ -1,6 +1,7 @@
 #include "character.h"
 
-Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth ) : GameObject( scale )
+Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth ) 
+	: GameObject( scale )
 {
 	row = startRow;
 	index = startIndex;
@@ -41,15 +42,42 @@ void Character::update( int frame, __int8 fps, __int16 screenWidth, float scale 
 		}
 
 		// Character completes jump
-		if( jumpTimer > fps / 2 && !isOOB )
+		if( jumpTimer > fps / 2 )
 		{
-			// Ensure Exact Position
-			setVX( 0 );
-			setVY( 0 );
-			setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
-			setY( scale * ( row * 24 - 16 ) + 100 );
-			
-			jumpDirection = 4;
+			// Adjust character position
+			switch( jumpDirection )
+			{
+			case 0: // Up right
+				row--;
+				break;
+			case 1: // Down right
+				row++;
+				index++;
+				break;
+			case 2: // Down left
+				row++;
+				break;
+			case 3: // Up left
+				row--;
+				index--;
+				break;
+			default:
+				break;
+			}
+
+			// OOB Check
+			if( row < 0 || row > 6 || index < 0 || index > row )
+				OOB = true;
+			else
+			{
+				moveAnimate( jumpDirection + 4 );
+				// Ensure Exact Position
+				setVX( 0 );
+				setVY( 0 );
+				setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
+				setY( scale * ( row * 24 - 16 ) + 100 );
+				jumpDirection = 4; // Stopped moving
+			}
 		}
 	}
 }
@@ -57,33 +85,28 @@ void Character::update( int frame, __int8 fps, __int16 screenWidth, float scale 
 
 void Character::move( __int8 direction, float scale, __int8 fps )
 {
-	if( jumpTimer > fps / 2 && !isOOB )
+	if( jumpTimer > fps / 2 && !OOB )
 	{
+		moveAnimate( direction );
 		switch( direction )
 		{
 		// Move up right
 		case 0:
-			row--;
 			setVX( 16 * scale / (fps / 2) );
 			setVY( -96 * scale / ( fps / 2 ) );
 			break;
 		// Move down right
 		case 1:
-			row++;
-			index++;
 			setVX( 16 * scale / (fps / 2) );
 			setVY( -48 * scale / ( fps / 2 ) );
 			break;
 		// Move down left
 		case 2:
-			row++;
 			setVX( -16 * scale / (fps / 2) );
 			setVY( -48 * scale / (fps / 2) );
 			break;
 		// Move up left
 		case 3:
-			row--;
-			index--;
 			setVX( -16 * scale / (fps / 2) );
 			setVY( -96 * scale / (fps / 2) );
 			break;
@@ -91,17 +114,13 @@ void Character::move( __int8 direction, float scale, __int8 fps )
 			break;
 		}
 
-		// Check if the move is out of bounds
-		if( row < 0 || row > 6 || index < 0 || index > row )
-			isOOB = true;
-
 		jumpTimer = 0;
 		jumpDirection = direction;
 	}
 }
 
 
-void Character::checkOOB( )
-{
-	
+bool Character::isOOB( )
+{ 
+	return OOB;
 }

@@ -30,6 +30,8 @@ public:
 	void setTexture( char* texPath, __int16 texWidth, __int16 texHeight );
 
 	~GameObject( );
+protected:
+	__int16 texWidth, texHeight;
 private:
 	float x, y, vX, vY;
 	sf::Texture texture;
