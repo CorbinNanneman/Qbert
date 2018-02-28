@@ -4,7 +4,7 @@
 RedBall::RedBall( float scale, __int16 screenWidth )
 	: Character( 1, rand( ) % 2, scale, screenWidth )
 {
-	setTexture( "./images/RedBall.png", 15, 10 );
+	setTexture( "./images/RedBall.png", 15, 15 );
 }
 
 void RedBall::moveAnimate( __int8 state )

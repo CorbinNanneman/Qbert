@@ -15,9 +15,9 @@ class Character : public GameObject
 public:
 	Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth );
 
-	void update( int frame, __int8 fps, __int16 screenWidth, float scale );
+	void update( int frame, float fpsScale, __int16 screenWidth, float scale );
 
-	void move( __int8 direction, float scale, __int8 fps );
+	void move( __int8 direction, float scale, float fpsScale );
 	bool isOOB( );
 	virtual void moveAnimate( __int8 direction ) = 0;
 

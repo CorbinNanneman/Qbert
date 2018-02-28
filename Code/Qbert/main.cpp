@@ -34,16 +34,18 @@ int main()
 
 	double screenWidth = 800, 
 		   screenHeight = screenWidth;
+	__int8 targetFps = 60;
 
 	// SFML Window
-	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Q*bert");
+	sf::RenderWindow window( sf::VideoMode(screenWidth, screenHeight), "Q*bert" );
 	window.setFramerateLimit( 60 );
 
 	__int8 scale = 3;
 	
 	// FPS Tracking variables
 	unsigned int frame = 0;
-	__int8 fps = 60;
+	__int16 fps = targetFps;
+	float fpsScale = targetFps * 1.0 / fps;
 	sf::Clock fpsTimer;
 	
 	// Map/Character creation
@@ -53,7 +55,11 @@ int main()
 
 	// Platform initialization
 	char* texStrings[3] = { "./images/blueBlue.png", NULL, "./images/blueTiedye1.png" };
-	platform.createMap(texStrings, screenWidth, scale);
+	platform.createMap( texStrings, screenWidth, scale );
+	
+	// Delay before starting game to stabilize frame rate
+	sf::Clock* delay = new sf::Clock( );
+	while( delay->getElapsedTime( ).asMilliseconds( ) < 999 );
 	
 	// Game Loop
 	while ( window.isOpen( ) )
@@ -67,28 +73,30 @@ int main()
 			else if ( e.key.code == sf::Keyboard::Escape )
 				window.close( );
 			else if ( e.key.code == sf::Keyboard::D )
-				q.move( 0, scale, fps );
+				q.move( 0, scale, fpsScale );
 			else if( e.key.code == sf::Keyboard::C )
-				q.move( 1, scale, fps );
+				q.move( 1, scale, fpsScale );
 			else if( e.key.code == sf::Keyboard::Z )
-				q.move( 2, scale, fps );
+				q.move( 2, scale, fpsScale );
 			else if( e.key.code == sf::Keyboard::S )
-				q.move( 3, scale, fps );
+				q.move( 3, scale, fpsScale );
 		}
 
 		window.clear(sf::Color::Black);
 
 		// FPS Tracking (for game stabilization)
 		frame++;
-		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 499 )
+		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
 		{
-			fps = frame * 2;
+			fps = frame;
+			fpsScale = targetFps * 1.0 / fps;
 			frame = 0;
 			fpsTimer.restart( );
 			std::cout << (int)fps << '\n';
 		}
 
-		q.update( frame, fps, screenWidth, scale );
+		q.update( frame, fpsScale, screenWidth, scale );
+		r.update( frame, fpsScale, screenWidth, scale );
 
 		// Draw behind map when OOB
 		if( q.isOOB( ) )

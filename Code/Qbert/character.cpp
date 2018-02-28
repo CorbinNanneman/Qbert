@@ -16,33 +16,19 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 Character::~Character() { }
 
 
-void Character::update( int frame, __int8 fps, __int16 screenWidth, float scale )
+void Character::update( int frame, float fpsScale, __int16 screenWidth, float scale )
 {
 	GameObject::update( );
 	jumpTimer++;
+
+	// Jump calculations, when character is jumping
 	if( jumpDirection != 4 )
 	{
 		// Character continues jumping
-		switch( jumpDirection )
-		{
-		case 0: // Up right
-			setVY( getVY( ) + 9.5 * scale / fps );
-			break;
-		case 1: // Down right
-			setVY( getVY( ) + 9.5 * scale / fps );
-			break;
-		case 2: // Down left
-			setVY( getVY( ) + 9.5 * scale / fps );
-			break;
-		case 3: // Up left
-			setVY( getVY( ) + 9.5 * scale / fps );
-			break;
-		default:
-			break;
-		}
+		setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
 
 		// Character completes jump
-		if( jumpTimer > fps / 2 )
+		if( jumpTimer > ( 60 / fpsScale ) / 2 )
 		{
 			// Adjust character position
 			switch( jumpDirection )
@@ -78,37 +64,37 @@ void Character::update( int frame, __int8 fps, __int16 screenWidth, float scale 
 				setY( scale * ( row * 24 - 16 ) + 100 );
 				jumpDirection = 4; // Stopped moving
 			}
-		}
-	}
+		} // endif( jumpTimer > (fpsScale / 60) / 2 )
+	} // endif( jumpDirection != 4 )
 }
 
 
-void Character::move( __int8 direction, float scale, __int8 fps )
+void Character::move( __int8 direction, float scale, float fpsScale )
 {
-	if( jumpTimer > fps / 2 && !OOB )
+	if( jumpTimer > ( 60 / fpsScale ) / 2 && !OOB )
 	{
 		moveAnimate( direction );
 		switch( direction )
 		{
 		// Move up right
 		case 0:
-			setVX( 16 * scale / (fps / 2) );
-			setVY( -96 * scale / ( fps / 2 ) );
+			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		// Move down right
 		case 1:
-			setVX( 16 * scale / (fps / 2) );
-			setVY( -48 * scale / ( fps / 2 ) );
+			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		// Move down left
 		case 2:
-			setVX( -16 * scale / (fps / 2) );
-			setVY( -48 * scale / (fps / 2) );
+			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		// Move up left
 		case 3:
-			setVX( -16 * scale / (fps / 2) );
-			setVY( -96 * scale / (fps / 2) );
+			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		default:
 			break;
