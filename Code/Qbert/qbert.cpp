@@ -1,7 +1,7 @@
 #include "qbert.h"
 
 Qbert::Qbert( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth )
-	: Character( startRow, startIndex, scale, screenWidth )
+	: Character( startRow, startIndex, scale, screenWidth, 0.5 )
 { 
 	setTexture( "./images/Qbert.png", 16, 16 );
 }

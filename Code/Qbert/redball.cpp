@@ -1,10 +1,18 @@
 #include "redball.h"
 #include "time.h"
 
-RedBall::RedBall( float scale, __int16 screenWidth )
-	: Character( 1, rand( ) % 2, scale, screenWidth )
+RedBall::RedBall( float scale, __int16 screenWidth, float jumpCD )
+	: Character( 1, rand( ) % 2, scale, screenWidth, jumpCD )
 {
 	setTexture( "./images/RedBall.png", 15, 15 );
+}
+
+void RedBall::update( float fpsScale, __int16 screenWidth, float scale, __int16 frame )
+{
+	Character::update( fpsScale, screenWidth, scale, frame );
+
+	if( jumpTimer > jumpCDTime )
+		Character::move( rand() % 2 + 1, scale, fpsScale );
 }
 
 void RedBall::moveAnimate( __int8 state )

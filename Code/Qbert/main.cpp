@@ -21,6 +21,7 @@
 \*==============================================================*/
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 #include <iostream>
 #include "cube.h"
@@ -34,32 +35,27 @@ int main()
 
 	double screenWidth = 800, 
 		   screenHeight = screenWidth;
-	__int8 targetFps = 60;
+	const __int8 targetFps = 60;
 
 	// SFML Window
 	sf::RenderWindow window( sf::VideoMode(screenWidth, screenHeight), "Q*bert" );
-	window.setFramerateLimit( 60 );
 
-	__int8 scale = 3;
+	float scale = 3;
 	
 	// FPS Tracking variables
 	unsigned int frame = 0;
 	__int16 fps = targetFps;
 	float fpsScale = targetFps * 1.0 / fps;
-	sf::Clock fpsTimer;
+	sf::Clock fpsTimer, spawnTimer;
 	
 	// Map/Character creation
 	Platform platform;
-	Qbert q( 6, 0, scale, screenWidth );
-	RedBall r( scale, screenWidth );
+	Qbert q( 0, 0, scale, screenWidth );
+	std::vector<Character *> characters;
 
 	// Platform initialization
 	char* texStrings[3] = { "./images/blueBlue.png", NULL, "./images/blueTiedye1.png" };
 	platform.createMap( texStrings, screenWidth, scale );
-	
-	// Delay before starting game to stabilize frame rate
-	sf::Clock* delay = new sf::Clock( );
-	while( delay->getElapsedTime( ).asMilliseconds( ) < 999 );
 	
 	// Game Loop
 	while ( window.isOpen( ) )
@@ -89,20 +85,32 @@ int main()
 		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
 		{
 			fps = frame;
+			// Determines adjustment needed to match proper frame rate
 			fpsScale = targetFps * 1.0 / fps;
 			frame = 0;
 			fpsTimer.restart( );
 			std::cout << (int)fps << '\n';
 		}
 
-		q.update( frame, fpsScale, screenWidth, scale );
-		r.update( frame, fpsScale, screenWidth, scale );
+		// Spawns
+		if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 1500 )
+		{
+			characters.push_back( new RedBall( scale, screenWidth, 0.75 ) );
+			spawnTimer.restart( );
+		}
+
+		// Updates
+		q.update( fpsScale, screenWidth, scale, frame );
+		for( int i = 0; i < characters.size( ); i++ )
+			characters.at( i )->update( fpsScale, screenWidth, scale, frame );
 
 		// Draw behind map when OOB
 		if( q.isOOB( ) )
 			window.draw( *q.getSprite( ) );
-		if( r.isOOB( ) )
-			window.draw( *r.getSprite( ) );
+		for( int i = 0; i < characters.size( ); i++ )
+			if( characters.at( i )->isOOB( ) )
+				window.draw( *characters.at( i )->getSprite( ) );
+		
 
 		// MAP DRAW
 		Cube** map = platform.getCubes( );
@@ -115,13 +123,19 @@ int main()
 		// Draw in front of map when in bounds
 		if( !q.isOOB( ) )
 			window.draw( *q.getSprite( ) );
-		if( !r.isOOB( ) )
-			window.draw( *r.getSprite( ) );
+		for( int i = 0; i < characters.size( ); i++ )
+			if( characters.at( i )->isOOB( ) )
+				window.draw( *characters.at( i )->getSprite( ) );
 
 		window.display( );
 	}
 
 	platform.deleteMap( );
+	while( characters.size( ) > 0 )
+	{
+		delete characters.at( characters.size( ) - 1 );
+		characters.pop_back( );
+	}
 
 	return 0;
 }

@@ -13,17 +13,19 @@ Date Last Modified:
 class Character : public GameObject
 {
 public:
-	Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth );
+	Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth, 
+		float jumpCD );
 
-	void update( int frame, float fpsScale, __int16 screenWidth, float scale );
+	virtual void update( float fpsScale, __int16 screenWidth, float scale, __int16 frame );
 
 	void move( __int8 direction, float scale, float fpsScale );
 	bool isOOB( );
 	virtual void moveAnimate( __int8 direction ) = 0;
 
 	~Character();
+protected:
+	float jumpTimer, jumpCDTime;
 private:
 	__int8 row, index, jumpDirection;
-	unsigned int jumpTimer;
 	bool OOB;
 };

@@ -1,11 +1,14 @@
 #include "character.h"
 
-Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth ) 
+Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth,
+	float jumpCD ) 
 	: GameObject( scale )
 {
 	row = startRow;
 	index = startIndex;
+	jumpCDTime = jumpCD;
 	jumpDirection = 4;
+	jumpTimer = 0;
 	
 	setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
 	setY( row * scale * 32 * .75 + 100 - 16 * scale );
@@ -16,10 +19,10 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 Character::~Character() { }
 
 
-void Character::update( int frame, float fpsScale, __int16 screenWidth, float scale )
+void Character::update( float fpsScale, __int16 screenWidth, float scale, __int16 frame )
 {
 	GameObject::update( );
-	jumpTimer++;
+	jumpTimer += 1 / ( 60 / fpsScale );
 
 	// Jump calculations, when character is jumping
 	if( jumpDirection != 4 )
@@ -28,7 +31,7 @@ void Character::update( int frame, float fpsScale, __int16 screenWidth, float sc
 		setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
 
 		// Character completes jump
-		if( jumpTimer > ( 60 / fpsScale ) / 2 )
+		if( jumpTimer > 0.5 )
 		{
 			// Adjust character position
 			switch( jumpDirection )
@@ -71,7 +74,7 @@ void Character::update( int frame, float fpsScale, __int16 screenWidth, float sc
 
 void Character::move( __int8 direction, float scale, float fpsScale )
 {
-	if( jumpTimer > ( 60 / fpsScale ) / 2 && !OOB )
+	if( jumpTimer > jumpCDTime && !OOB )
 	{
 		moveAnimate( direction );
 		switch( direction )
