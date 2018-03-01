@@ -60,6 +60,7 @@ int main()
 	// Game Loop
 	while ( window.isOpen( ) )
 	{
+		
 		// EVENTS
 		sf::Event e;
 		while ( window.pollEvent( e ) )
@@ -124,7 +125,7 @@ int main()
 		if( !q.isOOB( ) )
 			window.draw( *q.getSprite( ) );
 		for( int i = 0; i < characters.size( ); i++ )
-			if( characters.at( i )->isOOB( ) )
+			if( !characters.at( i )->isOOB( ) )
 				window.draw( *characters.at( i )->getSprite( ) );
 
 		window.display( );
