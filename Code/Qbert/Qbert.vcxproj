@@ -119,7 +119,7 @@
   <ItemGroup>
     <ClCompile Include="character.cpp" />
     <ClCompile Include="cube.cpp" />
-    <ClCompile Include="gameObject.cpp" />
+    <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="qbert.cpp" />
@@ -129,7 +129,7 @@
   <ItemGroup>
     <ClInclude Include="character.h" />
     <ClInclude Include="cube.h" />
-    <ClInclude Include="gameObject.h" />
+    <ClInclude Include="gameobject.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="qbert.h" />
     <ClInclude Include="redball.h" />

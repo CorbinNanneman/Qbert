@@ -8,7 +8,7 @@ Date Last Modified:
 	February 8th, 2018 | 12:00 PM
 */
 
-#include "gameObject.h"
+#include "gameobject.h"
 
 class Character : public GameObject
 {

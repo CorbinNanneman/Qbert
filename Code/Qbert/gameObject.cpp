@@ -1,4 +1,4 @@
-#include "gameObject.h"
+#include "gameobject.h"
 #include <SFML\Graphics.hpp>
 
 GameObject::GameObject( float scale )
