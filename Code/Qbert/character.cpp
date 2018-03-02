@@ -6,22 +6,25 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 {
 	row = startRow;
 	index = startIndex;
+	OOB = false;
 	jumpCDTime = jumpCD;
 	jumpTimer = 0;
 	
-	// setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
-	// setY( row * scale * 32 * .75 + 100 - 16 * scale );
+	setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
+	setY( row * scale * 32 * .75 + 100 - 16 * scale );
+	jumpDirection = 4;
 }
 
 
 Character::~Character() { }
 
 
-void Character::update( float fpsScale, __int16 screenWidth, float scale, __int16 frame )
+__int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __int16 frame )
 {
 	GameObject::update( );
-	jumpTimer += 1 / ( 60 / fpsScale );
+	__int8 retVal = 0;
 
+	jumpTimer += 1 / ( 60 / fpsScale );
 	// Jump calculations, when character is jumping
 	if( jumpDirection < 4 )
 	{
@@ -64,9 +67,12 @@ void Character::update( float fpsScale, __int16 screenWidth, float scale, __int1
 				setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
 				setY( scale * ( row * 24 - 16 ) + 100 );
 				jumpDirection = 4; // Stopped moving
+				retVal = 1;
 			}
 		} // endif( jumpTimer > (fpsScale / 60) / 2 )
 	} // endif( jumpDirection != 4 )
+
+	return retVal;
 }
 
 
@@ -107,7 +113,25 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 }
 
 
+__int8 Character::getRow( )
+{
+	return row;
+}
+
+
+__int8 Character::getIndex( )
+{
+	return index;
+}
+
+
 bool Character::isOOB( )
 { 
 	return OOB;
+}
+
+
+bool Character::isJumping( )
+{
+	return jumpDirection != 4;
 }

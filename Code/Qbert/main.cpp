@@ -54,7 +54,8 @@ int main()
 	std::vector<Character *> characters;
 
 	// Platform initialization
-	char* texStrings[3] = { "./images/blueBlue.png", NULL, "./images/blueTiedye1.png" };
+	char* texStrings[3] = { "./images/blueBlue.png", "./images/blueBlack.png", 
+		"./images/blueTiedye1.png" };
 	platform.createMap( texStrings, screenWidth, scale );
 	
 	// Game Loop
@@ -100,7 +101,10 @@ int main()
 		}
 
 		// Updates
-		q.update( fpsScale, screenWidth, scale, frame );
+		__int8 qReturn = q.update( fpsScale, screenWidth, scale, frame );
+		if( qReturn == 1 )
+			platform.changeCube( q.getRow( ), q.getIndex( ), 0, 1 );
+
 		for( int i = 0; i < characters.size( ); i++ )
 			characters.at( i )->update( fpsScale, screenWidth, scale, frame );
 
