@@ -16,6 +16,7 @@ public:
 	GameObject( float scale );
 
 	void update( );
+	bool isOffScreen( __int16 screenWidth, __int16 screenHeight, float scale );
 
 	void setX( float newX );
 	void setY( float newY );

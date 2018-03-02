@@ -124,6 +124,7 @@
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="qbert.cpp" />
     <ClCompile Include="redball.cpp" />
+    <ClCompile Include="statemanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="platform.h" />
     <ClInclude Include="qbert.h" />
     <ClInclude Include="redball.h" />
+    <ClInclude Include="statemanager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

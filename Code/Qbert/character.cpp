@@ -23,16 +23,20 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 {
 	GameObject::update( );
 	__int8 retVal = 0;
-
 	jumpTimer += 1 / ( 60 / fpsScale );
-	// Jump calculations, when character is jumping
+
+	// Character is Jumping
 	if( jumpDirection < 4 )
 	{
 		// Character continues jumping
-		setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
-
+		if( jumpTimer < 0.5 || OOB )
+		{
+			if( OOB && isOffScreen( screenWidth, screenWidth, scale ) )
+				retVal = 2;
+			setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
+		}
 		// Character completes jump
-		if( jumpTimer > 0.5 )
+		else
 		{
 			// Adjust character position
 			switch( jumpDirection )
@@ -57,7 +61,9 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 
 			// OOB Check
 			if( row < 0 || row > 6 || index < 0 || index > row )
+			{
 				OOB = true;
+			}
 			else
 			{
 				moveAnimate( jumpDirection + 4 );
@@ -72,6 +78,11 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 		} // endif( jumpTimer > (fpsScale / 60) / 2 )
 	} // endif( jumpDirection != 4 )
 
+	/* retVal Glossary
+	 0 - Default
+	 1 - Object landed on cube
+	 2 - Object fell off platform
+	*/
 	return retVal;
 }
 

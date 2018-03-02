@@ -36,6 +36,9 @@
     <ClCompile Include="redball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="statemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="platform.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="redball.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="statemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

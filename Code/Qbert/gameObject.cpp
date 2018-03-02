@@ -18,6 +18,8 @@ GameObject::GameObject( )
 	y = 0;
 	vX = 0;
 	vY = 0;
+	texWidth = 0;
+	texHeight = 0;
 	sprite.setScale( 1, 1 );
 }
 
@@ -31,6 +33,15 @@ void GameObject::update( )
 	x += vX;
 	y += vY;
 	sprite.setPosition( x, y );
+}
+
+
+bool GameObject::isOffScreen( __int16 screenWidth, __int16 screenHeight, float scale )
+{
+	// Store texture size calculations
+	__int16 halfTexWidth = texWidth * scale / 2,
+			halfTexHeight = texHeight * scale / 2;
+	return x + halfTexWidth < 0 || x - halfTexWidth > screenWidth || y + halfTexHeight < 0 || y + halfTexHeight  > screenHeight;
 }
 
 
@@ -100,7 +111,6 @@ void GameObject::setTexture( char* texPath, __int16 newTexWidth, __int16 newTexH
 	texHeight = newTexHeight;
 
 	// Update view rectangle and center
-	sprite.setTextureRect( sf::IntRect( sf::Vector2i(0, 0), 
-		sf::Vector2i(texWidth, texHeight) ) );
+	sprite.setTextureRect( sf::IntRect( 0, 0, texWidth, texHeight ) );
 	sprite.setOrigin( texWidth / 2, texHeight / 2 );
 }

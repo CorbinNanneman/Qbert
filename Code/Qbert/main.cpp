@@ -54,8 +54,7 @@ int main()
 	std::vector<Character *> characters;
 
 	// Platform initialization
-	char* texStrings[3] = { "./images/blueBlue.png", "./images/blueBlack.png", 
-		"./images/blueTiedye1.png" };
+	char* texStrings[3] = { "./images/blueBlue.png", "./images/blueBlack.png", "./images/blueTiedye1.png" };
 	platform.createMap( texStrings, screenWidth, scale );
 	
 	// Game Loop
@@ -93,8 +92,9 @@ int main()
 
 		window.clear(sf::Color::Black);
 
+	// Update
 		// Spawns
-		if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 1500 )
+		if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 1560 )
 		{
 			characters.push_back( new RedBall( scale, screenWidth, 0.75 ) );
 			spawnTimer.restart( );
@@ -102,12 +102,23 @@ int main()
 
 		// Updates
 		__int8 qReturn = q.update( fpsScale, screenWidth, scale, frame );
-		if( qReturn == 1 )
+		switch( qReturn )
+		{
+		default:
+		case 0:
+			break;
+		case 1: // Q*Bert completed jump
 			platform.changeCube( q.getRow( ), q.getIndex( ), 0, 1 );
+			break;
+		case 2: // Q*Bert fell off world
+			q.getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+			break;
+		}
 
 		for( int i = 0; i < characters.size( ); i++ )
 			characters.at( i )->update( fpsScale, screenWidth, scale, frame );
 
+	// Draw
 		// Draw behind map when OOB
 		if( q.isOOB( ) )
 			window.draw( *q.getSprite( ) );
@@ -115,7 +126,6 @@ int main()
 			if( characters.at( i )->isOOB( ) )
 				window.draw( *characters.at( i )->getSprite( ) );
 		
-
 		// MAP DRAW
 		Cube** map = platform.getCubes( );
 		for( int row = 0; row < 7; row++ )
