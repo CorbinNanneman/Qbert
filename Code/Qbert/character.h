@@ -23,9 +23,12 @@ public:
 	virtual void moveAnimate( __int8 direction ) = 0;
 
 	~Character();
+
 protected:
+	__int8 jumpDirection;
 	float jumpTimer, jumpCDTime;
+	
 private:
-	__int8 row, index, jumpDirection;
+	__int8 row, index;
 	bool OOB;
 };

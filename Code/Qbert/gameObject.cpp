@@ -93,12 +93,13 @@ sf::Sprite* GameObject::getSprite( )
 
 void GameObject::setTexture( char* texPath, __int16 newTexWidth, __int16 newTexHeight)
 {
-
+	// Update Texture
 	texture.loadFromFile( texPath );
 	sprite.setTexture( texture );
 	texWidth = newTexWidth;
 	texHeight = newTexHeight;
 
+	// Update view rectangle and center
 	sprite.setTextureRect( sf::IntRect( sf::Vector2i(0, 0), 
 		sf::Vector2i(texWidth, texHeight) ) );
 	sprite.setOrigin( texWidth / 2, texHeight / 2 );

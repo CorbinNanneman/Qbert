@@ -7,12 +7,10 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 	row = startRow;
 	index = startIndex;
 	jumpCDTime = jumpCD;
-	jumpDirection = 4;
 	jumpTimer = 0;
 	
-	setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
-	setY( row * scale * 32 * .75 + 100 - 16 * scale );
-	setTexture( "./images/Qbert.png", 16, 16 );
+	// setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
+	// setY( row * scale * 32 * .75 + 100 - 16 * scale );
 }
 
 
@@ -25,7 +23,7 @@ void Character::update( float fpsScale, __int16 screenWidth, float scale, __int1
 	jumpTimer += 1 / ( 60 / fpsScale );
 
 	// Jump calculations, when character is jumping
-	if( jumpDirection != 4 )
+	if( jumpDirection < 4 )
 	{
 		// Character continues jumping
 		setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
@@ -79,22 +77,22 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 		moveAnimate( direction );
 		switch( direction )
 		{
-		// Move up right
+		// Up right jump
 		case 0:
 			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
-		// Move down right
+		// Down Right jump
 		case 1:
 			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
-		// Move down left
+		// Down left jump
 		case 2:
 			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
-		// Move up left
+		// Up left jump
 		case 3:
 			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );

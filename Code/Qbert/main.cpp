@@ -50,7 +50,7 @@ int main()
 	
 	// Map/Character creation
 	Platform platform;
-	Qbert q( 0, 0, scale, screenWidth );
+	Qbert q( scale, screenWidth );
 	std::vector<Character *> characters;
 
 	// Platform initialization
@@ -60,7 +60,18 @@ int main()
 	// Game Loop
 	while ( window.isOpen( ) )
 	{
-		
+		// FPS Tracking (for game stabilization)
+		frame++;
+		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
+		{
+			fps = frame;
+			// Determines adjustment needed to match proper frame rate
+			fpsScale = targetFps * 1.0 / fps;
+			frame = 0;
+			fpsTimer.restart( );
+			std::cout << (int)fps << '\n';
+		}
+
 		// EVENTS
 		sf::Event e;
 		while ( window.pollEvent( e ) )
@@ -80,18 +91,6 @@ int main()
 		}
 
 		window.clear(sf::Color::Black);
-
-		// FPS Tracking (for game stabilization)
-		frame++;
-		if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
-		{
-			fps = frame;
-			// Determines adjustment needed to match proper frame rate
-			fpsScale = targetFps * 1.0 / fps;
-			frame = 0;
-			fpsTimer.restart( );
-			std::cout << (int)fps << '\n';
-		}
 
 		// Spawns
 		if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 1500 )
