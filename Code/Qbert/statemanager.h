@@ -22,10 +22,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-#include "cube.h"
 #include "platform.h"
 #include "qbert.h"
-#include "redball.h"
+
 
 class StateManager
 {
@@ -50,13 +49,15 @@ private:
 	unsigned __int16 frame = 0,
 					 fps = targetFps;
 	float fpsScale = targetFps * 1.f / fps;
-	sf::Clock fpsTimer, spawnTimer;
+	sf::Clock fpsTimer;
 
 	// Window
 	sf::RenderWindow window;
 	__int16 screenWidth,
 		screenHeight;
 	float scale;
+	sf::Clock gameTimer,
+			  spawnTimer;
 
 	enum State
 	{

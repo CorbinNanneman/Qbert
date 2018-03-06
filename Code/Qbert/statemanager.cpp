@@ -1,4 +1,5 @@
 #include "statemanager.h"
+#include "redball.h"
 
 StateManager::StateManager( )
 {
@@ -6,7 +7,7 @@ StateManager::StateManager( )
 	targetFps = 60;
 	frame = 0;
 	fps = targetFps;
-	fpsScale = targetFps * 1.0 / fps;
+	fpsScale = targetFps * 1.f / fps;
 
 	// Window
 	screenWidth = 800;
@@ -17,7 +18,7 @@ StateManager::StateManager( )
 
 	// Platform initialization
 	q = new Qbert( scale, screenWidth );
-	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/blueBlack.png", "./images/blueTiedye1.png" };
+	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/blueTiedye1.png", "./images/blueBlack.png" };
 	platform.createMap( texStrings, screenWidth, scale );
 
 	state = game;
@@ -43,6 +44,13 @@ void StateManager::clear( )
 }
 
 
+// For use in update
+bool checkCollision( Character &c1, Character &c2 )
+{
+	return c1.getRow( ) == c2.getRow( ) && c1.getIndex( ) == c2.getIndex( );
+}
+
+
 void StateManager::update( )
 {
 	// FPS Tracking
@@ -51,7 +59,7 @@ void StateManager::update( )
 	{
 		fps = frame;
 		// Determines adjustment needed to match proper frame rate
-		fpsScale = targetFps * 1.0 / fps;
+		fpsScale = targetFps * 1.f / fps;
 		frame = 0;
 		fpsTimer.restart( );
 	}
@@ -77,7 +85,7 @@ void StateManager::update( )
 	// Spawns
 	if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 1560 )
 	{
-		characters.push_back( new RedBall( scale, screenWidth, 0.75 ) );
+		characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
 		spawnTimer.restart( );
 	}
 
@@ -89,24 +97,32 @@ void StateManager::update( )
 	default:
 	case 0:
 		break;
-	case 1: // Q*Bert completed jump
-		platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
+	case 1:
 		break;
-	case 2: // Q*Bert fell off world
+	case 2: // Q*Bert completed jump
+		platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
+		if( platform.isComplete( ) )
+		{
+			platform.deleteMap( );
+			char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/blueTiedye1.png", "./images/blueBlack.png" };
+			platform.createMap( texStrings, screenWidth, scale );
+		}
+		break;
+	case 3: // Q*Bert fell off world
 		q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
 		break;
 	}
 	// Characters updates
-	for( int i = 0; i < characters.size( ); i++ )
+	for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 	{
 		__int8 charReturn = characters.at( i )->update( fpsScale, screenWidth, scale, frame );
 		switch( charReturn )
 		{
 		default:
 		case 0:
-		case 1:
+		case 2:
 			break;
-		case 2: // Character Fell off world
+		case 3: // Character fell off world
 			characters.at( i )->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
 			break;
 		}
@@ -119,7 +135,7 @@ void StateManager::display( )
 	// Draw characters behind map when OOB
 	if( q->isOOB( ) )
 		window.draw( *q->getSprite( ) );
-	for( int i = 0; i < characters.size( ); i++ )
+	for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 		if( characters.at( i )->isOOB( ) )
 			window.draw( *characters.at( i )->getSprite( ) );
 

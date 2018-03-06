@@ -9,9 +9,8 @@ Platform::~Platform( )
 
 
 // When only 2 cube textures are needed, newTexStrings[1] is set to NULL
-void Platform::createMap( char* newTexStrings[3], double screenWidth, int scale )
+void Platform::createMap( char* newTexStrings[3], __int16 screenWidth, float scale )
 {
-	// *texStrings = *newTexStrings;
 	texStrings[ 0 ] = newTexStrings[ 0 ];
 	texStrings[ 1 ] = newTexStrings[ 1 ];
 	texStrings[ 2 ] = newTexStrings[ 2 ];
@@ -31,8 +30,8 @@ void Platform::createMap( char* newTexStrings[3], double screenWidth, int scale 
 			
 			// Cube coordinate calculations
 			map[row][index].getSprite( )->setScale( scale, scale );
-			int x = 32 * scale * (row * -.5 + index) + screenWidth / 2;
-			int y = row * scale * 32 * .75 + 100;
+			float x = 32 * scale * (row * -.5f + index) + screenWidth / 2,
+				  y = row * scale * 32 * .75f + 100;
 
 			map[row][index].setX( x );
 			map[row][index].setY( y );
@@ -119,7 +118,7 @@ Cube** Platform::getCubes( )
 }
 
 
-bool Platform::win( )
+bool Platform::isComplete( )
 {
 	bool wrongCubeFound = false;
 	for( int row = 0; !wrongCubeFound && row < 7; row++ )

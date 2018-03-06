@@ -25,14 +25,16 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 	__int8 retVal = 0;
 	jumpTimer += 1 / ( 60 / fpsScale );
 
-	// Character is Jumping
+	// Character is jumping
 	if( jumpDirection < 4 )
 	{
 		// Character continues jumping
 		if( jumpTimer < 0.5 || OOB )
 		{
 			if( OOB && isOffScreen( screenWidth, screenWidth, scale ) )
-				retVal = 2;
+				retVal = 3;
+			else
+				retVal = 1;
 			setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
 		}
 		// Character completes jump
@@ -73,15 +75,16 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
 				setY( scale * ( row * 24 - 16 ) + 100 );
 				jumpDirection = 4; // Stopped moving
-				retVal = 1;
+				retVal = 2;
 			}
 		} // endif( jumpTimer > (fpsScale / 60) / 2 )
 	} // endif( jumpDirection != 4 )
 
 	/* retVal Glossary
 	 0 - Default
-	 1 - Object landed on cube
-	 2 - Object fell off platform
+	 1 - Character is jumping
+	 2 - Character landed on cube
+	 3 - Character fell off platform
 	*/
 	return retVal;
 }

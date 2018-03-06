@@ -13,13 +13,13 @@ class Platform
 public:
 	Platform( );
 
-	void createMap( char* newTexStrings[ 3 ], double screenWidth, int scale );
+	void createMap( char* newTexStrings[ 3 ], __int16 screenWidth, float scale );
 	void deleteMap( );
 
 	Cube** getCubes( );
 	void changeCube( __int8 row, __int8 index, __int8 changeType, __int8 level );
 
-	bool win( );
+	bool isComplete( );
 
 	~Platform();
 
