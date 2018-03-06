@@ -31,11 +31,29 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 		// Character continues jumping
 		if( jumpTimer < 0.5 || OOB )
 		{
+			setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
+
 			if( OOB && isOffScreen( screenWidth, screenWidth, scale ) )
 				retVal = 3;
 			else
 				retVal = 1;
-			setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
+			
+			// Update collision coordinates
+			switch( jumpDirection )
+			{
+			
+			case 0: // Up right
+				
+				break;
+			case 1: // Down right
+				break;
+			case 2: // Down left
+				break;
+			case 3: // Up left
+				break;
+			default:
+				break;
+			}
 		}
 		// Character completes jump
 		else
@@ -61,11 +79,12 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				break;
 			}
 
+			collisionRow = row + 0.5;
+			collisionIndex = index + 0.25;
+
 			// OOB Check
 			if( row < 0 || row > 6 || index < 0 || index > row )
-			{
 				OOB = true;
-			}
 			else
 			{
 				moveAnimate( jumpDirection + 4 );
@@ -136,6 +155,24 @@ __int8 Character::getRow( )
 __int8 Character::getIndex( )
 {
 	return index;
+}
+
+
+__int8 Character::getCollisionRow( )
+{
+	return collisionRow;
+}
+
+
+__int8 Character::getCollisionIndex( )
+{
+	return collisionIndex;
+}
+
+
+__int8 Character::getDirection( )
+{
+	return jumpDirection;
 }
 
 

@@ -23,6 +23,9 @@ public:
 
 	__int8 getRow( );
 	__int8 getIndex( );
+	__int8 getCollisionRow( );
+	__int8 getCollisionIndex( );
+	__int8 getDirection( );
 	bool isOOB( );
 	bool isJumping( );
 
@@ -33,6 +36,12 @@ protected:
 	float jumpTimer, jumpCDTime;
 	
 private:
-	__int8 row, index;
+	__int8 row, 
+		   index;
+
+	// For more accurate position tracking
+	float collisionRow,
+		  collisionIndex;
+
 	bool OOB;
 };

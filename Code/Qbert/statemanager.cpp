@@ -45,9 +45,12 @@ void StateManager::clear( )
 
 
 // For use in update
-bool checkCollision( Character &c1, Character &c2 )
+bool checkCollision( Character *c1, Character *c2 )
 {
-	return c1.getRow( ) == c2.getRow( ) && c1.getIndex( ) == c2.getIndex( );
+	int rowDist = c1->getRow( ) - c2->getRow( ),
+		indexDist = c1->getIndex( ) - c2->getIndex( );
+	// True if index and row are close enough to each other
+	return rowDist > -0.3f && rowDist < 0.3f && indexDist > -0.3f && indexDist < 0.3f;
 }
 
 
@@ -97,14 +100,24 @@ void StateManager::update( )
 	default:
 	case 0:
 		break;
-	case 1:
+	case 1: // Q*Bert is jumping
+		// Find nearby characters to check positions
+		for( int i = 0; i < characters.size( ); i++ )
+		{
+			if( checkCollision( q, characters.at( i ) ) )
+			{
+				characters.at( i )->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+				q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+			}
+		}
 		break;
 	case 2: // Q*Bert completed jump
 		platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
 		if( platform.isComplete( ) )
 		{
 			platform.deleteMap( );
-			char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/blueTiedye1.png", "./images/blueBlack.png" };
+			char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/blueTiedye1.png", 
+				"./images/blueBlack.png" };
 			platform.createMap( texStrings, screenWidth, scale );
 		}
 		break;
@@ -120,7 +133,14 @@ void StateManager::update( )
 		{
 		default:
 		case 0:
-		case 2:
+		case 1: // Character is jumping
+			if( checkCollision( characters.at( i ), q ) )
+			{
+				characters.at( i )->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+				q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+			}
+			break;
+		case 2: // Character completes jump
 			break;
 		case 3: // Character fell off world
 			characters.at( i )->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
