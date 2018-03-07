@@ -25,20 +25,22 @@
 #include "platform.h"
 #include "qbert.h"
 
-
 class StateManager
 {
 public:
-	StateManager( );
+	StateManager( ); // Line
 
-	bool isOpen( );
-	void clear( );
-	void update( );
-	void display( );
+	bool isOpen( ); // Line
+	void clear( ); // Line
+	void update( ); // Line
+	void display( ); // Line
 
 	~StateManager( );
 
 private:
+	void destroyCharacter( Character *c ); // Line 180 or somethin
+	bool checkCollision( Character *c1, Character *c2 ); // Line 190
+
 	// GameObjects
 	Platform platform;
 	Qbert *q;

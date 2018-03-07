@@ -1,6 +1,8 @@
 #include "statemanager.h"
 #include "redball.h"
 
+#include <iostream>
+
 StateManager::StateManager( )
 {
 	// FPS Tracking
@@ -41,16 +43,6 @@ bool StateManager::isOpen( )
 void StateManager::clear( )
 {
 	window.clear( sf::Color::Black );
-}
-
-
-// For use in update
-bool checkCollision( Character *c1, Character *c2 )
-{
-	int rowDist = c1->getRow( ) - c2->getRow( ),
-		indexDist = c1->getIndex( ) - c2->getIndex( );
-	// True if index and row are close enough to each other
-	return rowDist > -0.3f && rowDist < 0.3f && indexDist > -0.3f && indexDist < 0.3f;
 }
 
 
@@ -106,8 +98,8 @@ void StateManager::update( )
 		{
 			if( checkCollision( q, characters.at( i ) ) )
 			{
-				characters.at( i )->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
-				q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+				destroyCharacter( characters.at( i ) );
+				// DIE QBERT DIE
 			}
 		}
 		break;
@@ -136,17 +128,19 @@ void StateManager::update( )
 		case 1: // Character is jumping
 			if( checkCollision( characters.at( i ), q ) )
 			{
-				characters.at( i )->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
-				q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+				destroyCharacter( characters.at( i ) );
+				// DIE QBERT DIE
 			}
 			break;
 		case 2: // Character completes jump
 			break;
 		case 3: // Character fell off world
-			characters.at( i )->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+			destroyCharacter( characters.at( i ) );
 			break;
 		}
 	}
+
+	std::cout << "Characters: " << characters.size( ) << '\n';
 }
 
 
@@ -175,4 +169,30 @@ void StateManager::display( )
 			window.draw( *characters.at( i )->getSprite( ) );
 
 	window.display( );
+}
+
+
+void StateManager::destroyCharacter( Character *c )
+{
+	bool deleted = false;
+	for( int i = 0; !deleted && i < characters.size( ); i++ )
+	{
+		if( c == characters.at( i ) )
+		{
+			delete c;
+			characters.erase( characters.begin( ) + i );
+			deleted = true;
+		}
+	}
+}
+
+
+bool StateManager::checkCollision( Character *c1, Character *c2 )
+{
+	// Calculated Distance
+	int xDist = c1->getX( ) - c2->getX( ),
+		yDist = c1->getY( ) - c2->getY( ),
+		boundsFactor = 10 * scale;
+
+	return xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && yDist < boundsFactor;
 }

@@ -79,9 +79,6 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				break;
 			}
 
-			collisionRow = row + 0.5;
-			collisionIndex = index + 0.25;
-
 			// OOB Check
 			if( row < 0 || row > 6 || index < 0 || index > row )
 				OOB = true;
@@ -146,6 +143,14 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 }
 
 
+void Character::die( )
+{
+	getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+	row = -1;
+	index = -1;
+}
+
+
 __int8 Character::getRow( )
 {
 	return row;
@@ -155,18 +160,6 @@ __int8 Character::getRow( )
 __int8 Character::getIndex( )
 {
 	return index;
-}
-
-
-__int8 Character::getCollisionRow( )
-{
-	return collisionRow;
-}
-
-
-__int8 Character::getCollisionIndex( )
-{
-	return collisionIndex;
 }
 
 

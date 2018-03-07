@@ -19,12 +19,11 @@ public:
 	virtual __int8 update( float fpsScale, __int16 screenWidth, float scale, __int16 frame );
 
 	void move( __int8 direction, float scale, float fpsScale );
+	void die( );
 	virtual void moveAnimate( __int8 direction ) = 0;
 
 	__int8 getRow( );
 	__int8 getIndex( );
-	__int8 getCollisionRow( );
-	__int8 getCollisionIndex( );
 	__int8 getDirection( );
 	bool isOOB( );
 	bool isJumping( );
@@ -38,10 +37,6 @@ protected:
 private:
 	__int8 row, 
 		   index;
-
-	// For more accurate position tracking
-	float collisionRow,
-		  collisionIndex;
 
 	bool OOB;
 };
