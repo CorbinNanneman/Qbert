@@ -38,8 +38,12 @@ public:
 	~StateManager( );
 
 private:
+	void startGame( );
+	void reset( );
+
 	void destroyCharacter( Character *c ); // Line 180 or somethin
 	bool checkCollision( Character *c1, Character *c2 ); // Line 190
+	
 
 	// GameObjects
 	Platform platform;
@@ -54,13 +58,16 @@ private:
 	sf::Clock fpsTimer;
 
 	// Window
-	sf::RenderWindow window;
 	__int16 screenWidth,
-		screenHeight;
+			screenHeight;
 	float scale;
+	sf::RenderWindow window;
+
+	// Game Events
+	bool paused, 
+		 pauseKeyHeld;
 	sf::Clock gameTimer,
 			  spawnTimer;
-
 	enum State
 	{
 		startup = 0,
