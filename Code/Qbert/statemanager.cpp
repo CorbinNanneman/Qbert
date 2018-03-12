@@ -26,19 +26,20 @@ void StateManager::startGame( )
 {
 	// Objects
 	q = new Qbert( scale, screenWidth );
-	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/blueTiedye1.png", 
-		"./images/blueBlack.png" };
+	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
+		"./images/blueYellow.png" };
 	platform.createMap( texStrings, screenWidth, scale );
 
 	// Data
 	state = game;
+	respawning = false;
 	paused = false;
 	pauseKeyHeld = false;
 }
 
 
 // Reset all data to initial states
-void StateManager::clear( )
+void StateManager::reset( )
 {
 	// Objects
 	delete q;
@@ -47,7 +48,10 @@ void StateManager::clear( )
 	platform.deleteMap( );
 
 	// Timers
+	gameTimer.restart( );
+	spawnTimer.restart( );
 
+	startGame( );
 }
 
 
@@ -131,81 +135,104 @@ void StateManager::update( )
 		if( !sf::Keyboard::isKeyPressed( sf::Keyboard::P ) )
 			pauseKeyHeld = false;
 
-
-	if( !paused )
-	{
-// Spawns
-	if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 1560 )
-	{
-		characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
-		spawnTimer.restart( );
-	}
-
 // Updates
+	__int8 qReturn;
 	switch( state )
 	{
 	case game:
-	// Q*Bert update
-		__int8 qReturn = q->update( fpsScale, screenWidth, scale, frame );
-		switch( qReturn )
+		if( !paused )
 		{
-		default:
-		case 0:
-			break;
-		case 1: // Q*Bert is jumping
-			// Check for collision
-			for( int i = 0; i < characters.size( ); i++ )
+		// Spawns
+			if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 2560 && !paused )
 			{
-				if( checkCollision( q, characters.at( i ) ) )
-				{
-					destroyCharacter( characters.at( i ) );
-					// DIE QBERT DIE
-				}
-			} // end loop - character collision checking
-			break;
-		case 2: // Q*Bert completed jump
-			platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
-		
-			if( platform.isComplete( ) )
-			{
-				platform.deleteMap( );
-				char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/blueTiedye1.png", 
-					"./images/blueBlack.png" };
-				platform.createMap( texStrings, screenWidth, scale );
-			} // end if - Platform Completed
-			break;
-		case 3: // Q*Bert fell off world
-			q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
-			break;
-		} // end switch - qbert return
-
-	// Characters updates
-		for( unsigned __int8 i = 0; i < characters.size( ); i++ )
-		{
-			__int8 charReturn = characters.at( i )->update( fpsScale, screenWidth, scale, frame );
-			switch( charReturn )
+				characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
+				spawnTimer.restart( );
+			}
+		// Q*Bert update
+			qReturn = q->update( fpsScale, screenWidth, scale, frame );
+			switch( qReturn )
 			{
 			default:
 			case 0:
-			case 1: // Character is jumping
-				if( checkCollision( characters.at( i ), q ) )
+				break;
+			case 1: // Q*Bert is jumping
+				// Check for collision
+				for( int i = 0; i < characters.size( ); i++ )
 				{
+					if( checkCollision( q, characters.at( i ) ) )
+					{
+						paused = true;
+						respawning = true;
+						gameTimer.restart( );
+					}
+				} // end loop - character collision checking
+				break;
+			case 2: // Q*Bert completed jump
+				platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
+		
+				if( platform.isComplete( ) )
+					state = victory;
+				break;
+			case 3: // Q*Bert fell off world
+				q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+				break;
+			} // end switch - qReturn
+
+		// Characters updates
+			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
+			{
+				__int8 charReturn = characters.at( i )->update( fpsScale, screenWidth, scale, frame );
+				switch( charReturn )
+				{
+				default:
+				case 0:
+				case 1: // Character is jumping
+					if( checkCollision( characters.at( i ), q ) )
+					{
+						paused = true;
+						respawning = true;
+						gameTimer.restart( );
+					}
+					break;
+				case 2: // Character completes jump
+					break;
+				case 3: // Character fell off world
 					destroyCharacter( characters.at( i ) );
-					// DIE QBERT DIE
-				}
-				break;
-			case 2: // Character completes jump
-				break;
-			case 3: // Character fell off world
-				destroyCharacter( characters.at( i ) );
-				break;
-			} // endswitch - character return
-		} // endfor - character vector loop
+					break;
+				} // endswitch - character return
+			} // endfor - character vector loop
+		} // endif - !paused
+		else if( respawning )
+		{
+			if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 2000 )
+			{
+				delete q;
+				while( characters.size( ) != 0 )
+					destroyCharacter( characters.at( 0 ) );
+				platform.deleteMap( );
+
+				startGame( );
+			}
+		}
 		break;
+
+	case victory:
+		// Flash cubes 9 times
+		if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 49 )
+		{
+			flashChange++;
+			for( int row = 0; row < 7; row++ )
+				for( int index = 0; index < row + 1; index++ )
+					platform.changeCube( row, index, 0, 5 );
+			gameTimer.restart( );
+			if( flashChange > 8 )
+				startGame( );
+		}
+		break;
+
 	default:
 		break;
 	} // end switch - game state
-	} // endif - !paused
 }
 
 
@@ -254,10 +281,16 @@ void StateManager::destroyCharacter( Character *c )
 
 bool StateManager::checkCollision( Character *c1, Character *c2 )
 {
-	// Calculated Distance
-	int xDist = c1->getX( ) - c2->getX( ),
-		yDist = c1->getY( ) - c2->getY( ),
-		boundsFactor = 8 * scale;
-
-	return xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && yDist < boundsFactor;
+	bool collision = false;
+	
+	if( !c1->isOOB( ) && !c2->isOOB( ) )
+	{
+		int xDist = c1->getX( ) - c2->getX( ),
+			yDist = c1->getY( ) - c2->getY( ),
+			boundsFactor = 8 * scale;
+		if( xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && 
+			yDist < boundsFactor )
+			collision = true;
+	}
+	return collision;
 }

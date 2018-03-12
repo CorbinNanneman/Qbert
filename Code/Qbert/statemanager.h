@@ -43,12 +43,15 @@ private:
 
 	void destroyCharacter( Character *c ); // Line 180 or somethin
 	bool checkCollision( Character *c1, Character *c2 ); // Line 190
-	
+
+	// Temp
+	__int8 flashChange = 0;
 
 	// GameObjects
 	Platform platform;
 	Qbert *q;
 	std::vector<Character *> characters;
+	bool respawning;
 
 	// FPS Tracking
 	__int8 targetFps = 60;
@@ -74,6 +77,7 @@ private:
 		title = 1,
 		load = 2,
 		game = 3,
-		leaderboard = 4
+		victory = 4,
+		leaderboard = 5
 	} state;
 };

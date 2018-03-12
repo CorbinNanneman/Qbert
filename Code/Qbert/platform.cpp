@@ -63,7 +63,7 @@ void Platform::changeCube( __int8 row, __int8 index, __int8 changeType, __int8 l
 				cubeState = 2;
 			break;
 		case 2:
-			if( cubeState = map[ row ][ index ].getState( ) < 2 )
+			if( ( cubeState = map[ row ][ index ].getState( ) ) < 2 )
 				cubeState++;
 			break;
 		case 3:
@@ -71,6 +71,8 @@ void Platform::changeCube( __int8 row, __int8 index, __int8 changeType, __int8 l
 		case 4:
 			break;
 		case 5:
+			if( ( cubeState = map[ row ][ index ].getState( ) + 1 ) > 2 ) 
+				cubeState = 0;
 			break;
 		default:
 			break;
@@ -127,3 +129,4 @@ bool Platform::isComplete( )
 				wrongCubeFound = true;
 	return !wrongCubeFound;
 }
+
