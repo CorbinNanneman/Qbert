@@ -25,24 +25,33 @@
 #include "platform.h"
 #include "qbert.h"
 
-
 class StateManager
 {
 public:
-	StateManager( );
+	StateManager( ); // Line
 
-	bool isOpen( );
-	void clear( );
-	void update( );
-	void display( );
+	bool isOpen( ); // Line
+	void clear( ); // Line
+	void update( ); // Line
+	void display( ); // Line
 
 	~StateManager( );
 
 private:
+	void startGame( );
+	void reset( );
+
+	void destroyCharacter( Character *c ); // Line 180 or somethin
+	bool checkCollision( Character *c1, Character *c2 ); // Line 190
+
+	// Temp
+	__int8 flashChange = 0;
+
 	// GameObjects
 	Platform platform;
 	Qbert *q;
 	std::vector<Character *> characters;
+	bool respawning;
 
 	// FPS Tracking
 	__int8 targetFps = 60;
@@ -52,19 +61,23 @@ private:
 	sf::Clock fpsTimer;
 
 	// Window
-	sf::RenderWindow window;
 	__int16 screenWidth,
-		screenHeight;
+			screenHeight;
 	float scale;
+	sf::RenderWindow window;
+
+	// Game Events
+	bool paused, 
+		 pauseKeyHeld;
 	sf::Clock gameTimer,
 			  spawnTimer;
-
 	enum State
 	{
 		startup = 0,
 		title = 1,
 		load = 2,
 		game = 3,
-		leaderboard = 4
+		victory = 4,
+		leaderboard = 5
 	} state;
 };
