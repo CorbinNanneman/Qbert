@@ -218,14 +218,13 @@ void StateManager::update( )
 
 	case victory:
 		// Flash cubes 9 times
-		if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 49 )
+		if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 100 )
 		{
-			flashChange++;
 			for( int row = 0; row < 7; row++ )
 				for( int index = 0; index < row + 1; index++ )
 					platform.changeCube( row, index, 0, 5 );
 			gameTimer.restart( );
-			if( flashChange > 8 )
+			if( ++flashChange > 11 )
 				startGame( );
 		}
 		break;

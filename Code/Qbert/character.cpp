@@ -11,7 +11,7 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 	jumpTimer = 0;
 	
 	setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
-	setY( row * scale * 32 * .75 + 100 - 16 * scale );
+	setY( scale * ( row * 24 - 16 ) + 100 );
 	jumpDirection = 4;
 }
 
@@ -26,7 +26,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 	jumpTimer += 1 / ( 60 / fpsScale );
 
 	// Character is jumping
-	if( jumpDirection < 4 )
+	if( jumpDirection < 5 )
 	{
 		// Character continues jumping
 		if( jumpTimer < 0.5 || OOB )
@@ -37,23 +37,6 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				retVal = 3;
 			else
 				retVal = 1;
-			
-			// Update collision coordinates
-			switch( jumpDirection )
-			{
-			
-			case 0: // Up right
-				
-				break;
-			case 1: // Down right
-				break;
-			case 2: // Down left
-				break;
-			case 3: // Up left
-				break;
-			default:
-				break;
-			}
 		}
 		// Character completes jump
 		else
@@ -90,7 +73,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				setVY( 0 );
 				setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
 				setY( scale * ( row * 24 - 16 ) + 100 );
-				jumpDirection = 4; // Stopped moving
+				jumpDirection = 5; // Stopped moving
 				retVal = 2;
 			}
 		} // endif( jumpTimer > (fpsScale / 60) / 2 )
