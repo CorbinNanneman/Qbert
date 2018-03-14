@@ -121,6 +121,7 @@
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="monkey.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="qbert.cpp" />
     <ClCompile Include="redball.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="gameobject.h" />
+    <ClInclude Include="monkey.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="qbert.h" />
     <ClInclude Include="redball.h" />
