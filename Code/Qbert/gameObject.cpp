@@ -41,7 +41,8 @@ bool GameObject::isOffScreen( __int16 screenWidth, __int16 screenHeight, float s
 	// Store texture size calculations
 	__int16 halfTexWidth = texWidth * scale / 2,
 			halfTexHeight = texHeight * scale / 2;
-	return x + halfTexWidth < 0 || x - halfTexWidth > screenWidth || y + halfTexHeight < 0 || y + halfTexHeight  > screenHeight;
+	return x + halfTexWidth < 0 || x - halfTexWidth > screenWidth || 
+		y + halfTexHeight < 0 || y + halfTexHeight  > screenHeight;
 }
 
 

@@ -28,21 +28,22 @@
 class StateManager
 {
 public:
-	StateManager( ); // Line
+	StateManager( ); // Line 6
 
-	bool isOpen( ); // Line
-	void clear( ); // Line
-	void update( ); // Line
-	void display( ); // Line
+	bool isOpen( ); // Line 65
+	void clear( ); // Line 71
+	void update( ); // Line 127
+	void display( ); // Line 242
 
-	~StateManager( );
+	~StateManager( ); // Line 25
 
 private:
-	void startGame( );
-	void reset( );
+	void startGame( ); // Line 32
+	void reset( ); // Line 49
 
-	void destroyCharacter( Character *c ); // Line 180 or somethin
-	bool checkCollision( Character *c1, Character *c2 ); // Line 190
+	void checkEvents( ); // Line 77
+	bool checkCollision( Character *c1, Character *c2 ); // Line 270
+	void destroyCharacter( Character *c ); // Line 287
 
 	// Temp
 	__int8 flashChange = 0;

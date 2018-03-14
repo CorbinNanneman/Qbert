@@ -22,6 +22,13 @@ StateManager::StateManager( )
 }
 
 
+StateManager::~StateManager( )
+{
+	delete q;
+	platform.deleteMap( );
+}
+
+
 void StateManager::startGame( )
 {
 	// Objects
@@ -55,13 +62,6 @@ void StateManager::reset( )
 }
 
 
-StateManager::~StateManager( )
-{ 
-	delete q;
-	platform.deleteMap( );
-}
-
-
 bool StateManager::isOpen( )
 {
 	return window.isOpen( );
@@ -74,20 +74,8 @@ void StateManager::clear( )
 }
 
 
-void StateManager::update( )
+void StateManager::checkEvents( )
 {
-// FPS Tracking
-	frame++;
-	if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
-	{
-		fps = frame;
-		// Determines adjustment needed to match proper frame rate
-		fpsScale = targetFps * 1.f / fps;
-		frame = 0;
-		fpsTimer.restart( );
-	}
-
-// System Events
 	sf::Event e;
 	while( window.pollEvent( e ) )
 	{
@@ -99,7 +87,7 @@ void StateManager::update( )
 		case sf::Event::LostFocus:
 			paused = true;
 			break;
-// KeyBoard Input
+			// KeyBoard Input
 		case sf::Event::KeyPressed:
 			switch( e.key.code )
 			{
@@ -125,15 +113,31 @@ void StateManager::update( )
 				break;
 			default:
 				break;
-			} // end switch - Keyboard Input
+			}
 			break;
-		} // end switch - Event Type
-	} // end loop - Event Checking
-
+		}
+	}
 	// Update status of pause key when no longer held
 	if( pauseKeyHeld )
 		if( !sf::Keyboard::isKeyPressed( sf::Keyboard::P ) )
 			pauseKeyHeld = false;
+}
+
+
+void StateManager::update( )
+{
+// FPS Tracking
+	frame++;
+	if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
+	{
+		fps = frame;
+		// Determines adjustment needed to match proper frame rate
+		fpsScale = targetFps * 1.f / fps;
+		frame = 0;
+		fpsTimer.restart( );
+	}
+
+	checkEvents( );
 
 // Updates
 	__int8 qReturn;
@@ -218,7 +222,7 @@ void StateManager::update( )
 
 	case victory:
 		// Flash cubes 9 times
-		if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 100 )
+		if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 70 )
 		{
 			for( int row = 0; row < 7; row++ )
 				for( int index = 0; index < row + 1; index++ )
@@ -263,21 +267,6 @@ void StateManager::display( )
 }
 
 
-void StateManager::destroyCharacter( Character *c )
-{
-	bool deleted = false;
-	for( int i = 0; !deleted && i < characters.size( ); i++ )
-	{
-		if( c == characters.at( i ) )
-		{
-			delete c;
-			characters.erase( characters.begin( ) + i );
-			deleted = true;
-		}
-	}
-}
-
-
 bool StateManager::checkCollision( Character *c1, Character *c2 )
 {
 	bool collision = false;
@@ -292,4 +281,19 @@ bool StateManager::checkCollision( Character *c1, Character *c2 )
 			collision = true;
 	}
 	return collision;
+}
+
+
+void StateManager::destroyCharacter( Character *c )
+{
+	bool deleted = false;
+	for( int i = 0; !deleted && i < characters.size( ); i++ )
+	{
+		if( c == characters.at( i ) )
+		{
+			delete c;
+			characters.erase( characters.begin( ) + i );
+			deleted = true;
+		}
+	}
 }
