@@ -1,5 +1,6 @@
 #include "statemanager.h"
 #include "redball.h"
+#include "monkey.h"
 
 #include <iostream>
 
@@ -150,6 +151,7 @@ void StateManager::update( )
 			if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 2560 && !paused )
 			{
 				characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
+				characters.push_back( new Monkey( scale, screenWidth, 1.25 ) );
 				spawnTimer.restart( );
 			}
 		// Q*Bert update

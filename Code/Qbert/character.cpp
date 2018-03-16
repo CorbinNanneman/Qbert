@@ -10,7 +10,7 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 	jumpCDTime = jumpCD;
 	jumpTimer = 0;
 	
-	setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
+	setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
 	setY( scale * ( row * 24 - 16 ) + 100 );
 	jumpDirection = 4;
 }
@@ -26,12 +26,18 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 	jumpTimer += 1 / ( 60 / fpsScale );
 
 	// Character is jumping
-	if( jumpDirection < 5 )
+	if( jumpDirection < 9 )
 	{
 		// Character continues jumping
 		if( jumpTimer < 0.5 || OOB )
 		{
-			setVY( getVY( ) + 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
+			// Apply gravity
+			if( jumpDirection < 5 ) // Normal characters
+				setVY( getVY( ) + 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
+			else if( jumpDirection < 7 ) // RtL Monkey
+				setVX( getVX( ) - 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
+			else if( jumpDirection < 9 ) // LtR Monkey
+				;
 
 			if( OOB && isOffScreen( screenWidth, screenWidth, scale ) )
 				retVal = 3;
@@ -55,17 +61,48 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				row++;
 				break;
 			case 3: // Up left
+			case 5: // Monkey up left
 				row--;
 				index--;
+				break;
+			case 6: // Left
+				index--;
+			default:
+				break;
+			}
+
+			// OOB Checking
+			switch( jumpDirection )
+			{
+			case 0: // Up right
+				if( index > row )
+					OOB = true;
+				break;
+			case 1: // Down right
+			case 2: // Down left
+				if( row > 6 )
+					OOB = true;
+				break;
+			case 3: // Up left
+				if( index < 0 )
+					OOB = true;
+				break;
+			case 5: // Monkey up left
+			case 6: // Monkey left
+				if( index < 1 )
+					OOB = true;
+				break;
+			case 7: // Monkey up right
+			case 8: // Monkey right
+				if( index > row - 1 )
+					OOB = true;
 				break;
 			default:
 				break;
 			}
 
-			// OOB Check
-			if( row < 0 || row > 6 || index < 0 || index > row )
-				OOB = true;
-			else
+			// Charcater succesfully lands on block
+			if( !OOB )
 			{
 				moveAnimate( jumpDirection + 4 );
 				// Ensure Exact Position
@@ -73,17 +110,17 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				setVY( 0 );
 				setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
 				setY( scale * ( row * 24 - 16 ) + 100 );
-				jumpDirection = 5; // Stopped moving
+				jumpDirection = 9; // Stopped moving
 				retVal = 2;
 			}
-		} // endif( jumpTimer > (fpsScale / 60) / 2 )
-	} // endif( jumpDirection != 4 )
+		} // endif( jumpTimer > 0.5 )
+	} // endif( jumpDirection != 5 )
 
 	/* retVal Glossary
 	 0 - Default
 	 1 - Character is jumping
 	 2 - Character landed on cube
-	 3 - Character fell off platform
+	 3 - Character fell off screen
 	*/
 	return retVal;
 }
@@ -94,27 +131,37 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 	if( jumpTimer > jumpCDTime && !OOB )
 	{
 		moveAnimate( direction );
-		switch( direction )
+		switch( direction ) // Set jump velocities
 		{
-		// Up right jump
+		// Up Right
 		case 0:
 			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
-		// Down Right jump
+		// Down Right
 		case 1:
 			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
-		// Down left jump
+		// Down Left
 		case 2:
 			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
-		// Up left jump
+		// Up Left
 		case 3:
 			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		// Monkey Up Left
+		case 5:
+			setVX( 56 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -22 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		// Left
+		case 6:
+			setVX( 40 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( 2 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		default:
 			break;
@@ -123,14 +170,6 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 		jumpTimer = 0;
 		jumpDirection = direction;
 	}
-}
-
-
-void Character::die( )
-{
-	getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
-	row = -1;
-	index = -1;
 }
 
 

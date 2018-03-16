@@ -4,7 +4,7 @@ Qbert::Qbert( float scale = 0, __int16 screenWidth = 0 )
 	: Character( 0, 0, scale, screenWidth, 0.5 )
 { 
 	setTexture( "./images/Qbert.png", 16, 16 );
-	jumpDirection = 5;
+	jumpDirection = 9;
 }
 
 
