@@ -6,10 +6,10 @@ RedBall::RedBall( float scale, __int16 screenWidth, float jumpCD )
 {
 	setTexture( "./images/RedBall.png", 15, 15 );
 	getSprite( )->setTextureRect( sf::IntRect( 15, 0, 15, 15 ) );
-	setX( 32 * scale * ( getRow( ) * -.5 + getIndex( ) ) + screenWidth / 2 );
+	// setX( 32 * scale * ( getRow( ) * -.5 + getIndex( ) ) + screenWidth / 2 );
 	setY( -32 * scale );
 	
-	jumpDirection = 4;
+	jumpState = 4;
 }
 
 

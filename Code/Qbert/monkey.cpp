@@ -5,7 +5,11 @@ Monkey::Monkey(float scale, __int16 screenWidth,
 	float jumpCD) : Character(7, 7, scale, screenWidth, jumpCD)
 {
 	setTexture("./images/monkey.png", 16, 16);
-	jumpDirection = 9;
+
+	setX( getX( ) + 64 * scale );
+	//setY( scale * ( row * 24 - 16 ) + 100 );
+
+	jumpState = 7;
 }
 
 
@@ -28,6 +32,14 @@ void Monkey::moveAnimate(__int8 state)
 {
 	switch (state) 
 	{
+	case 5: //Jumping left
+		getSprite( )->setTextureRect( sf::IntRect( sf::Vector2i( 0, 0 ),
+			sf::Vector2i( texWidth, texHeight ) ) );
+		break;
+	case 6: //Jumping right
+		getSprite( )->setTextureRect( sf::IntRect( sf::Vector2i( texWidth * 4, 0 ),
+			sf::Vector2i( texWidth, texHeight ) ) );
+		break;
 	case 9: //Resting left
 		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth, 0),
 			sf::Vector2i(texWidth, texHeight)));
@@ -36,13 +48,7 @@ void Monkey::moveAnimate(__int8 state)
 		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth *5, 0),
 			sf::Vector2i(texWidth, texHeight)));
 		break;
-	case 5: //Jumping left
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(0, 0),
-			sf::Vector2i(texWidth, texHeight)));
-		break;
-	case 6: //Jumping right
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth*4, 0),
-			sf::Vector2i(texWidth, texHeight)));
+	default:
 		break;
 	}
 }

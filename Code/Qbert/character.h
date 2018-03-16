@@ -17,20 +17,20 @@ public:
 		float jumpCD );
 
 	virtual __int8 update( float fpsScale, __int16 screenWidth, float scale, __int16 frame );
-
 	void move( __int8 direction, float scale, float fpsScale );
-	virtual void moveAnimate( __int8 direction ) = 0;
+
+	virtual void moveAnimate( __int8 state ) = 0;
 
 	__int8 getRow( );
 	__int8 getIndex( );
-	__int8 getDirection( );
+	__int8 getJumpState( );
 	bool isOOB( );
 	bool isJumping( );
 
 	~Character();
 
 protected:
-	__int8 jumpDirection;
+	__int8 jumpState;
 	float jumpTimer, jumpCDTime;
 	
 private:

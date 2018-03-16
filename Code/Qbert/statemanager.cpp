@@ -56,8 +56,8 @@ void StateManager::reset( )
 	platform.deleteMap( );
 
 	// Timers
-	gameTimer.restart( );
-	spawnTimer.restart( );
+	gameTimer = 0;
+	spawnTimer = 0;
 
 	startGame( );
 }
@@ -96,16 +96,20 @@ void StateManager::checkEvents( )
 				window.close( );
 				break;
 			case sf::Keyboard::D:
-				q->move( 0, scale, fpsScale );
+				if( !paused )
+					q->move( 0, scale, fpsScale );
 				break;
 			case sf::Keyboard::C:
-				q->move( 1, scale, fpsScale );
+				if( !paused )
+					q->move( 1, scale, fpsScale );
 				break;
 			case sf::Keyboard::Z:
-				q->move( 2, scale, fpsScale );
+				if( !paused )
+					q->move( 2, scale, fpsScale );
 				break;
 			case sf::Keyboard::S:
-				q->move( 3, scale, fpsScale );
+				if( !paused )
+					q->move( 3, scale, fpsScale );
 				break;
 			case sf::Keyboard::P:
 				if( !pauseKeyHeld )
@@ -129,13 +133,13 @@ void StateManager::update( )
 {
 // FPS Tracking
 	frame++;
-	if( fpsTimer.getElapsedTime( ).asMilliseconds( ) > 999 )
+	if( fpsClock.getElapsedTime( ).asMilliseconds( ) > 999 )
 	{
 		fps = frame;
 		// Determines adjustment needed to match proper frame rate
 		fpsScale = targetFps * 1.f / fps;
 		frame = 0;
-		fpsTimer.restart( );
+		fpsClock.restart( );
 	}
 
 	checkEvents( );
@@ -148,11 +152,11 @@ void StateManager::update( )
 		if( !paused )
 		{
 		// Spawns
-			if( spawnTimer.getElapsedTime( ).asMilliseconds( ) > 2560 && !paused )
+			if( spawnTimer > 2.5f )
 			{
 				characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
 				characters.push_back( new Monkey( scale, screenWidth, 1.25 ) );
-				spawnTimer.restart( );
+				spawnTimer = 0;
 			}
 		// Q*Bert update
 			qReturn = q->update( fpsScale, screenWidth, scale, frame );
@@ -169,7 +173,7 @@ void StateManager::update( )
 					{
 						paused = true;
 						respawning = true;
-						gameTimer.restart( );
+						gameTimer = 0;
 					}
 				} // end loop - character collision checking
 				break;
@@ -197,7 +201,7 @@ void StateManager::update( )
 					{
 						paused = true;
 						respawning = true;
-						gameTimer.restart( );
+						gameTimer = 0;
 					}
 					break;
 				case 2: // Character completes jump
@@ -210,7 +214,7 @@ void StateManager::update( )
 		} // endif - !paused
 		else if( respawning )
 		{
-			if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 2000 )
+			if( gameTimer > 2.f )
 			{
 				delete q;
 				while( characters.size( ) != 0 )
@@ -224,12 +228,12 @@ void StateManager::update( )
 
 	case victory:
 		// Flash cubes 9 times
-		if( gameTimer.getElapsedTime( ).asMilliseconds( ) > 70 )
+		if( gameTimer > 0.6f )
 		{
 			for( int row = 0; row < 7; row++ )
 				for( int index = 0; index < row + 1; index++ )
 					platform.changeCube( row, index, 0, 5 );
-			gameTimer.restart( );
+			gameTimer = 0;
 			if( ++flashChange > 11 )
 				startGame( );
 		}
@@ -298,4 +302,22 @@ void StateManager::destroyCharacter( Character *c )
 			deleted = true;
 		}
 	}
+}
+
+
+void StateManager::addTimer( char *timerName )
+{
+	timers.push_back( NamedTimer = { .name = timerName, .time = 0 } )
+}
+
+
+float StateManager::checkTimer( char *timerName )
+{
+
+}
+
+
+void StateManager::removeTimer( char *timerName )
+{ 
+
 }
