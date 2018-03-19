@@ -19,7 +19,7 @@ StateManager::StateManager( )
 	window.create( sf::VideoMode( screenWidth, screenHeight ), "Q*Bert" );
 	window.setFramerateLimit( 120 );
 
-	startGame( );
+	addTimer( "delay" );
 }
 
 
@@ -27,6 +27,10 @@ StateManager::~StateManager( )
 {
 	delete q;
 	platform.deleteMap( );
+	while( characters.size( ) > 0 )
+		destroyCharacter( characters.at( 0 ) );
+	while( timers.size( ) > 0 )
+		removeTimer( timers.at( 0 )->name );
 }
 
 
@@ -40,9 +44,15 @@ void StateManager::startGame( )
 
 	// Data
 	state = game;
-	respawning = false;
+
 	paused = false;
 	pauseKeyHeld = false;
+
+	addTimer( "game" );
+	addTimer( "spawn" );
+	
+	respawning = false;
+	playing = true;
 }
 
 
@@ -56,8 +66,8 @@ void StateManager::reset( )
 	platform.deleteMap( );
 
 	// Timers
-	gameTimer = 0;
-	spawnTimer = 0;
+	while( timers.size( ) > 0 )
+		removeTimer( timers.at( 0 )->name );
 
 	startGame( );
 }
@@ -131,7 +141,7 @@ void StateManager::checkEvents( )
 
 void StateManager::update( )
 {
-// FPS Tracking
+	// FPS Tracking
 	frame++;
 	if( fpsClock.getElapsedTime( ).asMilliseconds( ) > 999 )
 	{
@@ -142,23 +152,80 @@ void StateManager::update( )
 		fpsClock.restart( );
 	}
 
-	checkEvents( );
+	// Timer updates
+	if( !paused )
+		for( __int8 i = 0; i < timers.size( ); i++ )
+			timers.at( i )->time += 1.f / fps;
 
-// Updates
+	// Delay Logic. Only true when window is loading.
+	if( !playing )
+	{
+		if( checkTimer( "delay" ) > 2.f )
+		{
+			playing = true;
+			removeTimer( "delay" );
+			startGame( );
+		}
+	}
+	else
+	{
+		checkEvents( );
+		stateUpdate( );
+	}
+
+	std::cout << timers.size( ) << '\n';
+}
+
+
+void StateManager::display( )
+{
+	if( playing )
+	{
+		// Draw characters behind map when OOB
+		if( q->isOOB( ) )
+			window.draw( *q->getSprite( ) );
+		for( unsigned __int8 i = 0; i < characters.size( ); i++ )
+			if( characters.at( i )->isOOB( ) )
+				window.draw( *characters.at( i )->getSprite( ) );
+
+		// MAP DRAW
+		Cube** map = platform.getCubes( );
+		for( int row = 0; row < 7; row++ )
+		{
+			for( int index = 0; index < row + 1; index++ )
+				window.draw( *map[ row ][ index ].getSprite( ) );
+		}
+
+		// Draw characters in front of map when in bounds
+		if( !q->isOOB( ) )
+			window.draw( *q->getSprite( ) );
+		for( unsigned int i = 0; i < characters.size( ); i++ )
+			if( !characters.at( i )->isOOB( ) )
+				window.draw( *characters.at( i )->getSprite( ) );
+	}
+
+	window.display( );
+}
+
+
+void StateManager::stateUpdate( )
+{
 	__int8 qReturn;
 	switch( state )
 	{
 	case game:
 		if( !paused )
 		{
-		// Spawns
-			if( spawnTimer > 2.5f )
+			// Spawns
+			if( checkTimer( "spawn" ) > 2.5f )
 			{
-				characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
-				characters.push_back( new Monkey( scale, screenWidth, 1.25 ) );
-				spawnTimer = 0;
+				if( rand( ) % 2 == 0 )
+					characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
+				else
+					characters.push_back( new Monkey( scale, screenWidth, 1.25 ) );
+				resetTimer( "spawn" );
 			}
-		// Q*Bert update
+			// Q*Bert update
 			qReturn = q->update( fpsScale, screenWidth, scale, frame );
 			switch( qReturn )
 			{
@@ -166,29 +233,33 @@ void StateManager::update( )
 			case 0:
 				break;
 			case 1: // Q*Bert is jumping
-				// Check for collision
+					// Check for collision
 				for( int i = 0; i < characters.size( ); i++ )
 				{
 					if( checkCollision( q, characters.at( i ) ) )
 					{
 						paused = true;
 						respawning = true;
-						gameTimer = 0;
+						resetTimer( "game" );
 					}
 				} // end loop - character collision checking
 				break;
 			case 2: // Q*Bert completed jump
 				platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
-		
+
 				if( platform.isComplete( ) )
+				{
 					state = victory;
+					addTimer( "flash" );
+					flashChange = 0;
+				}
 				break;
 			case 3: // Q*Bert fell off world
 				q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
 				break;
 			} // end switch - qReturn
 
-		// Characters updates
+			  // Characters updates
 			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 			{
 				__int8 charReturn = characters.at( i )->update( fpsScale, screenWidth, scale, frame );
@@ -201,7 +272,7 @@ void StateManager::update( )
 					{
 						paused = true;
 						respawning = true;
-						gameTimer = 0;
+						resetTimer( "game" );
 					}
 					break;
 				case 2: // Character completes jump
@@ -214,7 +285,7 @@ void StateManager::update( )
 		} // endif - !paused
 		else if( respawning )
 		{
-			if( gameTimer > 2.f )
+			if( checkTimer( "game" ) > 2.f )
 			{
 				delete q;
 				while( characters.size( ) != 0 )
@@ -228,48 +299,29 @@ void StateManager::update( )
 
 	case victory:
 		// Flash cubes 9 times
-		if( gameTimer > 0.6f )
+		if( checkTimer( "flash" ) > 0.06f )
 		{
 			for( int row = 0; row < 7; row++ )
 				for( int index = 0; index < row + 1; index++ )
 					platform.changeCube( row, index, 0, 5 );
-			gameTimer = 0;
+			resetTimer( "flash" );
+
 			if( ++flashChange > 11 )
+			{
+				removeTimer( "flash" );
+				delete q;
+				while( characters.size( ) != 0 )
+					destroyCharacter( characters.at( 0 ) );
+				platform.deleteMap( );
+
 				startGame( );
+			}
 		}
 		break;
 
 	default:
 		break;
-	} // end switch - game state
-}
-
-
-void StateManager::display( )
-{
-	// Draw characters behind map when OOB
-	if( q->isOOB( ) )
-		window.draw( *q->getSprite( ) );
-	for( unsigned __int8 i = 0; i < characters.size( ); i++ )
-		if( characters.at( i )->isOOB( ) )
-			window.draw( *characters.at( i )->getSprite( ) );
-
-	// MAP DRAW
-	Cube** map = platform.getCubes( );
-	for( int row = 0; row < 7; row++ )
-	{
-		for( int index = 0; index < row + 1; index++ )
-			window.draw( *map[ row ][ index ].getSprite( ) );
 	}
-
-	// Draw characters in front of map when in bounds
-	if( !q->isOOB( ) )
-		window.draw( *q->getSprite( ) );
-	for( unsigned int i = 0; i < characters.size( ); i++ )
-		if( !characters.at( i )->isOOB( ) )
-			window.draw( *characters.at( i )->getSprite( ) );
-
-	window.display( );
 }
 
 
@@ -307,17 +359,53 @@ void StateManager::destroyCharacter( Character *c )
 
 void StateManager::addTimer( char *timerName )
 {
-	timers.push_back( NamedTimer = { .name = timerName, .time = 0 } )
+	// Create Timer if not already created
+	if( checkTimer( timerName ) == -1.f )
+	{
+		NamedTimer *t = new NamedTimer;
+		t->name = timerName;
+		t->time = 0.f;
+		timers.push_back( t );
+	}
 }
 
 
 float StateManager::checkTimer( char *timerName )
 {
+	float time = -1.f; // If this is returned the timer does not exist
 
+	for( __int8 i = 0; time == -1.f && i < timers.size( ); i++ )
+		if( timers.at( i )->name == timerName )
+			time = timers.at( i )->time;
+
+	return time;
+}
+
+
+void StateManager::resetTimer( char *timerName )
+{
+	bool reset = false;
+	for( __int8 i = 0; !reset && i < timers.size( ); i++ )
+	{
+		if( timers.at( i )->name == timerName )
+		{
+			timers.at( i )->time = 0.f;
+			reset = true;
+		}
+	}
 }
 
 
 void StateManager::removeTimer( char *timerName )
 { 
-
+	bool removed = false;
+	for( int i = 0; !removed && i < timers.size( ); i++ )
+	{
+		if( timers.at( i )->name == timerName );
+		{
+			delete timers.at( i );
+			timers.erase( timers.begin( ) + i );
+			removed = true;
+		}
+	}
 }

@@ -42,11 +42,13 @@ private:
 	void reset( ); // Line 49
 
 	void checkEvents( ); // Line 77
+	void stateUpdate( );
 	bool checkCollision( Character *c1, Character *c2 ); // Line 270
 	void destroyCharacter( Character *c ); // Line 287
 
 	void addTimer( char *timerName );
 	float checkTimer( char *timerName );
+	void resetTimer( char *timerName );
 	void removeTimer( char *timerName );
 
 
@@ -67,7 +69,7 @@ private:
 	} NamedTimer;
 
 	// Temp
-	__int8 flashChange = 0;
+	__int8 flashChange;
 
 	// GameObjects
 	Platform platform;
@@ -90,6 +92,7 @@ private:
 
 	// Game Events
 	bool paused, 
-		 pauseKeyHeld;
-	std::vector< NamedTimer > timers;
+		 pauseKeyHeld,
+		 playing;
+	std::vector< NamedTimer * > timers;
 };

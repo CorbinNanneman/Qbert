@@ -15,9 +15,7 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 	jumpState = 4;
 }
 
-
 Character::~Character() { }
-
 
 /** Jump State Glossary
  0 - Normal Up Reft
@@ -184,7 +182,6 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 		// LtR
 		case 6:
 			setVX( 40 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( 2 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		default:
 			break;
