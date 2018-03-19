@@ -6,7 +6,7 @@ Monkey::Monkey(float scale, __int16 screenWidth,
 {
 	setTexture("./images/monkey.png", 16, 16);
 
-	setX( getX( ) + 65 * scale );
+	setX( getX( ) + 74 * scale );
 
 	jumpState = 7;
 }

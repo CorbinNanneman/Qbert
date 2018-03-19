@@ -46,7 +46,7 @@ private:
 	bool checkCollision( Character *c1, Character *c2 ); // Line 270
 	void destroyCharacter( Character *c ); // Line 287
 
-	void addTimer( char *timerName );
+	void addTimer( char *timerName, bool pauses );
 	float checkTimer( char *timerName );
 	void resetTimer( char *timerName );
 	void removeTimer( char *timerName );
@@ -66,6 +66,7 @@ private:
 	{
 		float time;
 		char *name;
+		bool pauses;
 	} NamedTimer;
 
 	// Temp

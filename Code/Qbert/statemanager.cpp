@@ -19,7 +19,7 @@ StateManager::StateManager( )
 	window.create( sf::VideoMode( screenWidth, screenHeight ), "Q*Bert" );
 	window.setFramerateLimit( 120 );
 
-	addTimer( "delay" );
+	addTimer( "delay", false );
 }
 
 
@@ -36,6 +36,14 @@ StateManager::~StateManager( )
 
 void StateManager::startGame( )
 {
+	// Deallocate any old memory
+	if( platform.getCubes( ) != nullptr )
+		platform.deleteMap( );
+	while( characters.size( ) > 0 )
+		destroyCharacter( characters.at( 0 ) );
+	while( timers.size( ) > 0 )
+		removeTimer( timers.at( 0 )->name );
+
 	// Objects
 	q = new Qbert( scale, screenWidth );
 	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
@@ -45,14 +53,12 @@ void StateManager::startGame( )
 	// Data
 	state = game;
 
-	paused = false;
-	pauseKeyHeld = false;
-
-	addTimer( "game" );
-	addTimer( "spawn" );
+	addTimer( "spawn", true );
 	
 	respawning = false;
 	playing = true;
+	paused = false;
+	pauseKeyHeld = false;
 }
 
 
@@ -82,6 +88,79 @@ bool StateManager::isOpen( )
 void StateManager::clear( )
 {
 	window.clear( sf::Color::Black );
+}
+
+
+void StateManager::update( )
+{
+	// FPS Tracking
+	frame++;
+	if( fpsClock.getElapsedTime( ).asMilliseconds( ) > 999 )
+	{
+		fps = frame;
+		// Determines adjustment needed to match proper frame rate
+		fpsScale = targetFps * 1.f / fps;
+		frame = 0;
+		fpsClock.restart( );
+	}
+
+	// Timer updates
+	for( unsigned __int8 i = 0; i < timers.size( ); i++ )
+		if( !paused || !timers.at( i )->pauses )
+			timers.at( i )->time += 1.f / fps;
+
+	// Delay Logic. Only true when window is loading.
+	if( !playing )
+	{
+		if( checkTimer( "delay" ) > 2.f )
+		{
+			playing = true;
+			removeTimer( "delay" );
+			startGame( );
+		}
+	}
+	else
+	{
+		checkEvents( );
+		stateUpdate( );
+	}
+}
+
+
+void StateManager::display( )
+{
+	if( playing )
+	{
+		// Tracks characters in front of map
+		std::vector< Character * > inFront;
+
+		// Draw characters behind map when OOB
+		if( q->isOOB( ) )
+			window.draw( *q->getSprite( ) );
+		else
+			inFront.push_back( q );
+		for( __int8 i = 0; i < characters.size( ); i++ )
+		{
+			if( characters.at( i )->isOOB( ) )
+				window.draw( *characters.at( i )->getSprite( ) );
+			else
+				inFront.push_back( characters.at( i ) );
+		}
+
+		// MAP DRAW
+		Cube** map = platform.getCubes( );
+		for( int row = 0; row < 7; row++ )
+		{
+			for( int index = 0; index < row + 1; index++ )
+				window.draw( *map[ row ][ index ].getSprite( ) );
+		}
+
+		// Draw characters in front of map when in bounds
+		for( __int8 i = 0; i < inFront.size( ); i++ )
+			window.draw( *inFront.at( i )->getSprite( ) );
+	}
+
+	window.display( );
 }
 
 
@@ -139,75 +218,6 @@ void StateManager::checkEvents( )
 }
 
 
-void StateManager::update( )
-{
-	// FPS Tracking
-	frame++;
-	if( fpsClock.getElapsedTime( ).asMilliseconds( ) > 999 )
-	{
-		fps = frame;
-		// Determines adjustment needed to match proper frame rate
-		fpsScale = targetFps * 1.f / fps;
-		frame = 0;
-		fpsClock.restart( );
-	}
-
-	// Timer updates
-	if( !paused )
-		for( __int8 i = 0; i < timers.size( ); i++ )
-			timers.at( i )->time += 1.f / fps;
-
-	// Delay Logic. Only true when window is loading.
-	if( !playing )
-	{
-		if( checkTimer( "delay" ) > 2.f )
-		{
-			playing = true;
-			removeTimer( "delay" );
-			startGame( );
-		}
-	}
-	else
-	{
-		checkEvents( );
-		stateUpdate( );
-	}
-
-	std::cout << timers.size( ) << '\n';
-}
-
-
-void StateManager::display( )
-{
-	if( playing )
-	{
-		// Draw characters behind map when OOB
-		if( q->isOOB( ) )
-			window.draw( *q->getSprite( ) );
-		for( unsigned __int8 i = 0; i < characters.size( ); i++ )
-			if( characters.at( i )->isOOB( ) )
-				window.draw( *characters.at( i )->getSprite( ) );
-
-		// MAP DRAW
-		Cube** map = platform.getCubes( );
-		for( int row = 0; row < 7; row++ )
-		{
-			for( int index = 0; index < row + 1; index++ )
-				window.draw( *map[ row ][ index ].getSprite( ) );
-		}
-
-		// Draw characters in front of map when in bounds
-		if( !q->isOOB( ) )
-			window.draw( *q->getSprite( ) );
-		for( unsigned int i = 0; i < characters.size( ); i++ )
-			if( !characters.at( i )->isOOB( ) )
-				window.draw( *characters.at( i )->getSprite( ) );
-	}
-
-	window.display( );
-}
-
-
 void StateManager::stateUpdate( )
 {
 	__int8 qReturn;
@@ -233,14 +243,14 @@ void StateManager::stateUpdate( )
 			case 0:
 				break;
 			case 1: // Q*Bert is jumping
-					// Check for collision
-				for( int i = 0; i < characters.size( ); i++ )
+				// Collision Check
+				for( unsigned int i = 0; i < characters.size( ); i++ )
 				{
 					if( checkCollision( q, characters.at( i ) ) )
 					{
 						paused = true;
 						respawning = true;
-						resetTimer( "game" );
+						addTimer( "respawn", false );
 					}
 				} // end loop - character collision checking
 				break;
@@ -250,7 +260,7 @@ void StateManager::stateUpdate( )
 				if( platform.isComplete( ) )
 				{
 					state = victory;
-					addTimer( "flash" );
+					addTimer( "flash", true );
 					flashChange = 0;
 				}
 				break;
@@ -268,11 +278,11 @@ void StateManager::stateUpdate( )
 				default:
 				case 0:
 				case 1: // Character is jumping
-					if( checkCollision( characters.at( i ), q ) )
+					if( qReturn != 1 && checkCollision( characters.at( i ), q ) )
 					{
 						paused = true;
 						respawning = true;
-						resetTimer( "game" );
+						addTimer( "respawn", false );
 					}
 					break;
 				case 2: // Character completes jump
@@ -285,12 +295,9 @@ void StateManager::stateUpdate( )
 		} // endif - !paused
 		else if( respawning )
 		{
-			if( checkTimer( "game" ) > 2.f )
+			if( checkTimer( "respawn" ) > 2.f )
 			{
-				delete q;
-				while( characters.size( ) != 0 )
-					destroyCharacter( characters.at( 0 ) );
-				platform.deleteMap( );
+				removeTimer( "respawn" );
 
 				startGame( );
 			}
@@ -299,20 +306,16 @@ void StateManager::stateUpdate( )
 
 	case victory:
 		// Flash cubes 9 times
-		if( checkTimer( "flash" ) > 0.06f )
+		if( checkTimer( "flash" ) > 0.1f )
 		{
 			for( int row = 0; row < 7; row++ )
 				for( int index = 0; index < row + 1; index++ )
 					platform.changeCube( row, index, 0, 5 );
 			resetTimer( "flash" );
 
-			if( ++flashChange > 11 )
+			if( ++flashChange > 14 )
 			{
 				removeTimer( "flash" );
-				delete q;
-				while( characters.size( ) != 0 )
-					destroyCharacter( characters.at( 0 ) );
-				platform.deleteMap( );
 
 				startGame( );
 			}
@@ -357,7 +360,7 @@ void StateManager::destroyCharacter( Character *c )
 }
 
 
-void StateManager::addTimer( char *timerName )
+void StateManager::addTimer( char *timerName, bool pauses )
 {
 	// Create Timer if not already created
 	if( checkTimer( timerName ) == -1.f )
@@ -365,6 +368,7 @@ void StateManager::addTimer( char *timerName )
 		NamedTimer *t = new NamedTimer;
 		t->name = timerName;
 		t->time = 0.f;
+		t->pauses = pauses;
 		timers.push_back( t );
 	}
 }

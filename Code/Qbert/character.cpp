@@ -17,6 +17,51 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 
 Character::~Character() { }
 
+void Character::move( __int8 direction, float scale, float fpsScale )
+{
+	if( jumpTimer > jumpCDTime && !OOB )
+	{
+		moveAnimate( direction );
+		switch( direction ) // Set jump velocities
+		{
+		// Up Right
+		case 0:
+			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		// Down Right
+		case 1:
+			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		// Down Left
+		case 2:
+			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		// Up Left
+		case 3:
+			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		// RtL Up Left
+		case 5:
+			setVX( 56 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -24 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		// LtR
+		case 6:
+			setVX( 40 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			break;
+		default:
+			break;
+		}
+
+		jumpTimer = 0;
+		jumpState = direction;
+	}
+}
+
 /** Jump State Glossary
  0 - Normal Up Reft
  1 - Normal Down Right
@@ -39,7 +84,7 @@ Character::~Character() { }
 __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __int16 frame )
 {
 	GameObject::update( );
-	__int8 retVal = 0;
+	__int8 retVal = 0; // See Glossary At end of function.
 	jumpTimer += 1 / ( 60 / fpsScale );
 
 	// Character is jumping
@@ -52,7 +97,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 			if( jumpState < 5 ) // Normal characters
 				setVY( getVY( ) + 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
 			else if( jumpState < 8 ) // RtL Monkey
-				setVX( getVX( ) - 9.8 * fpsScale * scale / ( 60 / fpsScale ) );
+				setVX( getVX( ) - 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
 			else if( jumpState < 11 ) // LtR Monkey
 				;
 
@@ -128,7 +173,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				// Ensure Exact Position
 				setVX( 0 );
 				setVY( 0 );
-				setX( 32 * scale * ( row * -.5 + index ) + screenWidth / 2 );
+				setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
 				setY( scale * ( row * 24 - 16 ) + 100 );
 				// Stop Moving
 				jumpState = 11;
@@ -144,52 +189,6 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 	 3 - Character fell off screen
 	*/
 	return retVal;
-}
-
-
-void Character::move( __int8 direction, float scale, float fpsScale )
-{
-	if( jumpTimer > jumpCDTime && !OOB )
-	{
-		moveAnimate( direction );
-		switch( direction ) // Set jump velocities
-		{
-		// Up Right
-		case 0:
-			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			break;
-		// Down Right
-		case 1:
-			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			break;
-		// Down Left
-		case 2:
-			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			break;
-		// Up Left
-		case 3:
-			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			break;
-		// RtL Up Left
-		case 5:
-			setVX( 56 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -22 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			break;
-		// LtR
-		case 6:
-			setVX( 40 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			break;
-		default:
-			break;
-		}
-
-		jumpTimer = 0;
-		jumpState = direction;
-	}
 }
 
 

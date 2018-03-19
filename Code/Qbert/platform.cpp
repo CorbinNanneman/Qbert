@@ -1,7 +1,9 @@
 #include "platform.h"
 
 Platform::Platform( )
-{ }
+{ 
+	map = nullptr;
+}
 
 
 Platform::~Platform( )
@@ -42,10 +44,15 @@ void Platform::createMap( char* newTexStrings[3], __int16 screenWidth, float sca
 
 void Platform::deleteMap()
 {
-	// Deallocate map storage
-	for ( int i = 0; i < 7; i++ )
-		delete[] map[i];
-	delete[] map;
+	// Avoid doing bad things
+	if( !deleted )
+	{
+		// Deallocate map storage
+		for ( int i = 0; i < 7; i++ )
+			delete[] map[i];
+		delete[] map;
+		deleted = true;
+	}
 }
 
 
