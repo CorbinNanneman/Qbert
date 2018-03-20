@@ -112,7 +112,7 @@ void StateManager::update( )
 	// Delay Logic. Only true when window is loading.
 	if( !playing )
 	{
-		if( checkTimer( "delay" ) > 2.f )
+		if( checkTimer( "delay" ) > 5.f )
 		{
 			playing = true;
 			removeTimer( "delay" );

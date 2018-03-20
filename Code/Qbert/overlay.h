@@ -20,32 +20,24 @@
 \*==============================================================*/
 
 #include "gameobject.h"
+#include <vector>
 
-class Character : public GameObject
+class Overlay
 {
 public:
-	Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth, 
-		float jumpCD );
+	Overlay( );
 
-	virtual __int8 update( float fpsScale, __int16 screenWidth, float scale, __int16 frame );
-	void move( __int8 direction, float scale, float fpsScale );
+	std::vector< GameObject * > &getElements( );
 
-	virtual void moveAnimate( __int8 state ) = 0;
+	void createObjects( );
+	void clearObjects( );
 
-	__int8 getRow( );
-	__int8 getIndex( );
-	__int8 getJumpState( );
-	bool isOOB( );
-	bool isJumping( );
+	void vanish( );
+	void unvanish( );
 
-	~Character();
+	~Overlay( );
 
-protected:
-	__int8 jumpState;
-	float jumpTimer, jumpCDTime;
-	
 private:
-	__int8 row, 
-		   index;
-	bool OOB;
+	std::vector< GameObject * > elements;
+	bool vanished;
 };
