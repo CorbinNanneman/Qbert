@@ -24,7 +24,7 @@
 
 #include "platform.h"
 #include "qbert.h"
-
+#include "snake.h"
 class StateManager
 {
 public:
@@ -74,7 +74,9 @@ private:
 
 	// GameObjects
 	Platform platform;
+
 	Qbert *q;
+	Snake *s;
 	std::vector< Character * > characters;
 	bool respawning;
 

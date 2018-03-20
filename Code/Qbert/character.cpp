@@ -53,13 +53,6 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 		case 6:
 			setVX( 40 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
-		case 8:
-			setVX(-56 * scale / ((60 / fpsScale) / 2));
-			setVY(-24 * scale / ((60 / fpsScale) / 2));
-			break;
-		case 9:
-			setVX(-40 * scale / ((60 / fpsScale) / 2));
-			break;
 		default:
 			break;
 		}
@@ -80,9 +73,9 @@ void Character::move( __int8 direction, float scale, float fpsScale )
  6 - RtL Monkey Left
  7 - RtL Monkey Spawn In*
 
- 8 - LankyDude Up Right
- 9 - LankyDude Right
- 10 - LankyDude Spawn In*
+ 8 - LtR Monkey Up Right
+ 9 - LtR Monkey Right
+ 10 - LtR Monkey Spawn In*
 
  11 - Character Not Moving
 
@@ -106,7 +99,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 			else if( jumpState < 8 ) // RtL Monkey
 				setVX( getVX( ) - 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
 			else if( jumpState < 11 ) // LtR Monkey
-				setVX(getVX() + 9.8f * fpsScale * scale / (60 / fpsScale));
+				;
 
 			if( OOB && isOffScreen( screenWidth, screenWidth, scale ) )
 				retVal = 3;
@@ -136,13 +129,6 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				break;
 			case 6: // RtL left
 				index--;
-				break;
-			case 8:
-				row--;
-				break;
-			case 9:
-				index++;
-				break;
 			default:
 				break;
 			}

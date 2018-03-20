@@ -120,23 +120,23 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="gameobject.cpp" />
-    <ClCompile Include="lankyDude.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="monkey.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="qbert.cpp" />
     <ClCompile Include="redball.cpp" />
+    <ClCompile Include="snake.cpp" />
     <ClCompile Include="statemanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="gameobject.h" />
-    <ClInclude Include="lankyDude.h" />
     <ClInclude Include="monkey.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="qbert.h" />
     <ClInclude Include="redball.h" />
+    <ClInclude Include="snake.h" />
     <ClInclude Include="statemanager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

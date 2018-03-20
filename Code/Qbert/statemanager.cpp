@@ -48,6 +48,8 @@ void StateManager::startGame( )
 	q = new Qbert( scale, screenWidth );
 	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
 		"./images/blueYellow.png" };
+
+	s = new Snake(scale, screenWidth, 1);
 	platform.createMap( texStrings, screenWidth, scale );
 
 	// Data
@@ -139,6 +141,16 @@ void StateManager::display( )
 			window.draw( *q->getSprite( ) );
 		else
 			inFront.push_back( q );
+
+
+
+		if (s->isOOB())
+			window.draw(*s->getSprite());
+		else
+			inFront.push_back(s);
+
+
+
 		for( __int8 i = 0; i < characters.size( ); i++ )
 		{
 			if( characters.at( i )->isOOB( ) )
@@ -227,16 +239,23 @@ void StateManager::stateUpdate( )
 		if( !paused )
 		{
 			// Spawns
-			if( checkTimer( "spawn" ) > 2.5f )
+			/*if( checkTimer( "spawn" ) > 2.5f )
 			{
 				if( rand( ) % 2 == 0 )
 					characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
 				else
 					characters.push_back( new Monkey( scale, screenWidth, 1.25 ) );
 				resetTimer( "spawn" );
-			}
+			}*/
+
+
+
+
 			// Q*Bert update
 			qReturn = q->update( fpsScale, screenWidth, scale, frame );
+			
+			s->findTarget(q->getRow(), q->getX());
+			s->update(fpsScale,screenWidth,scale,frame);
 			switch( qReturn )
 			{
 			default:
