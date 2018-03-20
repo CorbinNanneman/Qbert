@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{60845E9D-717B-4707-A2B9-5DD41822AA98}</ProjectGuid>
     <RootNamespace>Qbert</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -120,6 +120,7 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="gameobject.cpp" />
+    <ClCompile Include="lankyDude.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="monkey.cpp" />
     <ClCompile Include="platform.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="gameobject.h" />
+    <ClInclude Include="lankyDude.h" />
     <ClInclude Include="monkey.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="qbert.h" />

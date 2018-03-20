@@ -28,6 +28,7 @@
     <ClCompile Include="redball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lankyDude.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h">
@@ -54,6 +55,7 @@
     <ClInclude Include="statemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lankyDude.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
