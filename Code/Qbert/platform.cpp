@@ -31,7 +31,7 @@ void Platform::createMap( char* newTexStrings[3], __int16 screenWidth, float sca
 			map[row][index].setTexture( texStrings[0], 32, 32 );
 			
 			// Cube coordinate calculations
-			map[row][index].getSprite( )->setScale( scale, scale );
+			map[row][index].getSpritePtr( )->setScale( scale, scale );
 			float x = 32 * scale * (row * -.5f + index) + screenWidth / 2,
 				  y = row * scale * 32 * .75f + 100;
 

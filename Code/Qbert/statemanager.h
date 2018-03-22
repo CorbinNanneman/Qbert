@@ -24,6 +24,7 @@
 
 #include "platform.h"
 #include "qbert.h"
+#include "overlay.h"
 
 class StateManager
 {
@@ -77,6 +78,7 @@ private:
 	Qbert *q;
 	std::vector< Character * > characters;
 	bool respawning;
+	Overlay overlay;
 
 	// FPS Tracking
 	__int8 targetFps = 60;

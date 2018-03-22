@@ -32,20 +32,16 @@ void Monkey::moveAnimate(__int8 state)
 	switch (state) 
 	{
 	case 5: //Jumping left
-		getSprite( )->setTextureRect( sf::IntRect( sf::Vector2i( 0, 0 ),
-			sf::Vector2i( texWidth, texHeight ) ) );
+		updateTexRect( 0, 0 );
 		break;
 	case 6: //Jumping right
-		getSprite( )->setTextureRect( sf::IntRect( sf::Vector2i( texWidth * 4, 0 ),
-			sf::Vector2i( texWidth, texHeight ) ) );
+		updateTexRect( 4, 0 );
 		break;
 	case 9: //Resting left
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth, 0),
-			sf::Vector2i(texWidth, texHeight)));
+		updateTexRect( 1, 0 );
 		break;
 	case 10: //Resting right
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth *5, 0),
-			sf::Vector2i(texWidth, texHeight)));
+		updateTexRect( 5, 0 );
 		break;
 	default:
 		break;

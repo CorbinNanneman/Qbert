@@ -28,7 +28,12 @@
     <ClCompile Include="redball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lankyDude.cpp" />
+    <ClCompile Include="lankyDude.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h">
@@ -55,7 +60,12 @@
     <ClInclude Include="statemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lankyDude.h" />
+    <ClInclude Include="lankyDude.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

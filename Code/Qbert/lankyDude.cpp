@@ -28,20 +28,16 @@ void LankyDude::moveAnimate(__int8 state)
 	switch (state)
 	{
 	case 8: //Jumping left
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth * 4, 0),
-			sf::Vector2i(texWidth, texHeight)));
+		updateTexRect( 4, 0 );
 		break;
 	case 9: //Jumping right
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(0, 0),
-			sf::Vector2i(texWidth, texHeight)));
+		updateTexRect( 0, 0 );
 		break;
 	case 12: //Resting left
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth* 5, 0),
-			sf::Vector2i(texWidth, texHeight)));
+		updateTexRect( 5, 0 );
 		break;
 	case 13: //Resting right
-		getSprite()->setTextureRect(sf::IntRect(sf::Vector2i(texWidth, 0),
-			sf::Vector2i(texWidth, texHeight)));
+		updateTexRect( 1, 0 );
 		break;
 	default:
 		break;

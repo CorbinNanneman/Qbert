@@ -7,8 +7,7 @@ Cube::Cube()
 
 
 Cube::~Cube()
-{
-}
+{ }
 
 
 void Cube::setState(__int8 newState)

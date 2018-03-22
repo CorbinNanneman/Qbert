@@ -97,7 +97,7 @@ float GameObject::getVY( )
 
 
 
-sf::Sprite* GameObject::getSprite( )
+sf::Sprite* GameObject::getSpritePtr( )
 {
 	return &sprite;
 }
@@ -112,6 +112,13 @@ void GameObject::setTexture( char* texPath, __int16 newTexWidth, __int16 newTexH
 	texHeight = newTexHeight;
 
 	// Update view rectangle and center
-	sprite.setTextureRect( sf::IntRect( 0, 0, texWidth, texHeight ) );
+	updateTexRect( 0, 0 );
 	sprite.setOrigin( texWidth / 2, texHeight / 2 );
+}
+
+
+void GameObject::updateTexRect( __int16 xFrame, __int16 yFrame )
+{
+	sprite.setTextureRect( 
+		sf::IntRect( xFrame * texWidth, yFrame * texHeight, texWidth, texHeight ) );
 }

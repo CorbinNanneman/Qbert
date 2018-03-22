@@ -123,6 +123,7 @@
     <ClCompile Include="lankyDude.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="monkey.cpp" />
+    <ClCompile Include="overlay.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="qbert.cpp" />
     <ClCompile Include="redball.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="lankyDude.h" />
     <ClInclude Include="monkey.h" />
+    <ClInclude Include="overlay.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="qbert.h" />
     <ClInclude Include="redball.h" />

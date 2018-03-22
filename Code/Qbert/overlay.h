@@ -13,7 +13,7 @@
 |                                                                |
 | -------------------------------------------------------------- |
 |                                                                |
-| Authors: Greg Francis, Ben Ewing                               |
+| Authors: Greg Francis                                          |
 |                                                                |
 | Date Last Updated: March 20th, 2018 | 10:55am                  |
 |                                                                |
@@ -27,13 +27,12 @@ class Overlay
 public:
 	Overlay( );
 
-	std::vector< GameObject * > &getElements( );
-
-	void createObjects( );
+	void createObjects( __int8 lives, __int32 score, __int8 round, __int8 level, 
+		float scale );
+	void update( __int32 score );
 	void clearObjects( );
 
-	void vanish( );
-	void unvanish( );
+	std::vector< GameObject * > &getElements( );
 
 	~Overlay( );
 

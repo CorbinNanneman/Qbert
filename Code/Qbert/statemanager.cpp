@@ -59,6 +59,8 @@ void StateManager::startGame( )
 	playing = true;
 	paused = false;
 	pauseKeyHeld = false;
+
+	overlay.createObjects( 3, 0, 0, 0, scale );
 }
 
 
@@ -136,13 +138,13 @@ void StateManager::display( )
 
 		// Draw characters behind map when OOB
 		if( q->isOOB( ) )
-			window.draw( *q->getSprite( ) );
+			window.draw( *q->getSpritePtr( ) );
 		else
 			inFront.push_back( q );
 		for( __int8 i = 0; i < characters.size( ); i++ )
 		{
 			if( characters.at( i )->isOOB( ) )
-				window.draw( *characters.at( i )->getSprite( ) );
+				window.draw( *characters.at( i )->getSpritePtr( ) );
 			else
 				inFront.push_back( characters.at( i ) );
 		}
@@ -152,12 +154,16 @@ void StateManager::display( )
 		for( int row = 0; row < 7; row++ )
 		{
 			for( int index = 0; index < row + 1; index++ )
-				window.draw( *map[ row ][ index ].getSprite( ) );
+				window.draw( *map[ row ][ index ].getSpritePtr( ) );
 		}
 
 		// Draw characters in front of map when in bounds
 		for( __int8 i = 0; i < inFront.size( ); i++ )
-			window.draw( *inFront.at( i )->getSprite( ) );
+			window.draw( *inFront.at( i )->getSpritePtr( ) );
+
+		std::vector< GameObject * > elements = overlay.getElements( );
+		for( int i = 0; i < elements.size( ); i++ )
+			window.draw( *elements.at( i )->getSpritePtr( ) );
 	}
 
 	window.display( );
@@ -265,7 +271,9 @@ void StateManager::stateUpdate( )
 				}
 				break;
 			case 3: // Q*Bert fell off world
-				q->getSprite( )->setTextureRect( sf::IntRect( 0, 0, 0, 0 ) );
+				paused = true;
+				respawning = true;
+				addTimer( "respawn", false );
 				break;
 			} // end switch - qReturn
 
@@ -316,7 +324,6 @@ void StateManager::stateUpdate( )
 			if( ++flashChange > 14 )
 			{
 				removeTimer( "flash" );
-
 				startGame( );
 			}
 		}
