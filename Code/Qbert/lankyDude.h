@@ -1,4 +1,5 @@
 #pragma once
+
 #include "character.h"
 class LankyDude:
 	public Character

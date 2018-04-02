@@ -103,7 +103,7 @@ sf::Sprite* GameObject::getSpritePtr( )
 }
 
 
-void GameObject::setTexture( char* texPath, __int16 newTexWidth, __int16 newTexHeight)
+void GameObject::setTexture( const char* texPath, __int16 newTexWidth, __int16 newTexHeight)
 {
 	// Update Texture
 	texture.loadFromFile( texPath );
@@ -112,12 +112,12 @@ void GameObject::setTexture( char* texPath, __int16 newTexWidth, __int16 newTexH
 	texHeight = newTexHeight;
 
 	// Update view rectangle and center
-	updateTexRect( 0, 0 );
+	setTexRect( 0, 0 );
 	sprite.setOrigin( texWidth / 2, texHeight / 2 );
 }
 
 
-void GameObject::updateTexRect( __int16 xFrame, __int16 yFrame )
+void GameObject::setTexRect( __int16 xFrame, __int16 yFrame )
 {
 	sprite.setTextureRect( 
 		sf::IntRect( xFrame * texWidth, yFrame * texHeight, texWidth, texHeight ) );

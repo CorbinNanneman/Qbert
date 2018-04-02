@@ -1,23 +1,4 @@
 #pragma once
-/*==============================================================*\
-|                                                                |
-| Program: Qbert                                                 |
-|                                                                |
-| Breif: Classic arcade game recreated in C++                    |
-|                                                                |
-| -------------------------------------------------------------- |
-|                                                                |
-| Class: StateManager                                            |
-|                                                                |
-| Purpose: Manage all objects and perfrom state-based logic      |
-|                                                                |
-| -------------------------------------------------------------- |
-|                                                                |
-| Author: Greg Francis                                           |
-|                                                                |
-| Date Last Updated: March 20th, 2018 | 10:55am                  |
-|                                                                |
-\*==============================================================*/
 
 #include <SFML/Graphics.hpp>
 #include <vector>

@@ -28,16 +28,16 @@ void LankyDude::moveAnimate(__int8 state)
 	switch (state)
 	{
 	case 8: //Jumping left
-		updateTexRect( 4, 0 );
+		setTexRect( 4, 0 );
 		break;
 	case 9: //Jumping right
-		updateTexRect( 0, 0 );
+		setTexRect( 0, 0 );
 		break;
 	case 12: //Resting left
-		updateTexRect( 5, 0 );
+		setTexRect( 5, 0 );
 		break;
 	case 13: //Resting right
-		updateTexRect( 1, 0 );
+		setTexRect( 1, 0 );
 		break;
 	default:
 		break;

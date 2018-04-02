@@ -8,13 +8,9 @@
 |                                                                |
 | Leader: Corbin Nanneman                                        |
 |                                                                |
-| Program Writers: Greg Francis, Ben Ewing, Corbin Nanneman      |
+| Program Authors: Greg Francis, Ben Ewing, Corbin Nanneman      |
 |                                                                |
-| -------------------------------------------------------------- |
 |                                                                |
-| File: main.cpp                                                 |
-|                                                                |
-| Purpose: Drive the program without hosting any specific logic  |
 |                                                                |
 | -------------------------------------------------------------- |
 |                                                                |

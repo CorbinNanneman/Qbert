@@ -60,7 +60,7 @@ void StateManager::startGame( )
 	paused = false;
 	pauseKeyHeld = false;
 
-	overlay.createObjects( 3, 0, 0, 0, scale );
+	overlay.createObjects( 1, 3, 0, 0, 0, scale );
 }
 
 

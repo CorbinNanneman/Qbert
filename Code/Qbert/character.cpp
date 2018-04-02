@@ -11,7 +11,7 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 	jumpTimer = 0;
 	
 	setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
-	setY( scale * ( row * 24 - 16 ) + 100 );
+	setY( scale * ( row * 24 + 34 ) );
 	jumpState = 4;
 }
 
@@ -32,12 +32,12 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 		// Down Right
 		case 1:
 			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -46 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		// Down Left
 		case 2:
 			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -48 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVY( -46 * scale / ( ( 60 / fpsScale ) / 2 ) );
 			break;
 		// Up Left
 		case 3:
@@ -188,7 +188,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __in
 				setVX( 0 );
 				setVY( 0 );
 				setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
-				setY( scale * ( row * 24 - 16 ) + 100 );
+				setY( scale * ( row * 24 + 34 ) );
 				// Stop Moving
 				jumpState = 11;
 				retVal = 2;
