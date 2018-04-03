@@ -1,6 +1,8 @@
 #include "statemanager.h"
 #include "redball.h"
 #include "monkey.h"
+#include "snake.h"
+#include "lankyDude.h"
 
 #include <iostream>
 
@@ -53,7 +55,7 @@ void StateManager::startGame( )
 	// Data
 	state = game;
 
-	addTimer( "spawn", true );
+	addTimer( "snakeSpawn", true );
 	
 	respawning = false;
 	playing = true;
@@ -111,7 +113,7 @@ void StateManager::update( )
 		if( !paused || !timers.at( i )->pauses )
 			timers.at( i )->time += 1.f / fps;
 
-	// Delay Logic. Only true when window is loading.
+	// Delay Logic. Only relevant when window is loading.
 	if( !playing )
 	{
 		if( checkTimer( "delay" ) > 5.f )
@@ -225,14 +227,14 @@ void StateManager::checkEvents( )
 
 
 /* Character IDs
-0 - Qbert
-1 - Snake
-2 - Monkey
-3 - Lanky Dude
-4 - Red Ball
-5 - Magic Ball
-6 - Slick
-7 - Sam
+ 0 - Qbert
+ 1 - Snake
+ 2 - Monkey
+ 3 - Lanky Dude
+ 4 - Red Ball
+ 5 - Magic Ball
+ 6 - Slick
+ 7 - Sam
 */
 void StateManager::stateUpdate( )
 {
@@ -243,6 +245,12 @@ void StateManager::stateUpdate( )
 		if( !paused )
 		{
 			// Spawns
+			if( checkTimer( "snakeSpawn" ) > 1.0f )
+			{
+				characters.push_back( new Snake( scale, screenWidth, 1.25 ) );
+				removeTimer( "snakeSpawn" );
+				addTimer( "spawn", true );
+			}
 			if( checkTimer( "spawn" ) > 2.5f )
 			{
 				if( rand( ) % 2 == 0 )
@@ -251,7 +259,7 @@ void StateManager::stateUpdate( )
 					characters.push_back( new Monkey( scale, screenWidth, 1.25 ) );
 				resetTimer( "spawn" );
 			}
-			// Q*Bert update
+	// Character Updates
 			qReturn = q->update( fpsScale, screenWidth, scale);
 			switch( qReturn )
 			{
@@ -314,6 +322,12 @@ void StateManager::stateUpdate( )
 					}
 					break;
 				case 2: // Character completes jump
+					// Snake
+					if( characters.at( i )->getID( ) == 1 )
+					{
+						dynamic_cast< Snake* >( characters.at( i ) )->setTarget( 
+							q->getX( ), q->getRow( ) );
+					}
 					break;
 				case 3: // Character fell off world
 					destroyCharacter( characters.at( i ) );
