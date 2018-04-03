@@ -9,6 +9,7 @@ Monkey::Monkey(float scale, __int16 screenWidth,
 	setX( getX( ) + 74 * scale );
 
 	jumpState = 7;
+	id = 2;
 }
 
 
@@ -16,9 +17,9 @@ Monkey::~Monkey( )
 { }
 
 
-__int8 Monkey::update(float fpsScale, __int16 screenWidth, float scale, __int16 frame)
+__int8 Monkey::update(float fpsScale, __int16 screenWidth, float scale)
 {
-	__int8 retVal = Character::update( fpsScale, screenWidth, scale, frame );
+	__int8 retVal = Character::update( fpsScale, screenWidth, scale);
 
 	if( jumpTimer > jumpCDTime )
 		move( rand( ) % 2 + 5, scale, fpsScale );	

@@ -1,20 +1,23 @@
 #include "lankyDude.h"
 
-
-
 LankyDude::LankyDude(float scale, __int16 screenWidth,
 	float jumpCD) : Character(7, 0, scale, screenWidth, jumpCD)
 {
 	setTexture("./images/lankyDude.png", 16, 16);
-
 	setX(getX() - 74 * scale);
 
 	jumpState = 10;
+	id = 3;
 }
 
-__int8 LankyDude::update(float fpsScale, __int16 screenWidth, float scale, __int16 frame)
+
+LankyDude::~LankyDude( )
+{ }
+
+
+__int8 LankyDude::update(float fpsScale, __int16 screenWidth, float scale)
 {
-	__int8 retVal = Character::update(fpsScale, screenWidth, scale, frame);
+	__int8 retVal = Character::update(fpsScale, screenWidth, scale);
 
 	if (jumpTimer > jumpCDTime)
 		move(rand() % 2 + 8, scale, fpsScale);
@@ -42,8 +45,4 @@ void LankyDude::moveAnimate(__int8 state)
 	default:
 		break;
 	}
-}
-
-LankyDude::~LankyDude()
-{
 }

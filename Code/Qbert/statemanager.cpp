@@ -224,6 +224,16 @@ void StateManager::checkEvents( )
 }
 
 
+/* Character IDs
+0 - Qbert
+1 - Snake
+2 - Monkey
+3 - Lanky Dude
+4 - Red Ball
+5 - Magic Ball
+6 - Slick
+7 - Sam
+*/
 void StateManager::stateUpdate( )
 {
 	__int8 qReturn;
@@ -242,7 +252,7 @@ void StateManager::stateUpdate( )
 				resetTimer( "spawn" );
 			}
 			// Q*Bert update
-			qReturn = q->update( fpsScale, screenWidth, scale, frame );
+			qReturn = q->update( fpsScale, screenWidth, scale);
 			switch( qReturn )
 			{
 			default:
@@ -254,9 +264,14 @@ void StateManager::stateUpdate( )
 				{
 					if( checkCollision( q, characters.at( i ) ) )
 					{
-						paused = true;
-						respawning = true;
-						addTimer( "respawn", false );
+						if( characters.at( i )->getID( ) < 5 )
+						{
+							paused = true;
+							respawning = true;
+							addTimer( "respawn", false );
+						}
+						else
+							destroyCharacter( characters.at( i ) );
 					}
 				} // end loop - character collision checking
 				break;
@@ -280,7 +295,7 @@ void StateManager::stateUpdate( )
 			  // Characters updates
 			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 			{
-				__int8 charReturn = characters.at( i )->update( fpsScale, screenWidth, scale, frame );
+				__int8 charReturn = characters.at( i )->update( fpsScale, screenWidth, scale);
 				switch( charReturn )
 				{
 				default:
@@ -288,9 +303,14 @@ void StateManager::stateUpdate( )
 				case 1: // Character is jumping
 					if( qReturn != 1 && checkCollision( characters.at( i ), q ) )
 					{
-						paused = true;
-						respawning = true;
-						addTimer( "respawn", false );
+						if( characters.at( i )->getID( ) < 5 )
+						{
+							paused = true;
+							respawning = true;
+							addTimer( "respawn", false );
+						}
+						else
+							destroyCharacter( characters.at( i ) );
 					}
 					break;
 				case 2: // Character completes jump

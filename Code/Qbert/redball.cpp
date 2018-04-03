@@ -9,6 +9,7 @@ RedBall::RedBall( float scale, __int16 screenWidth, float jumpCD )
 	setY( -14 * scale );
 	
 	jumpState = 4;
+	id = 4;
 }
 
 
@@ -16,9 +17,9 @@ RedBall::~RedBall( )
 { }
 
 
-__int8 RedBall::update( float fpsScale, __int16 screenWidth, float scale, __int16 frame )
+__int8 RedBall::update( float fpsScale, __int16 screenWidth, float scale)
 {
-	__int8 retVal = Character::update( fpsScale, screenWidth, scale, frame );
+	__int8 retVal = Character::update( fpsScale, screenWidth, scale);
 
 	if( jumpTimer > jumpCDTime )
 		Character::move( rand() % 2 + 1, scale, fpsScale );

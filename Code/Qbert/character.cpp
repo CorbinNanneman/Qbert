@@ -15,7 +15,10 @@ Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 s
 	jumpState = 4;
 }
 
-Character::~Character() { }
+
+Character::~Character() 
+{ }
+
 
 void Character::move( __int8 direction, float scale, float fpsScale )
 {
@@ -80,15 +83,15 @@ void Character::move( __int8 direction, float scale, float fpsScale )
  6 - RtL Monkey Left
  7 - RtL Monkey Spawn In*
 
- 8 - LankyDude Up Right
- 9 - LankyDude Right
- 10 - LankyDude Spawn In*
+ 8 - LtR Up Right
+ 9 - LtR Right
+ 10 - LtR Spawn In*
 
  11 - Character Not Moving
 
  *Spawn In exists to allow an animation when a character is spawned
 */
-__int8 Character::update( float fpsScale, __int16 screenWidth, float scale, __int16 frame )
+__int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 {
 	GameObject::update( );
 	__int8 retVal = 0; // See Glossary At end of function.
@@ -218,9 +221,9 @@ __int8 Character::getIndex( )
 }
 
 
-__int8 Character::getJumpState( )
+__int8 Character::getID( )
 {
-	return jumpState;
+	return id;
 }
 
 

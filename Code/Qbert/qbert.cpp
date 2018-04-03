@@ -5,7 +5,9 @@ Qbert::Qbert( float scale = 0, __int16 screenWidth = 0 )
 { 
 	setTexture( "./images/Qbert.png", 16, 16 );
 	setTexRect( 4, 0 );
+
 	jumpState = 11;
+	id = 0;
 }
 
 
