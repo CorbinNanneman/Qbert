@@ -6,8 +6,10 @@ Snake::Snake(float scale, __int16 screenWidth, float jumpCD)
 	: Character(1, rand() % 2, scale, screenWidth, jumpCD)
 {
 	isEgg = true;
-	setTexture("./images/snakeEgg.png", 16, 12);
+	setTexture("./images/snakeEgg.png", 16, 16);
 
+	setY( -14 * scale );
+	jumpState = 4;
 	id = 1;
 }
 
@@ -30,38 +32,35 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 		else if (jumpTimer > jumpCDTime)
 			Character::move(rand() % 2 + 1, scale, fpsScale);
 	}
+	// Hatched snake movement AI
 	else
 	{   
-		//Attempting to get a relative x coordinate 
+		// Target above snake
 		if (targetRow < getRow())
 		{
-			if (targetX == GameObject::getX())
+			if (targetX == getX())
 				Character::move(rand() % 2 * 3, scale, fpsScale);
-
-			if (targetX > GameObject::getX())
+			else if (targetX > getX())
 				Character::move(0, scale, fpsScale);
 			else
 				Character::move(3, scale, fpsScale);
 		}
-		// Move up
+		// Target below snake
 		else if (targetRow > getRow())
 		{
-
-
-			if (targetX == GameObject::getX())
+			if (targetX == getX())
 				Character::move(rand() % 2 + 1, scale, fpsScale);
-
-			if (targetX > GameObject::getX())
+			else if (targetX > getX())
 				Character::move(1, scale, fpsScale);
 			else
 				Character::move(2, scale, fpsScale);
-		// Move down
 		}
+		// Target on same row as snake
 		else
 		{
 			if (getRow() == 6)
 			{
-				if (targetX > GameObject::getX())
+				if (targetX > getX())
 					Character::move(0, scale, fpsScale);
 				else
 					Character::move(3, scale, fpsScale);
@@ -73,7 +72,6 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 				else
 					Character::move(rand() % 2 + 2, scale, fpsScale);
 			}	
-			//move up or down
 		}
 	}
 	return retVal;
