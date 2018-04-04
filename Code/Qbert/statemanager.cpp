@@ -27,7 +27,6 @@ StateManager::StateManager( )
 
 StateManager::~StateManager( )
 {
-	delete q;
 	platform.deleteMap( );
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
@@ -48,6 +47,7 @@ void StateManager::startGame( )
 
 	// Objects
 	q = new Qbert( scale, screenWidth );
+	characters.push_back( q );
 	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
 		"./images/blueYellow.png" };
 	platform.createMap( texStrings, screenWidth, scale );
@@ -135,23 +135,27 @@ void StateManager::display( )
 {
 	if( playing )
 	{
-		// Tracks characters in front of map
-		std::vector< Character * > inFront;
+		std::vector< Character * > frontChars;
 
-		// Draw characters behind map when OOB
-		if( q->isOOB( ) )
-			window.draw( *q->getSpritePtr( ) );
-		else
-			inFront.push_back( q );
+		// Draw characters that are behind map
 		for( __int8 i = 0; i < characters.size( ); i++ )
 		{
-			if( characters.at( i )->isOOB( ) )
-				window.draw( *characters.at( i )->getSpritePtr( ) );
-			else
-				inFront.push_back( characters.at( i ) );
+			switch( characters.at( i )->getID( ) )
+			{
+			default:
+				if( characters.at( i )->isOOB( ) )
+				{
+					window.draw( *characters.at( i )->getSpritePtr( ) );
+					break;
+				}
+			case 2:
+			case 3:
+				frontChars.push_back( characters.at( i ) );
+				break;
+			}
 		}
 
-		// MAP DRAW
+		// Draw map
 		Cube** map = platform.getCubes( );
 		for( int row = 0; row < 7; row++ )
 		{
@@ -159,11 +163,12 @@ void StateManager::display( )
 				window.draw( *map[ row ][ index ].getSpritePtr( ) );
 		}
 
-		// Draw characters in front of map when in bounds
-		for( __int8 i = 0; i < inFront.size( ); i++ )
-			window.draw( *inFront.at( i )->getSpritePtr( ) );
+		// Draw characters that are in front of map
+		for( __int8 i = 0; i < frontChars.size( ); i++ )
+			window.draw( *frontChars.at( i )->getSpritePtr( ) );
 
-		std::vector< GameObject * > elements = overlay.getElements( );
+		// Draw overlay
+		std::vector< GameObject * > &elements = overlay.getElements( );
 		for( int i = 0; i < elements.size( ); i++ )
 			window.draw( *elements.at( i )->getSpritePtr( ) );
 	}
@@ -182,10 +187,11 @@ void StateManager::checkEvents( )
 		case sf::Event::Closed:
 			window.close( );
 			break;
+
 		case sf::Event::LostFocus:
 			paused = true;
 			break;
-			// KeyBoard Input
+
 		case sf::Event::KeyPressed:
 			switch( e.key.code )
 			{
@@ -193,19 +199,19 @@ void StateManager::checkEvents( )
 				window.close( );
 				break;
 			case sf::Keyboard::D:
-				if( !paused )
+				if( state == game && !paused )
 					q->move( 0, scale, fpsScale );
 				break;
 			case sf::Keyboard::C:
-				if( !paused )
+				if( state == game && !paused )
 					q->move( 1, scale, fpsScale );
 				break;
 			case sf::Keyboard::Z:
-				if( !paused )
+				if( state == game && !paused )
 					q->move( 2, scale, fpsScale );
 				break;
 			case sf::Keyboard::S:
-				if( !paused )
+				if( state == game && !paused )
 					q->move( 3, scale, fpsScale );
 				break;
 			case sf::Keyboard::P:
@@ -238,114 +244,96 @@ void StateManager::checkEvents( )
 */
 void StateManager::stateUpdate( )
 {
-	__int8 qReturn;
+	
 	switch( state )
 	{
+// Game
 	case game:
 		if( !paused )
 		{
-			// Spawns
-			if( checkTimer( "snakeSpawn" ) > 1.0f )
+
+	// Spawns
+			if( checkTimer( "snakeSpawn" ) > 0.2f )
 			{
-				characters.push_back( new Snake( scale, screenWidth, 1.25 ) );
+				characters.push_back( new Snake( scale, screenWidth, 1.0f ) );
 				removeTimer( "snakeSpawn" );
 				addTimer( "spawn", true );
 			}
-			if( checkTimer( "spawn" ) > 2.5f )
+			if( checkTimer( "spawn" ) > 4.3f )
 			{
 				if( rand( ) % 2 == 0 )
-					characters.push_back( new RedBall( scale, screenWidth, 1.25 ) );
+					characters.push_back( new RedBall( scale, screenWidth, 1.1f ) );
 				else
-					characters.push_back( new Monkey( scale, screenWidth, 1.25 ) );
+					characters.push_back( new Monkey( scale, screenWidth, 1.25f ) );
 				resetTimer( "spawn" );
 			}
-	// Character Updates
-			qReturn = q->update( fpsScale, screenWidth, scale);
-			switch( qReturn )
-			{
-			default:
-			case 0:
-				break;
-			case 1: // Q*Bert is jumping
-				// Collision Check
-				for( unsigned int i = 0; i < characters.size( ); i++ )
-				{
-					if( checkCollision( q, characters.at( i ) ) )
-					{
-						if( characters.at( i )->getID( ) < 5 )
-						{
-							paused = true;
-							respawning = true;
-							addTimer( "respawn", false );
-						}
-						else
-							destroyCharacter( characters.at( i ) );
-					}
-				} // end loop - character collision checking
-				break;
-			case 2: // Q*Bert completed jump
-				platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
 
-				if( platform.isComplete( ) )
-				{
-					state = victory;
-					addTimer( "flash", true );
-					flashChange = 0;
-				}
-				break;
-			case 3: // Q*Bert fell off world
-				paused = true;
-				respawning = true;
-				addTimer( "respawn", false );
-				break;
-			} // end switch - qReturn
-
-			  // Characters updates
+	// Character updates
+			__int8 qReturn;
 			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 			{
-				__int8 charReturn = characters.at( i )->update( fpsScale, screenWidth, scale);
+				// Shortened character handle
+				Character *curChar = characters.at( i );
+
+				__int8 charReturn = curChar->update( fpsScale, screenWidth, scale);
+				if( curChar == q )
+					qReturn = charReturn;
+
 				switch( charReturn )
 				{
 				default:
-				case 0:
+				case 0: // Character does nothing
+					break;
 				case 1: // Character is jumping
-					if( qReturn != 1 && checkCollision( characters.at( i ), q ) )
+					// NEED QBERT COLLISION
+					if( curChar != q && checkCollision( curChar, q ) )
 					{
-						if( characters.at( i )->getID( ) < 5 )
+						if( curChar->getID( ) < 5 )
 						{
 							paused = true;
 							respawning = true;
 							addTimer( "respawn", false );
 						}
 						else
-							destroyCharacter( characters.at( i ) );
+							destroyCharacter( curChar );
 					}
 					break;
 				case 2: // Character completes jump
-					// Snake
-					if( characters.at( i )->getID( ) == 1 )
+					switch( curChar->getID( ) )
 					{
-						dynamic_cast< Snake* >( characters.at( i ) )->setTarget( 
+					case 0: // Qbert
+						platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
+
+						if( platform.isComplete( ) )
+						{
+							state = victory;
+							addTimer( "flash", true );
+							flashChange = 0;
+						}
+						break;
+					case 1: // Snake
+						dynamic_cast< Snake* >( characters.at( i ) )->setTarget(
 							q->getX( ), q->getRow( ) );
+					default:
+						break;
 					}
 					break;
 				case 3: // Character fell off world
 					destroyCharacter( characters.at( i ) );
 					break;
-				} // endswitch - character return
-			} // endfor - character vector loop
-		} // endif - !paused
+				}
+			} // End character updates
+		}
 		else if( respawning )
 		{
 			if( checkTimer( "respawn" ) > 2.f )
 			{
 				removeTimer( "respawn" );
-
 				startGame( );
 			}
 		}
 		break;
-
+// Victory
 	case victory:
 		// Flash cubes 9 times
 		if( checkTimer( "flash" ) > 0.1f )
@@ -375,7 +363,7 @@ bool StateManager::checkCollision( Character *c1, Character *c2 )
 	
 	if( !c1->isOOB( ) && !c2->isOOB( ) )
 	{
-		int xDist = c1->getX( ) - c2->getX( ),
+		int xDist = c1->getX( ) - c2->getX( ), 
 			yDist = c1->getY( ) - c2->getY( ),
 			boundsFactor = 8 * scale;
 		if( xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && 

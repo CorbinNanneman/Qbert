@@ -7,6 +7,7 @@ Snake::Snake(float scale, __int16 screenWidth, float jumpCD)
 {
 	isEgg = true;
 	setTexture("./images/snakeEgg.png", 16, 16);
+	setTexRect( 1, 0 );
 
 	setY( -14 * scale );
 	jumpState = 4;
