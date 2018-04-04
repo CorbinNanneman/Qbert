@@ -21,7 +21,7 @@ StateManager::StateManager( )
 	window.create( sf::VideoMode( screenWidth, screenHeight ), "Q*Bert" );
 	window.setFramerateLimit( 120 );
 
-	addTimer( "delay", false );
+	addTimer( "windowLoaded", false );
 }
 
 
@@ -58,7 +58,6 @@ void StateManager::startGame( )
 	addTimer( "snakeSpawn", true );
 	
 	respawning = false;
-	playing = true;
 	paused = false;
 	pauseKeyHeld = false;
 
@@ -113,27 +112,24 @@ void StateManager::update( )
 		if( !paused || !timers.at( i )->pauses )
 			timers.at( i )->time += 1.f / fps;
 
-	// Delay Logic. Only relevant when window is loading.
-	if( !playing )
-	{
-		if( checkTimer( "delay" ) > 5.f )
-		{
-			playing = true;
-			removeTimer( "delay" );
-			startGame( );
-		}
-	}
-	else
+	if( windowLoaded )
 	{
 		checkEvents( );
 		stateUpdate( );
+	}
+	// This is done to stabilize framerate after window is created.
+	else if( checkTimer( "windowLoaded" ) > 3.f )
+	{
+		windowLoaded = true;
+		removeTimer( "windowLoaded" );
+		startGame( );
 	}
 }
 
 
 void StateManager::display( )
 {
-	if( playing )
+	if( windowLoaded )
 	{
 		std::vector< Character * > frontChars;
 
@@ -255,7 +251,7 @@ void StateManager::stateUpdate( )
 	// Spawns
 			if( checkTimer( "snakeSpawn" ) > 0.2f )
 			{
-				characters.push_back( new Snake( scale, screenWidth, 1.0f ) );
+				characters.push_back( new Snake( scale, screenWidth, 1.f ) );
 				removeTimer( "snakeSpawn" );
 				addTimer( "spawn", true );
 			}
@@ -270,6 +266,7 @@ void StateManager::stateUpdate( )
 
 	// Character updates
 			__int8 qReturn;
+			bool collided;
 			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 			{
 				// Shortened character handle
@@ -285,8 +282,20 @@ void StateManager::stateUpdate( )
 				case 0: // Character does nothing
 					break;
 				case 1: // Character is jumping
-					// NEED QBERT COLLISION
-					if( curChar != q && checkCollision( curChar, q ) )
+					collided = false;
+					if( curChar != q )
+					{
+						if( checkCollision( q, curChar ) )
+							collided = true;
+					}
+					else
+					{
+						for( int i = 0; !collided && i < characters.size( ); i++ )
+							if( q != characters.at( i ) && checkCollision( q, characters.at( i ) ) )
+								collided = true;
+					}
+
+					if( collided )
 					{
 						if( curChar->getID( ) < 5 )
 						{
@@ -313,7 +322,7 @@ void StateManager::stateUpdate( )
 						break;
 					case 1: // Snake
 						dynamic_cast< Snake* >( characters.at( i ) )->setTarget(
-							q->getX( ), q->getRow( ) );
+							q->getX( ), q->getY( ) );
 					default:
 						break;
 					}

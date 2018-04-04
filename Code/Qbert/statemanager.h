@@ -77,6 +77,6 @@ private:
 	// Game Events
 	bool paused, 
 		 pauseKeyHeld,
-		 playing;
+		 windowLoaded;
 	std::vector< NamedTimer * > timers;
 };

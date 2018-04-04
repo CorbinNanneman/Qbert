@@ -37,7 +37,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 	else
 	{   
 		// Target above snake
-		if (targetRow < getRow())
+		if (targetY < getY())
 		{
 			if (targetX == getX())
 				Character::move(rand() % 2 * 3, scale, fpsScale);
@@ -47,7 +47,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 				Character::move(3, scale, fpsScale);
 		}
 		// Target below snake
-		else if (targetRow > getRow())
+		else if (targetY > getY())
 		{
 			if (targetX == getX())
 				Character::move(rand() % 2 + 1, scale, fpsScale);
@@ -122,9 +122,9 @@ void Snake::moveAnimate(__int8 state)
 }
 
 
-void Snake::setTarget( __int16 tX, __int8 tRow)
+void Snake::setTarget( __int16 tX, __int16 tY)
 {
 	targetX = tX;
-	targetRow = tRow;
+	targetY = tY;
 	return;
 }
