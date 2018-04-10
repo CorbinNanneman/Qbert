@@ -15,6 +15,30 @@ Qbert::~Qbert( )
 { }
 
 
+void Qbert::move( __int8 direction, float scale, float fpsScale )
+{
+	Character::move( direction, scale, fpsScale );
+	lastRow = getRow( );
+	lastX = getX( );
+
+	switch( direction )
+	{
+	case 3: // Up left
+		targetX = getX( ) - 16 * scale;
+	case 0: // Up right
+		targetRow = getRow( ) - 1;
+		break;
+	case 1: // Down right
+		targetX = getX( ) + 16 * scale;
+	case 2: // Down left
+		targetRow = getRow( ) + 1;
+		break;
+	default:
+		break;
+	}
+}
+
+
 void Qbert::moveAnimate( __int8 state )
 {
 	switch( state )
@@ -45,4 +69,28 @@ void Qbert::moveAnimate( __int8 state )
 		setTexRect( 2, 0 );
 		break;
 	}
+}
+
+
+__int16 Qbert::getTX( )
+{
+	return targetX;
+}
+
+
+__int8 Qbert::getTRow( )
+{
+	return targetRow;
+}
+
+
+__int16 Qbert::getLX( )
+{
+	return lastX;
+}
+
+
+__int8 Qbert::getLRow( )
+{
+	return lastRow;
 }

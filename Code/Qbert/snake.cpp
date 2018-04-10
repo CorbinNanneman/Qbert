@@ -37,7 +37,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 	else
 	{   
 		// Target above snake
-		if (targetY < getY())
+		if (targetRow < getRow())
 		{
 			if (targetX == getX())
 				Character::move(rand() % 2 * 3, scale, fpsScale);
@@ -47,7 +47,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 				Character::move(3, scale, fpsScale);
 		}
 		// Target below snake
-		else if (targetY > getY())
+		else if (targetRow > getRow())
 		{
 			if (targetX == getX())
 				Character::move(rand() % 2 + 1, scale, fpsScale);
@@ -122,9 +122,38 @@ void Snake::moveAnimate(__int8 state)
 }
 
 
-void Snake::setTarget( __int16 tX, __int16 tY)
+void Snake::findTarget( Qbert &q, __int8 qReturn )
 {
-	targetX = tX;
-	targetY = tY;
-	return;
+	static __int8 lastQRet = 0;
+	//if( lastQRet )
+	switch( qReturn )
+	{
+	default:
+	case 0: // Qbert idling
+	case 2: // Qbert completing jump
+		targetX = q.getX( );
+		targetRow = q.getRow( );
+		break;
+	case 1: // Qbert jumping
+		if( !q.isOOB( ) )
+		{
+			targetX = q.getTX( );
+			targetRow = q.getTRow( );
+			break;
+		}
+	case 3: // Qbert fell out of bounds
+		// Snake at Qberts last block
+		if( getX( ) == q.getLX( ) && getRow( ) == q.getLRow( ) )
+		{
+			targetX = q.getTX( );
+			targetRow = q.getTRow( );
+		}
+		else 
+		{
+			targetX = q.getLX( );
+			targetRow = q.getLRow( );
+		}
+		break;
+	}
+	lastQRet = qReturn;
 }

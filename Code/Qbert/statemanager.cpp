@@ -134,15 +134,18 @@ void StateManager::display( )
 		std::vector< Character * > frontChars;
 
 		// Draw characters that are behind map
-		for( __int8 i = 0; i < characters.size( ); i++ )
+		for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 		{
 			switch( characters.at( i )->getID( ) )
 			{
 			default:
 				if( characters.at( i )->isOOB( ) )
 				{
-					window.draw( *characters.at( i )->getSpritePtr( ) );
-					break;
+					if( characters.at( i )->getID( ) != 1 || characters.at( i )->getRow( ) < 7 )
+					{
+						window.draw( *characters.at( i )->getSpritePtr( ) );
+						break;
+					}
 				}
 			case 2:
 			case 3:
@@ -160,12 +163,12 @@ void StateManager::display( )
 		}
 
 		// Draw characters that are in front of map
-		for( __int8 i = 0; i < frontChars.size( ); i++ )
+		for( unsigned __int8 i = 0; i < frontChars.size( ); i++ )
 			window.draw( *frontChars.at( i )->getSpritePtr( ) );
 
 		// Draw overlay
 		std::vector< GameObject * > &elements = overlay.getElements( );
-		for( int i = 0; i < elements.size( ); i++ )
+		for( unsigned int i = 0; i < elements.size( ); i++ )
 			window.draw( *elements.at( i )->getSpritePtr( ) );
 	}
 
@@ -211,7 +214,7 @@ void StateManager::checkEvents( )
 					q->move( 3, scale, fpsScale );
 				break;
 			case sf::Keyboard::P:
-				if( !pauseKeyHeld )
+				if( !pauseKeyHeld && !respawning )
 					paused = !paused;
 				pauseKeyHeld = true;
 				break;
@@ -251,7 +254,10 @@ void StateManager::stateUpdate( )
 	// Spawns
 			if( checkTimer( "snakeSpawn" ) > 0.2f )
 			{
-				characters.push_back( new Snake( scale, screenWidth, 1.f ) );
+				Snake *s = new Snake( scale, screenWidth, 1.f );
+				s->findTarget( *q, 0 );
+
+				characters.push_back( s );
 				removeTimer( "snakeSpawn" );
 				addTimer( "spawn", true );
 			}
@@ -265,7 +271,7 @@ void StateManager::stateUpdate( )
 			}
 
 	// Character updates
-			__int8 qReturn;
+			static __int8 qReturn;
 			bool collided;
 			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 			{
@@ -280,6 +286,12 @@ void StateManager::stateUpdate( )
 				{
 				default:
 				case 0: // Character does nothing
+					switch( curChar->getID( ) )
+					{
+					case 1: // Snake
+						if( qReturn == 1 )
+							dynamic_cast< Snake* >( curChar )->findTarget( *q, qReturn );
+					}
 					break;
 				case 1: // Character is jumping
 					collided = false;
@@ -290,7 +302,7 @@ void StateManager::stateUpdate( )
 					}
 					else
 					{
-						for( int i = 0; !collided && i < characters.size( ); i++ )
+						for( unsigned int i = 0; !collided && i < characters.size( ); i++ )
 							if( q != characters.at( i ) && checkCollision( q, characters.at( i ) ) )
 								collided = true;
 					}
@@ -321,18 +333,25 @@ void StateManager::stateUpdate( )
 						}
 						break;
 					case 1: // Snake
-						dynamic_cast< Snake* >( characters.at( i ) )->setTarget(
-							q->getX( ), q->getY( ) );
+						dynamic_cast< Snake* >( curChar )->findTarget( *q, qReturn );
+						break;
 					default:
 						break;
 					}
 					break;
 				case 3: // Character fell off world
-					destroyCharacter( characters.at( i ) );
+					if( characters.at( i ) == q )
+					{
+						//paused = true;
+						//respawning = true;
+						//addTimer( "respawn", false );
+					}
+					else
+						destroyCharacter( characters.at( i ) );
 					break;
 				}
 			} // End character updates
-		}
+		} // End !paused
 		else if( respawning )
 		{
 			if( checkTimer( "respawn" ) > 2.f )
@@ -372,7 +391,7 @@ bool StateManager::checkCollision( Character *c1, Character *c2 )
 	
 	if( !c1->isOOB( ) && !c2->isOOB( ) )
 	{
-		int xDist = c1->getX( ) - c2->getX( ), 
+		float xDist = c1->getX( ) - c2->getX( ), 
 			yDist = c1->getY( ) - c2->getY( ),
 			boundsFactor = 8 * scale;
 		if( xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && 
@@ -386,7 +405,7 @@ bool StateManager::checkCollision( Character *c1, Character *c2 )
 void StateManager::destroyCharacter( Character *c )
 {
 	bool deleted = false;
-	for( int i = 0; !deleted && i < characters.size( ); i++ )
+	for( unsigned int i = 0; !deleted && i < characters.size( ); i++ )
 	{
 		if( c == characters.at( i ) )
 		{
@@ -416,7 +435,7 @@ float StateManager::checkTimer( char *timerName )
 {
 	float time = -1.f; // If this is returned the timer does not exist
 
-	for( __int8 i = 0; time == -1.f && i < timers.size( ); i++ )
+	for( unsigned __int8 i = 0; time == -1.f && i < timers.size( ); i++ )
 		if( timers.at( i )->name == timerName )
 			time = timers.at( i )->time;
 
@@ -427,7 +446,7 @@ float StateManager::checkTimer( char *timerName )
 void StateManager::resetTimer( char *timerName )
 {
 	bool reset = false;
-	for( __int8 i = 0; !reset && i < timers.size( ); i++ )
+	for( unsigned __int8 i = 0; !reset && i < timers.size( ); i++ )
 	{
 		if( timers.at( i )->name == timerName )
 		{
@@ -441,9 +460,9 @@ void StateManager::resetTimer( char *timerName )
 void StateManager::removeTimer( char *timerName )
 { 
 	bool removed = false;
-	for( int i = 0; !removed && i < timers.size( ); i++ )
+	for( unsigned int i = 0; !removed && i < timers.size( ); i++ )
 	{
-		if( timers.at( i )->name == timerName );
+		if( timers.at( i )->name == timerName )
 		{
 			delete timers.at( i );
 			timers.erase( timers.begin( ) + i );

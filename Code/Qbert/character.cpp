@@ -97,19 +97,19 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 	__int8 retVal = 0; // See Glossary At end of function.
 	jumpTimer += 1 / ( 60 / fpsScale );
 
-	// Character is jumping
+	// Character is jumpcing
 	if( jumpState < 11 )
 	{
 		// Character continues jumping
-		if( jumpTimer < 0.5 || OOB )
+		if( jumpTimer < 0.5f || OOB )
 		{
 			// Apply gravity
-			if( jumpState < 5 ) // Normal characters
+			if( jumpState < 5 ) // Normaal characters
 				setVY( getVY( ) + 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
 			else if( jumpState < 8 ) // RtL Monkey
 				setVX( getVX( ) - 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
 			else if( jumpState < 11 ) // LtR Monkey
-				setVX(getVX() + 9.8f * fpsScale * scale / (60 / fpsScale));
+				setVX( getVX() + 9.8f * fpsScale * scale / (60 / fpsScale));
 
 			if( OOB && isOffScreen( screenWidth, screenWidth, scale ) )
 				retVal = 3;
@@ -122,38 +122,32 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 			// Adjust character position
 			switch( jumpState )
 			{
+			case 3: // Up left
+			case 5: // RtL up left
+				index--;
 			case 0: // Up right
+			case 8: // LtR Up Right
 				row--;
 				break;
 			case 1: // Down right
-				row++;
 				index++;
-				break;
 			case 2: // Down left
 				row++;
-				break;
-			case 3: // Up left
-			case 5: // RtL up left
-				row--;
-				index--;
 				break;
 			case 6: // RtL left
 				index--;
 				break;
-			case 8:
-				row--;
-				break;
-			case 9:
+			case 9: // LtR Right
 				index++;
 				break;
 			default:
 				break;
 			}
 
-		// OOB Checking
+			// OOB Checking
 			switch( jumpState )
 			{
-		// Normal characters
+			// Normal characters
 			case 0: // Up right
 				if( index > row )
 					OOB = true;
@@ -167,13 +161,13 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 				if( index < 0 )
 					OOB = true;
 				break;
-		// RtL Monkey
+			// RtL Monkey
 			case 5: // Up left
 			case 6: // Left
 				if( index < 1 )
 					OOB = true;
 				break;
-		// LtR Monkey
+			// LtR Monkey
 			case 8: // Monkey up right
 			case 9: // Monkey right
 				if( index > row - 1 )

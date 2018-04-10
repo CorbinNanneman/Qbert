@@ -4,9 +4,6 @@
     <ClCompile Include="statemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -16,61 +13,64 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="monkey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="platform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="qbert.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="redball.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="lankyDude.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="overlay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="lankyDude.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="monkey.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="qbert.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="redball.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
     <ClCompile Include="snake.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Characters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gameobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="monkey.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="platform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="qbert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="redball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="statemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lankyDude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="overlay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="lankyDude.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="monkey.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="qbert.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="redball.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
     <ClInclude Include="snake.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Characters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +79,12 @@
     </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{7f4b2f1c-9ad6-472b-804e-358c4f494ba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Characters">
+      <UniqueIdentifier>{6d9559b4-c6dd-4d7a-90fb-44d1c336b372}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Characters">
+      <UniqueIdentifier>{938f58f5-820e-4628-827e-4001f4698ea3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

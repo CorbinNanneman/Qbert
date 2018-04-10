@@ -1,6 +1,7 @@
 #pragma once
 
 #include "character.h"
+#include "qbert.h"
 
 class Snake : public Character
 {
@@ -9,11 +10,11 @@ public:
 
 	__int8 update(float fpsScale, __int16 screenWidth, float scale) override;
 	void moveAnimate(__int8 state) override;
-	void setTarget(__int16 tX, __int16 tY);
+	void findTarget( Qbert &q, __int8 qReturn );
 	~Snake();
 
 private:
-	__int16 targetX;
-	__int16 targetY;
+	float targetX;
+	__int8 targetRow;
 	bool isEgg;
 };
