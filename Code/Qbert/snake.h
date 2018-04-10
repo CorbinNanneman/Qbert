@@ -14,7 +14,6 @@ public:
 	~Snake();
 
 private:
-	float targetX;
-	__int8 targetRow;
+	float targetX, targetY;
 	bool isEgg;
 };

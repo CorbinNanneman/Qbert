@@ -118,7 +118,7 @@ void StateManager::update( )
 		stateUpdate( );
 	}
 	// This is done to stabilize framerate after window is created.
-	else if( checkTimer( "windowLoaded" ) > 3.f )
+	else if( checkTimer( "windowLoaded" ) > 4.f )
 	{
 		windowLoaded = true;
 		removeTimer( "windowLoaded" );
@@ -254,7 +254,7 @@ void StateManager::stateUpdate( )
 	// Spawns
 			if( checkTimer( "snakeSpawn" ) > 0.2f )
 			{
-				Snake *s = new Snake( scale, screenWidth, 1.f );
+				Snake *s = new Snake( scale, screenWidth, 0.75f );
 				s->findTarget( *q, 0 );
 
 				characters.push_back( s );
