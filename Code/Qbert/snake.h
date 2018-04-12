@@ -10,7 +10,7 @@ public:
 
 	__int8 update(float fpsScale, __int16 screenWidth, float scale) override;
 	void moveAnimate(__int8 state) override;
-	void findTarget( Qbert &q, __int8 qReturn );
+	void findTarget( Qbert &q );
 	~Snake();
 
 private:

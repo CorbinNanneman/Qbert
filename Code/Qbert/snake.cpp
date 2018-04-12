@@ -1,6 +1,5 @@
 #include "Snake.h"
 #include "time.h"
-#include <iostream>
 
 Snake::Snake(float scale, __int16 screenWidth, float jumpCD)
 	: Character(1, rand() % 2, scale, screenWidth, jumpCD)
@@ -25,7 +24,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 
 	if (isEgg)
 	{
-		if( getRow( ) == 6 )
+		if( retVal == 2 && getRow( ) == 6 )
 		{
 			setTexture( "./images/snake.png", 16, 32 );
 			isEgg = false;
@@ -59,6 +58,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 		// Target on same row as snake
 		else
 		{
+			// Dont jump OOB on last row
 			if (getRow() == 6)
 			{
 				if (targetX > getX())
@@ -68,7 +68,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 			}
 			else
 			{
-				if (targetX > GameObject::getX())
+				if (targetX > getX())
 					Character::move(rand() % 2, scale, fpsScale);
 				else
 					Character::move(rand() % 2 + 2, scale, fpsScale);
@@ -121,23 +121,24 @@ void Snake::moveAnimate(__int8 state)
 	}
 }
 
+#include <iostream>
 
-void Snake::findTarget( Qbert &q, __int8 qReturn )
+void Snake::findTarget( Qbert &q )
 {
 	if( !q.isOOB( ) )
 	{
-		targetX = q.getTX( );
-		targetY = q.getTY( );
+		targetX = q.getX( );
+		targetY = q.getY( );
 	}
 	else
 	{
 		// If Snake isn't on Q's last pos
-		if( targetX != q.getTX( ) || targetY != q.getTY( ) )
+		if( getX( ) != q.getLX( ) || getY( ) != q.getLY( ) )
 		{
 			targetX = q.getLX( );
 			targetY = q.getLY( );
 		}
-		else
+		else // Jump Off
 		{
 			targetX = q.getTX( );
 			targetY = q.getTY( );

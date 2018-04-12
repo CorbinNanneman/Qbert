@@ -20,6 +20,25 @@ Character::~Character()
 { }
 
 
+/** Jump State Glossary
+0 - Normal Up Reft
+1 - Normal Down Right
+2 - Normal Down Left
+3 - Normal Up Left
+4 - Normal Spawn In*
+
+5 - RtL Monkey Up Left
+6 - RtL Monkey Left
+7 - RtL Monkey Spawn In*
+
+8 - LtR Up Right
+9 - LtR Right
+10 - LtR Spawn In*
+
+11 - Character Not Moving
+
+*Spawn In exists to allow an animation when a character is spawned
+*/
 void Character::move( __int8 direction, float scale, float fpsScale )
 {
 	if( jumpTimer > jumpCDTime && !OOB )
@@ -67,30 +86,70 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 			break;
 		}
 
+		// Adjust character position
+		switch( direction )
+		{
+		case 3: // Up left
+		case 5: // RtL up left
+			index--;
+		case 0: // Up right
+		case 8: // LtR Up Right
+			row--;
+			break;
+		case 1: // Down right
+			index++;
+		case 2: // Down left
+			row++;
+			break;
+		case 6: // RtL left
+			index--;
+			break;
+		case 9: // LtR Right
+			index++;
+			break;
+		default:
+			break;
+		}
+
+		// OOB Checking
+		switch( direction )
+		{
+			// Normal characters
+		case 0: // Up right
+			if( index > row )
+				OOB = true;
+			break;
+		case 1: // Down right
+		case 2: // Down left
+			if( row > 6 )
+				OOB = true;
+			break;
+		case 3: // Up left
+			if( index < 0 )
+				OOB = true;
+			break;
+			// RtL Monkey
+		case 5: // Up left
+		case 6: // Left
+			if( index < 1 )
+				OOB = true;
+			break;
+			// LtR Monkey
+		case 8: // Monkey up right
+		case 9: // Monkey right
+			if( index > row - 1 )
+				OOB = true;
+			break;
+		default:
+			break;
+		}
+
 		jumpTimer = 0;
 		jumpState = direction;
 	}
 }
 
-/** Jump State Glossary
- 0 - Normal Up Reft
- 1 - Normal Down Right
- 2 - Normal Down Left
- 3 - Normal Up Left
- 4 - Normal Spawn In*
 
- 5 - RtL Monkey Up Left
- 6 - RtL Monkey Left
- 7 - RtL Monkey Spawn In*
-
- 8 - LtR Up Right
- 9 - LtR Right
- 10 - LtR Spawn In*
-
- 11 - Character Not Moving
-
- *Spawn In exists to allow an animation when a character is spawned
-*/
 __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 {
 	GameObject::update( );
@@ -119,64 +178,6 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 		// Character completes jump
 		else
 		{
-			// Adjust character position
-			switch( jumpState )
-			{
-			case 3: // Up left
-			case 5: // RtL up left
-				index--;
-			case 0: // Up right
-			case 8: // LtR Up Right
-				row--;
-				break;
-			case 1: // Down right
-				index++;
-			case 2: // Down left
-				row++;
-				break;
-			case 6: // RtL left
-				index--;
-				break;
-			case 9: // LtR Right
-				index++;
-				break;
-			default:
-				break;
-			}
-
-			// OOB Checking
-			switch( jumpState )
-			{
-			// Normal characters
-			case 0: // Up right
-				if( index > row )
-					OOB = true;
-				break;
-			case 1: // Down right
-			case 2: // Down left
-				if( row > 6 )
-					OOB = true;
-				break;
-			case 3: // Up left
-				if( index < 0 )
-					OOB = true;
-				break;
-			// RtL Monkey
-			case 5: // Up left
-			case 6: // Left
-				if( index < 1 )
-					OOB = true;
-				break;
-			// LtR Monkey
-			case 8: // Monkey up right
-			case 9: // Monkey right
-				if( index > row - 1 )
-					OOB = true;
-				break;
-			default:
-				break;
-			}
-
 			// Charcater succesfully lands on block
 			if( !OOB )
 			{

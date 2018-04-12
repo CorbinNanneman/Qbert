@@ -62,6 +62,8 @@ void StateManager::startGame( )
 	pauseKeyHeld = false;
 
 	overlay.createObjects( 1, 3, 0, 0, 0, scale );
+
+	system( "CLS" );
 }
 
 
@@ -118,7 +120,7 @@ void StateManager::update( )
 		stateUpdate( );
 	}
 	// This is done to stabilize framerate after window is created.
-	else if( checkTimer( "windowLoaded" ) > 4.f )
+	else if( checkTimer( "windowLoaded" ) > 5.f )
 	{
 		windowLoaded = true;
 		removeTimer( "windowLoaded" );
@@ -243,7 +245,6 @@ void StateManager::checkEvents( )
 */
 void StateManager::stateUpdate( )
 {
-	
 	switch( state )
 	{
 // Game
@@ -252,10 +253,10 @@ void StateManager::stateUpdate( )
 		{
 
 	// Spawns
-			if( checkTimer( "snakeSpawn" ) > 0.2f )
+			if( checkTimer( "snakeSpawn" ) > 0.1f )
 			{
 				Snake *s = new Snake( scale, screenWidth, 0.75f );
-				s->findTarget( *q, 0 );
+				s->findTarget( *q );
 
 				characters.push_back( s );
 				removeTimer( "snakeSpawn" );
@@ -289,8 +290,9 @@ void StateManager::stateUpdate( )
 					switch( curChar->getID( ) )
 					{
 					case 1: // Snake
-						if( qReturn == 1 )
-							dynamic_cast< Snake* >( curChar )->findTarget( *q, qReturn );
+						if( qReturn < 3 )
+							dynamic_cast< Snake* >( curChar )->findTarget( *q );
+						break;
 					}
 					break;
 				case 1: // Character is jumping
@@ -332,22 +334,19 @@ void StateManager::stateUpdate( )
 							flashChange = 0;
 						}
 						break;
-					case 1: // Snake
-						dynamic_cast< Snake* >( curChar )->findTarget( *q, qReturn );
-						break;
 					default:
 						break;
 					}
 					break;
 				case 3: // Character fell off world
-					if( characters.at( i ) == q )
+					if( curChar == q )
 					{
-						//paused = true;
-						//respawning = true;
-						//addTimer( "respawn", false );
+						paused = true;
+						respawning = true;
+						addTimer( "respawn", false );
 					}
 					else
-						destroyCharacter( characters.at( i ) );
+						destroyCharacter( curChar );
 					break;
 				}
 			} // End character updates
@@ -364,7 +363,7 @@ void StateManager::stateUpdate( )
 // Victory
 	case victory:
 		// Flash cubes 9 times
-		if( checkTimer( "flash" ) > 0.1f )
+		if( checkTimer( "flash" ) > 0.09f )
 		{
 			for( int row = 0; row < 7; row++ )
 				for( int index = 0; index < row + 1; index++ )
@@ -417,8 +416,9 @@ void StateManager::destroyCharacter( Character *c )
 }
 
 
-void StateManager::addTimer( char *timerName, bool pauses )
+bool StateManager::addTimer( char *timerName, bool pauses )
 {
+	bool created = false;
 	// Create Timer if not already created
 	if( checkTimer( timerName ) == -1.f )
 	{
@@ -427,7 +427,10 @@ void StateManager::addTimer( char *timerName, bool pauses )
 		t->time = 0.f;
 		t->pauses = pauses;
 		timers.push_back( t );
+		created = true;
 	}
+
+	return created;
 }
 
 
