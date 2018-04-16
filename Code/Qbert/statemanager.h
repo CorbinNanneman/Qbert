@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "timermanager.h"
 #include <vector>
 
 #include "platform.h"
@@ -28,12 +29,6 @@ private:
 	bool checkCollision( Character *c1, Character *c2 ); // Line 270
 	void destroyCharacter( Character *c ); // Line 287
 
-	bool addTimer( char *timerName, bool pauses );
-	float checkTimer( char *timerName );
-	void resetTimer( char *timerName );
-	void removeTimer( char *timerName );
-
-
 	enum State
 	{
 		startup = 0,
@@ -44,22 +39,8 @@ private:
 		leaderboard = 5
 	} state;
 
-	typedef struct 
-	{
-		float time;
-		char *name;
-		bool pauses;
-	} NamedTimer;
-
 	// Temp
 	__int8 flashChange;
-
-	// GameObjects
-	Platform platform;
-	Qbert *q;
-	std::vector< Character * > characters;
-	bool respawning;
-	Overlay overlay;
 
 	// FPS Tracking
 	__int8 targetFps = 60;
@@ -78,5 +59,12 @@ private:
 	bool paused, 
 		 pauseKeyHeld,
 		 windowLoaded;
-	std::vector< NamedTimer * > timers;
+	TimerManager timers;
+
+	// GameObjects
+	Platform platform;
+	Qbert *q = nullptr;
+	std::vector< Character * > characters;
+	bool respawning;
+	Overlay overlay;
 };

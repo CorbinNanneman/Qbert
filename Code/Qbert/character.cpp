@@ -21,7 +21,7 @@ Character::~Character()
 
 
 /** Jump State Glossary
-0 - Normal Up Reft
+0 - Normal Up Right
 1 - Normal Down Right
 2 - Normal Down Left
 3 - Normal Up Left
@@ -230,5 +230,5 @@ bool Character::isOOB( )
 
 bool Character::isJumping( )
 {
-	return jumpState != 4;
+	return jumpState != 11;
 }

@@ -8,15 +8,24 @@ Overlay::~Overlay( )
 { }
 
 
-void Overlay::createObjects( __int8 player, __int8 lives, __int32 score, __int8 round, \
-	__int8 level, float scale )
+void Overlay::createObjects( __int8 player, __int8 lives, __int32 score, __int8 round,
+	__int8 level, float scale, __int16 screenWidth )
 {
+	// Player
 	if( player == 1 )
-		addElement( scale, "./images/player1.png", 51, 7, 45 * scale, 30 );
+		addElement( scale, "./images/player1.png", 51, 7, screenWidth / 2 - 87 * scale, 10 * scale );
 	else
-		addElement( scale, "./images/player2.png", 51, 7, 45 * scale, 30 );
-	addElement( scale, "./images/playerNum.png", 8, 11, 80 * scale, 30 );
-	elements.at(1)->setTexRect( player - 1, 0 );
+		addElement( scale, "./images/player2.png", 51, 7, screenWidth / 2 - 87 * scale, 10 * scale );
+	timers.addTimer( "playerAnim", true );
+	// Player #
+	addElement( scale, "./images/playerNum.png", 8, 11, screenWidth / 2 - 52 * scale, 10 * scale );
+	elements.at( 1 )->setTexRect( player - 1, 0 );
+	// Score
+	
+	// Change To:
+	addElement( scale, "./images/changeTo.png", 47, 5, screenWidth / 2 - 89 * scale, 37 * scale );
+	// Target Arrows
+	addElement( scale, "./images/arrows.png", 48, 7, screenWidth / 2 - 88 * scale, 41 * scale );
 }
 
 
@@ -25,17 +34,23 @@ void Overlay::createObjects( __int8 player, __int8 lives, __int32 score, __int8 
  1 - Player Number
  2 - Score
  3 - Change To:
- 4 - Target Cube
- 5 - Target Arrows
+ 4 - Target Arrows
+ 5 - Target Cube
  6 - Lives Counter
  7 - Level:
  8 - Level Num
  9 - Round:
  10 - Round Num
 */
-void Overlay::update( __int32 score )
+void Overlay::update( __int32 score, float timerIncVal )
 {
+	timers.updateTimers( timerIncVal, false );
+	
+	if( timers.checkTimer( "playerAnim" ) > 0.1f )
+	{
 
+		timers.resetTimer( "playerAnim" );
+	}
 }
 
 

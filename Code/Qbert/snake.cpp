@@ -1,7 +1,7 @@
 #include "Snake.h"
 #include "time.h"
 
-Snake::Snake(float scale, __int16 screenWidth, float jumpCD)
+Snake::Snake(float scale, __int16 screenWidth, float jumpCD, Qbert *q)
 	: Character(1, rand() % 2, scale, screenWidth, jumpCD)
 {
 	isEgg = true;
@@ -11,12 +11,14 @@ Snake::Snake(float scale, __int16 screenWidth, float jumpCD)
 	setY( -14 * scale );
 	jumpState = 4;
 	id = 1;
+	qbert = q;
 }
 
 
 Snake::~Snake( )
 { }
 
+#include <iostream>
 
 __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 {
@@ -33,45 +35,69 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 			Character::move(rand() % 2 + 1, scale, fpsScale);
 	}
 	// Hatched snake movement AI
-	else
-	{   
+	else if( retVal == 0 || retVal == 2 )
+	{
+		findTarget( );
 		// Target above snake
-		if (targetY < getY())
+		if ( targetY < getY())
 		{
 			if (targetX == getX())
-				Character::move(rand() % 2 * 3, scale, fpsScale);
+				move(rand() % 2 * 3, scale, fpsScale);
 			else if (targetX > getX())
-				Character::move(0, scale, fpsScale);
+				move(0, scale, fpsScale);
 			else
-				Character::move(3, scale, fpsScale);
+				move(3, scale, fpsScale);
 		}
 		// Target below snake
-		else if (targetY > getY())
+		else if ( targetY > getY())
 		{
 			if (targetX == getX())
-				Character::move(rand() % 2 + 1, scale, fpsScale);
+				move(rand() % 2 + 1, scale, fpsScale);
 			else if (targetX > getX())
-				Character::move(1, scale, fpsScale);
+				move(1, scale, fpsScale);
 			else
-				Character::move(2, scale, fpsScale);
+				move(2, scale, fpsScale);
 		}
 		// Target on same row as snake
 		else
 		{
-			// Dont jump OOB on last row
-			if (getRow() == 6)
+			// Target not on bottom row
+			if (getRow() != 6 )
 			{
-				if (targetX > getX())
-					Character::move(0, scale, fpsScale);
+				// Target is right of qbert
+				if( targetX > getX( ) )
+				{
+					// Actual qbert target y above snake y
+					if( qbert->getTY( ) < getY( ) )
+						move( 0, scale, fpsScale );
+					// Actual qbert target y below snake y
+					else if( qbert->getTY( ) > getY( ) )
+						move( 1, scale, fpsScale );
+					// Actual qbert target y equal to snake y
+					else
+						move( rand( ) % 2, scale, fpsScale );
+				}
+				// Target is left of qbert
 				else
-					Character::move(3, scale, fpsScale);
+				{
+					// Actual qbert target y above snake y
+					if( qbert->getTY( ) < getY( ) )
+						move( 3, scale, fpsScale );
+					// Actual qbert target y below snake y
+					else if( qbert->getTY( ) > getY( ) )
+						move( 2, scale, fpsScale );
+					// Actual qbert target y equal to snake y
+					else
+						move( rand( ) % 2 + 2, scale, fpsScale );
+				}
 			}
+			// Target on bottom row
 			else
 			{
-				if (targetX > getX())
-					Character::move(rand() % 2, scale, fpsScale);
+				if( targetX > getX( ) )
+					move( 0, scale, fpsScale );
 				else
-					Character::move(rand() % 2 + 2, scale, fpsScale);
+					move( 3, scale, fpsScale );
 			}	
 		}
 	}
@@ -121,27 +147,25 @@ void Snake::moveAnimate(__int8 state)
 	}
 }
 
-#include <iostream>
-
-void Snake::findTarget( Qbert &q )
+void Snake::findTarget( )
 {
-	if( !q.isOOB( ) )
+	if( !qbert->isOOB( ) && !qbert->isJumping( ) )
 	{
-		targetX = q.getX( );
-		targetY = q.getY( );
+		targetX = qbert->getX( );
+		targetY = qbert->getY( );
 	}
 	else
 	{
 		// If Snake isn't on Q's last pos
-		if( getX( ) != q.getLX( ) || getY( ) != q.getLY( ) )
+		if( getX( ) != qbert->getLX( ) || getY( ) != qbert->getLY( ) )
 		{
-			targetX = q.getLX( );
-			targetY = q.getLY( );
+			targetX = qbert->getLX( );
+			targetY = qbert->getLY( );
 		}
 		else // Jump Off
 		{
-			targetX = q.getTX( );
-			targetY = q.getTY( );
+			targetX = qbert->getTX( );
+			targetY = qbert->getTY( );
 		}
 	}
 }

@@ -12,6 +12,7 @@ GameObject::GameObject( float scale )
 	sprite.setScale( scale, scale );
 }
 
+
 GameObject::GameObject( )
 {
 	x = 0;
@@ -121,4 +122,12 @@ void GameObject::setTexRect( __int16 xFrame, __int16 yFrame )
 {
 	sprite.setTextureRect( 
 		sf::IntRect( xFrame * texWidth, yFrame * texHeight, texWidth, texHeight ) );
+}
+
+
+void GameObject::cycleAnimation( )
+{
+	// update texrect
+
+	// update animframe, based on animcap
 }

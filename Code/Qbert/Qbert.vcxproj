@@ -129,6 +129,7 @@
     <ClCompile Include="redball.cpp" />
     <ClCompile Include="snake.cpp" />
     <ClCompile Include="statemanager.cpp" />
+    <ClCompile Include="timermanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="redball.h" />
     <ClInclude Include="snake.h" />
     <ClInclude Include="statemanager.h" />
+    <ClInclude Include="timermanager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

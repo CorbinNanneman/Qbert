@@ -21,7 +21,7 @@ StateManager::StateManager( )
 	window.create( sf::VideoMode( screenWidth, screenHeight ), "Q*Bert" );
 	window.setFramerateLimit( 120 );
 
-	addTimer( "windowLoaded", false );
+	timers.addTimer( "windowLoaded", false );
 }
 
 
@@ -30,8 +30,7 @@ StateManager::~StateManager( )
 	platform.deleteMap( );
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
-	while( timers.size( ) > 0 )
-		removeTimer( timers.at( 0 )->name );
+	timers.erase( );
 }
 
 
@@ -42,8 +41,7 @@ void StateManager::startGame( )
 		platform.deleteMap( );
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
-	while( timers.size( ) > 0 )
-		removeTimer( timers.at( 0 )->name );
+	timers.erase( );
 
 	// Objects
 	q = new Qbert( scale, screenWidth );
@@ -55,13 +53,13 @@ void StateManager::startGame( )
 	// Data
 	state = game;
 
-	addTimer( "snakeSpawn", true );
+	timers.addTimer( "snakeSpawn", true );
 	
 	respawning = false;
 	paused = false;
 	pauseKeyHeld = false;
 
-	overlay.createObjects( 1, 3, 0, 0, 0, scale );
+	overlay.createObjects( 1, 3, 0, 0, 0, scale, screenWidth );
 
 	system( "CLS" );
 }
@@ -77,8 +75,7 @@ void StateManager::reset( )
 	platform.deleteMap( );
 
 	// Timers
-	while( timers.size( ) > 0 )
-		removeTimer( timers.at( 0 )->name );
+	timers.erase( );
 
 	startGame( );
 }
@@ -104,15 +101,12 @@ void StateManager::update( )
 	{
 		fps = frame;
 		// Determines adjustment needed to match proper frame rate
-		fpsScale = targetFps * 1.f / fps;
+		fpsScale = static_cast< float >( targetFps ) / fps;
 		frame = 0;
 		fpsClock.restart( );
 	}
 
-	// Timer updates
-	for( unsigned __int8 i = 0; i < timers.size( ); i++ )
-		if( !paused || !timers.at( i )->pauses )
-			timers.at( i )->time += 1.f / fps;
+	timers.updateTimers( 1.f / fps, paused );
 
 	if( windowLoaded )
 	{
@@ -120,10 +114,10 @@ void StateManager::update( )
 		stateUpdate( );
 	}
 	// This is done to stabilize framerate after window is created.
-	else if( checkTimer( "windowLoaded" ) > 5.f )
+	else if( timers.checkTimer( "windowLoaded" ) > 5.f )
 	{
 		windowLoaded = true;
-		removeTimer( "windowLoaded" );
+		timers.removeTimer( "windowLoaded" );
 		startGame( );
 	}
 }
@@ -173,7 +167,6 @@ void StateManager::display( )
 		for( unsigned int i = 0; i < elements.size( ); i++ )
 			window.draw( *elements.at( i )->getSpritePtr( ) );
 	}
-
 	window.display( );
 }
 
@@ -251,26 +244,24 @@ void StateManager::stateUpdate( )
 	case game:
 		if( !paused )
 		{
-
+			overlay.update( 0, 1.f / fps );
 	// Spawns
-			if( checkTimer( "snakeSpawn" ) > 0.1f )
+			if( timers.checkTimer( "snakeSpawn" ) > 4.0f )
 			{
-				Snake *s = new Snake( scale, screenWidth, 0.75f );
-				s->findTarget( *q );
+				Snake *s = new Snake( scale, screenWidth, 0.7f, q );
 
 				characters.push_back( s );
-				removeTimer( "snakeSpawn" );
-				addTimer( "spawn", true );
+				timers.removeTimer( "snakeSpawn" );
+				timers.addTimer( "spawn", true );
 			}
-			if( checkTimer( "spawn" ) > 4.3f )
+			if( timers.checkTimer( "spawn" ) > 4.3f )
 			{
 				if( rand( ) % 2 == 0 )
 					characters.push_back( new RedBall( scale, screenWidth, 1.1f ) );
 				else
 					characters.push_back( new Monkey( scale, screenWidth, 1.25f ) );
-				resetTimer( "spawn" );
+				timers.resetTimer( "spawn" );
 			}
-
 	// Character updates
 			static __int8 qReturn;
 			bool collided;
@@ -287,13 +278,6 @@ void StateManager::stateUpdate( )
 				{
 				default:
 				case 0: // Character does nothing
-					switch( curChar->getID( ) )
-					{
-					case 1: // Snake
-						if( qReturn < 3 )
-							dynamic_cast< Snake* >( curChar )->findTarget( *q );
-						break;
-					}
 					break;
 				case 1: // Character is jumping
 					collided = false;
@@ -315,7 +299,7 @@ void StateManager::stateUpdate( )
 						{
 							paused = true;
 							respawning = true;
-							addTimer( "respawn", false );
+							timers.addTimer( "respawn", false );
 						}
 						else
 							destroyCharacter( curChar );
@@ -330,7 +314,7 @@ void StateManager::stateUpdate( )
 						if( platform.isComplete( ) )
 						{
 							state = victory;
-							addTimer( "flash", true );
+							timers.addTimer( "flash", true );
 							flashChange = 0;
 						}
 						break;
@@ -343,7 +327,7 @@ void StateManager::stateUpdate( )
 					{
 						paused = true;
 						respawning = true;
-						addTimer( "respawn", false );
+						timers.addTimer( "respawn", false );
 					}
 					else
 						destroyCharacter( curChar );
@@ -353,9 +337,9 @@ void StateManager::stateUpdate( )
 		} // End !paused
 		else if( respawning )
 		{
-			if( checkTimer( "respawn" ) > 2.f )
+			if( timers.checkTimer( "respawn" ) > 2.f )
 			{
-				removeTimer( "respawn" );
+				timers.removeTimer( "respawn" );
 				startGame( );
 			}
 		}
@@ -363,16 +347,16 @@ void StateManager::stateUpdate( )
 // Victory
 	case victory:
 		// Flash cubes 9 times
-		if( checkTimer( "flash" ) > 0.09f )
+		if( timers.checkTimer( "flash" ) > 0.09f )
 		{
 			for( int row = 0; row < 7; row++ )
 				for( int index = 0; index < row + 1; index++ )
 					platform.changeCube( row, index, 0, 5 );
-			resetTimer( "flash" );
+			timers.resetTimer( "flash" );
 
 			if( ++flashChange > 14 )
 			{
-				removeTimer( "flash" );
+				timers.removeTimer( "flash" );
 				startGame( );
 			}
 		}
@@ -411,65 +395,6 @@ void StateManager::destroyCharacter( Character *c )
 			delete c;
 			characters.erase( characters.begin( ) + i );
 			deleted = true;
-		}
-	}
-}
-
-
-bool StateManager::addTimer( char *timerName, bool pauses )
-{
-	bool created = false;
-	// Create Timer if not already created
-	if( checkTimer( timerName ) == -1.f )
-	{
-		NamedTimer *t = new NamedTimer;
-		t->name = timerName;
-		t->time = 0.f;
-		t->pauses = pauses;
-		timers.push_back( t );
-		created = true;
-	}
-
-	return created;
-}
-
-
-float StateManager::checkTimer( char *timerName )
-{
-	float time = -1.f; // If this is returned the timer does not exist
-
-	for( unsigned __int8 i = 0; time == -1.f && i < timers.size( ); i++ )
-		if( timers.at( i )->name == timerName )
-			time = timers.at( i )->time;
-
-	return time;
-}
-
-
-void StateManager::resetTimer( char *timerName )
-{
-	bool reset = false;
-	for( unsigned __int8 i = 0; !reset && i < timers.size( ); i++ )
-	{
-		if( timers.at( i )->name == timerName )
-		{
-			timers.at( i )->time = 0.f;
-			reset = true;
-		}
-	}
-}
-
-
-void StateManager::removeTimer( char *timerName )
-{ 
-	bool removed = false;
-	for( unsigned int i = 0; !removed && i < timers.size( ); i++ )
-	{
-		if( timers.at( i )->name == timerName )
-		{
-			delete timers.at( i );
-			timers.erase( timers.begin( ) + i );
-			removed = true;
 		}
 	}
 }

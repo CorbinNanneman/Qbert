@@ -25,6 +25,8 @@ public:
 	float getVX( );
 	float getVY( );
 
+	void cycleAnimation( );
+
 	~GameObject( );
 protected:
 	
@@ -33,4 +35,5 @@ private:
 	__int16 texWidth, texHeight;
 	sf::Texture texture;
 	sf::Sprite sprite;
+	__int8 animFrame, totalAnimFrames;
 };
