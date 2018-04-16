@@ -123,6 +123,8 @@ void StateManager::update( )
 }
 
 
+
+// FIX ME
 void StateManager::display( )
 {
 	if( windowLoaded )
@@ -283,14 +285,17 @@ void StateManager::stateUpdate( )
 					collided = false;
 					if( curChar != q )
 					{
-						if( checkCollision( q, curChar ) )
+						if( !q->isOOB( ) && checkCollision( q, curChar ) )
 							collided = true;
 					}
 					else
 					{
-						for( unsigned int i = 0; !collided && i < characters.size( ); i++ )
-							if( q != characters.at( i ) && checkCollision( q, characters.at( i ) ) )
-								collided = true;
+						if( !q->isOOB( ) )
+						{
+							for( unsigned int i = 0; !collided && i < characters.size( ); i++ )
+								if( q != characters.at( i ) && checkCollision( q, characters.at( i ) ) )
+									collided = true;
+						}
 					}
 
 					if( collided )
@@ -372,15 +377,13 @@ bool StateManager::checkCollision( Character *c1, Character *c2 )
 {
 	bool collision = false;
 	
-	if( !c1->isOOB( ) && !c2->isOOB( ) )
-	{
-		float xDist = c1->getX( ) - c2->getX( ), 
-			yDist = c1->getY( ) - c2->getY( ),
-			boundsFactor = 8 * scale;
-		if( xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && 
-			yDist < boundsFactor )
-			collision = true;
-	}
+	float xDist = c1->getX( ) - c2->getX( ), 
+		yDist = c1->getY( ) - c2->getY( ),
+		boundsFactor = 8 * scale;
+	if( xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && 
+		yDist < boundsFactor )
+		collision = true;
+
 	return collision;
 }
 

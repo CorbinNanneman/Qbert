@@ -18,8 +18,6 @@ Snake::Snake(float scale, __int16 screenWidth, float jumpCD, Qbert *q)
 Snake::~Snake( )
 { }
 
-#include <iostream>
-
 __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 {
 	__int8 retVal = Character::update(fpsScale, screenWidth, scale);
