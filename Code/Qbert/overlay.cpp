@@ -1,4 +1,4 @@
-#include "overlay.h"
+#include "Overlay.h"
 
 Overlay::Overlay( )
 { }
@@ -13,19 +13,24 @@ void Overlay::createObjects( __int8 player, __int8 lives, __int32 score, __int8 
 {
 	// Player
 	if( player == 1 )
-		addElement( scale, "./images/player1.png", 51, 7, screenWidth / 2 - 87 * scale, 10 * scale );
+		addElement( scale, "./images/player1.png", 51, 7, 
+			screenWidth / 2 - static_cast< __int16 >( 87 * scale), static_cast< __int16 >( 10 * scale ) );
 	else
-		addElement( scale, "./images/player2.png", 51, 7, screenWidth / 2 - 87 * scale, 10 * scale );
+		addElement( scale, "./images/player2.png", 51, 7, 
+			screenWidth / 2 - static_cast< __int16 >( 87 * scale ), static_cast< __int16 >( 10 * scale ) );
 	timers.addTimer( "playerAnim", true );
 	// Player #
-	addElement( scale, "./images/playerNum.png", 8, 11, screenWidth / 2 - 52 * scale, 10 * scale );
+	addElement( scale, "./images/playerNum.png", 8, 11, 
+		screenWidth / 2 - static_cast< __int16 >( 52 * scale ), static_cast< __int16 >( 10 * scale ) );
 	elements.at( 1 )->setTexRect( player - 1, 0 );
 	// Score
 	
 	// Change To:
-	addElement( scale, "./images/changeTo.png", 47, 5, screenWidth / 2 - 89 * scale, 37 * scale );
+	addElement( scale, "./images/changeTo.png", 47, 5, 
+		screenWidth / 2 - static_cast< __int16 >( 89 * scale ), static_cast< __int16 >( 37 * scale ) );
 	// Target Arrows
-	addElement( scale, "./images/arrows.png", 48, 7, screenWidth / 2 - 88 * scale, 41 * scale );
+	addElement( scale, "./images/arrows.png", 48, 7, 
+		screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 41 * scale ) );
 }
 
 

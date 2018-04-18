@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cube.h"
+#include "Cube.h"
 
 class Platform
 {

@@ -1,4 +1,4 @@
-#include "qbert.h"
+#include "Qbert.h"
 
 Qbert::Qbert( float scale = 0, __int16 screenWidth = 0 )
 	: Character( 0, 0, scale, screenWidth, 0.5 )

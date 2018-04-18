@@ -1,4 +1,4 @@
-#include "character.h"
+#include "Character.h"
 
 Character::Character( __int8 startRow, __int8 startIndex, float scale, __int16 screenWidth,
 	float jumpCD ) 

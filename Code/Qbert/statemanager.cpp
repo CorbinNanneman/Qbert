@@ -1,8 +1,8 @@
-#include "statemanager.h"
-#include "redball.h"
-#include "monkey.h"
-#include "snake.h"
-#include "lankyDude.h"
+#include "StateManager.h"
+#include "RedBall.h"
+#include "Ugg.h"
+#include "Snake.h"
+#include "Wrongway.h"
 
 #include <iostream>
 
@@ -44,8 +44,7 @@ void StateManager::startGame( )
 	timers.erase( );
 
 	// Objects
-	q = new Qbert( scale, screenWidth );
-	characters.push_back( q );
+	q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
 	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
 		"./images/blueYellow.png" };
 	platform.createMap( texStrings, screenWidth, scale );
@@ -123,7 +122,6 @@ void StateManager::update( )
 }
 
 
-
 // FIX ME
 void StateManager::display( )
 {
@@ -134,22 +132,10 @@ void StateManager::display( )
 		// Draw characters that are behind map
 		for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 		{
-			switch( characters.at( i )->getID( ) )
-			{
-			default:
-				if( characters.at( i )->isOOB( ) )
-				{
-					if( characters.at( i )->getID( ) != 1 || characters.at( i )->getRow( ) < 7 )
-					{
-						window.draw( *characters.at( i )->getSpritePtr( ) );
-						break;
-					}
-				}
-			case 2:
-			case 3:
+			if( characters.at( i )->getZ( ) < 0 )
+				window.draw( *characters.at( i )->getSpritePtr( ) );
+			else
 				frontChars.push_back( characters.at( i ) );
-				break;
-			}
 		}
 
 		// Draw map
@@ -160,9 +146,26 @@ void StateManager::display( )
 				window.draw( *map[ row ][ index ].getSpritePtr( ) );
 		}
 
+		// Sort frontChars by zIndex
+		if( characters.size( ) > 1 )
+		{
+			unsigned __int8 i = 0, fCSize = frontChars.size( ), lockedEls = 0;
+			while( i < fCSize )
+			{
+				if( frontChars.at( i )->getZ( ) > frontChars.at( fCSize - lockedEls - 1 )->getZ( ) )
+				{
+
+				}
+				else
+					i++;
+			}
+		}
+
 		// Draw characters that are in front of map
 		for( unsigned __int8 i = 0; i < frontChars.size( ); i++ )
+		{
 			window.draw( *frontChars.at( i )->getSpritePtr( ) );
+		}
 
 		// Draw overlay
 		std::vector< GameObject * > &elements = overlay.getElements( );
@@ -231,8 +234,8 @@ void StateManager::checkEvents( )
 /* Character IDs
  0 - Qbert
  1 - Snake
- 2 - Monkey
- 3 - Lanky Dude
+ 2 - Ugg (RtL Monkey)
+ 3 - Wrongway (LtR Monkey)
  4 - Red Ball
  5 - Magic Ball
  6 - Slick
@@ -250,18 +253,13 @@ void StateManager::stateUpdate( )
 	// Spawns
 			if( timers.checkTimer( "snakeSpawn" ) > 4.0f )
 			{
-				Snake *s = new Snake( scale, screenWidth, 0.7f, q );
-
-				characters.push_back( s );
+				createCharacter( 1 );
 				timers.removeTimer( "snakeSpawn" );
 				timers.addTimer( "spawn", true );
 			}
 			if( timers.checkTimer( "spawn" ) > 4.3f )
 			{
-				if( rand( ) % 2 == 0 )
-					characters.push_back( new RedBall( scale, screenWidth, 1.1f ) );
-				else
-					characters.push_back( new Monkey( scale, screenWidth, 1.25f ) );
+				createCharacter( rand() % 2 + 2 );
 				timers.resetTimer( "spawn" );
 			}
 	// Character updates
@@ -385,6 +383,40 @@ bool StateManager::checkCollision( Character *c1, Character *c2 )
 		collision = true;
 
 	return collision;
+}
+
+
+Character* StateManager::createCharacter( __int8 characID )
+{
+	Character *c = nullptr;
+	switch( characID )
+	{
+	case 0: // Qbert
+		c = new Qbert( scale, screenWidth );
+		break;
+	case 1: // Snake
+		c = new Snake( scale, screenWidth, 0.7f, q );
+		break;
+	case 2: // Ugg (RtL Monkey)
+		c = new Ugg( scale, screenWidth, 1.1f );
+		break;
+	case 3: // Wrongway (LtR Monkey)
+		c = new Wrongway( scale, screenWidth, 1.1f );
+		break;
+	case 4: // Red Ball
+		c = new RedBall( scale, screenWidth, 1.1f );
+		break;
+	case 5: // Magic Ball
+		break;
+	case 6: // Slick
+		break;
+	case 7: // Sam
+		break;
+	default:
+		break;
+	}
+	characters.push_back( c );
+	return c;
 }
 
 

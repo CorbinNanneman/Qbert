@@ -1,5 +1,5 @@
-#include "gameobject.h"
-#include <SFML\Graphics.hpp>
+#include "GameObject.h"
+#include <SFML/Graphics/Rect.hpp>
 
 GameObject::GameObject( float scale )
 {
@@ -9,24 +9,27 @@ GameObject::GameObject( float scale )
 	vY = 0;
 	texWidth = 0;
 	texHeight = 0;
+	zIndex = 0;
+	animFrame = 0;
 	sprite.setScale( scale, scale );
-}
-
-
-GameObject::GameObject( )
-{
-	x = 0;
-	y = 0;
-	vX = 0;
-	vY = 0;
-	texWidth = 0;
-	texHeight = 0;
-	sprite.setScale( 1, 1 );
 }
 
 
 GameObject::~GameObject( )
 { }
+
+
+// Update for auto-animated objects
+void GameObject::update( float incVal )
+{
+	animTimer += incVal;
+	if( animTimer > animDelay )
+	{
+		cycleAnimation( );
+		animTimer = 0.f;
+	}
+	update( );
+}
 
 
 void GameObject::update( )
@@ -50,14 +53,14 @@ bool GameObject::isOffScreen( __int16 screenWidth, __int16 screenHeight, float s
 void GameObject::setX( float newX )
 {
 	x = newX;
-	sprite.setPosition( sf::Vector2f( x, y ) );
+	sprite.setPosition( x, y );
 }
 
 
 void GameObject::setY( float newY )
 {
 	y = newY;
-	sprite.setPosition( sf::Vector2f( x, y ) );
+	sprite.setPosition( x, y );
 }
 
 
@@ -97,6 +100,17 @@ float GameObject::getVY( )
 }
 
 
+__int8 GameObject::getZ( )
+{
+	return zIndex;
+}
+
+
+void GameObject::setZ( __int8 newZ )
+{
+	zIndex = newZ;
+}
+
 
 sf::Sprite* GameObject::getSpritePtr( )
 {
@@ -127,7 +141,8 @@ void GameObject::setTexRect( __int16 xFrame, __int16 yFrame )
 
 void GameObject::cycleAnimation( )
 {
-	// update texrect
-
-	// update animframe, based on animcap
+	// Animations are expected in a LtR format
+	if( ++animFrame >= totalAnimFrames )
+		animFrame = 0;
+	setTexRect( animFrame * texWidth, 0 );
 }

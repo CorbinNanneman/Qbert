@@ -117,33 +117,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="character.cpp" />
-    <ClCompile Include="cube.cpp" />
-    <ClCompile Include="gameobject.cpp" />
-    <ClCompile Include="lankyDude.cpp" />
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Wrongway.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="monkey.cpp" />
-    <ClCompile Include="overlay.cpp" />
-    <ClCompile Include="platform.cpp" />
-    <ClCompile Include="qbert.cpp" />
-    <ClCompile Include="redball.cpp" />
-    <ClCompile Include="snake.cpp" />
-    <ClCompile Include="statemanager.cpp" />
-    <ClCompile Include="timermanager.cpp" />
+    <ClCompile Include="Ugg.cpp" />
+    <ClCompile Include="Overlay.cpp" />
+    <ClCompile Include="Platform.cpp" />
+    <ClCompile Include="Qbert.cpp" />
+    <ClCompile Include="RedBall.cpp" />
+    <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="StateManager.cpp" />
+    <ClCompile Include="TimerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="character.h" />
-    <ClInclude Include="cube.h" />
-    <ClInclude Include="gameobject.h" />
-    <ClInclude Include="lankyDude.h" />
-    <ClInclude Include="monkey.h" />
-    <ClInclude Include="overlay.h" />
-    <ClInclude Include="platform.h" />
-    <ClInclude Include="qbert.h" />
-    <ClInclude Include="redball.h" />
-    <ClInclude Include="snake.h" />
-    <ClInclude Include="statemanager.h" />
-    <ClInclude Include="timermanager.h" />
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Wrongway.h" />
+    <ClInclude Include="Ugg.h" />
+    <ClInclude Include="Overlay.h" />
+    <ClInclude Include="Platform.h" />
+    <ClInclude Include="Qbert.h" />
+    <ClInclude Include="RedBall.h" />
+    <ClInclude Include="Snake.h" />
+    <ClInclude Include="StateManager.h" />
+    <ClInclude Include="TimerManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

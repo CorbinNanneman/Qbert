@@ -1,10 +1,10 @@
-#include "monkey.h"
+#include "Ugg.h"
 #include "time.h"
 
-Monkey::Monkey(float scale, __int16 screenWidth,
+Ugg::Ugg(float scale, __int16 screenWidth,
 	float jumpCD) : Character(7, 7, scale, screenWidth, jumpCD)
 {
-	setTexture("./images/monkey.png", 16, 16);
+	setTexture("./images/ugg.png", 16, 16);
 
 	setX( getX( ) + 74 * scale );
 
@@ -13,11 +13,11 @@ Monkey::Monkey(float scale, __int16 screenWidth,
 }
 
 
-Monkey::~Monkey( )
+Ugg::~Ugg( )
 { }
 
 
-__int8 Monkey::update(float fpsScale, __int16 screenWidth, float scale)
+__int8 Ugg::update(float fpsScale, __int16 screenWidth, float scale)
 {
 	__int8 retVal = Character::update( fpsScale, screenWidth, scale);
 
@@ -28,7 +28,7 @@ __int8 Monkey::update(float fpsScale, __int16 screenWidth, float scale)
 }
 
 
-void Monkey::moveAnimate(__int8 state)
+void Ugg::moveAnimate(__int8 state)
 {
 	switch (state) 
 	{

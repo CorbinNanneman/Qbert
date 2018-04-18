@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gameObject.h"
+#include "GameObject.h"
 
 class Cube : public GameObject
 {

@@ -1,9 +1,9 @@
-#include "lankyDude.h"
+#include "Wrongway.h"
 
-LankyDude::LankyDude(float scale, __int16 screenWidth,
+Wrongway::Wrongway(float scale, __int16 screenWidth,
 	float jumpCD) : Character(7, 0, scale, screenWidth, jumpCD)
 {
-	setTexture("./images/lankyDude.png", 16, 16);
+	setTexture("./images/wrongway.png", 16, 16);
 	setX(getX() - 74 * scale);
 
 	jumpState = 10;
@@ -11,11 +11,11 @@ LankyDude::LankyDude(float scale, __int16 screenWidth,
 }
 
 
-LankyDude::~LankyDude( )
+Wrongway::~Wrongway( )
 { }
 
 
-__int8 LankyDude::update(float fpsScale, __int16 screenWidth, float scale)
+__int8 Wrongway::update(float fpsScale, __int16 screenWidth, float scale)
 {
 	__int8 retVal = Character::update(fpsScale, screenWidth, scale);
 
@@ -26,7 +26,7 @@ __int8 LankyDude::update(float fpsScale, __int16 screenWidth, float scale)
 }
 
 
-void LankyDude::moveAnimate(__int8 state)
+void Wrongway::moveAnimate(__int8 state)
 {
 	switch (state)
 	{

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gameobject.h"
-#include "timermanager.h"
+#include "GameObject.h"
+#include "TimerManager.h"
 #include <vector>
 
 class Overlay

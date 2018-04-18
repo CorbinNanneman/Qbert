@@ -1,12 +1,12 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "timermanager.h"
+#include "TimerManager.h"
 #include <vector>
 
-#include "platform.h"
-#include "qbert.h"
-#include "overlay.h"
+#include "Platform.h"
+#include "Qbert.h"
+#include "Overlay.h"
 
 class StateManager
 {
@@ -27,6 +27,8 @@ private:
 	void checkEvents( ); // Line 77
 	void stateUpdate( );
 	bool checkCollision( Character *c1, Character *c2 ); // Line 270
+
+	Character* createCharacter( __int8 characID );
 	void destroyCharacter( Character *c ); // Line 287
 
 	enum State

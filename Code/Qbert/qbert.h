@@ -1,6 +1,6 @@
 #pragma once
 
-#include "character.h"
+#include "Character.h"
 
 class Qbert : public Character
 {

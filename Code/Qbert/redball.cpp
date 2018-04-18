@@ -1,4 +1,4 @@
-#include "redball.h"
+#include "RedBall.h"
 #include "time.h"
 
 RedBall::RedBall( float scale, __int16 screenWidth, float jumpCD )

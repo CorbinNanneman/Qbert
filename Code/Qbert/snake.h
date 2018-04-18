@@ -1,7 +1,7 @@
 #pragma once
 
-#include "character.h"
-#include "qbert.h"
+#include "Character.h"
+#include "Qbert.h"
 
 class Snake : public Character
 {
