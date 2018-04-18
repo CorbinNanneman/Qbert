@@ -120,6 +120,8 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Sam.cpp" />
+    <ClCompile Include="Slick.cpp" />
     <ClCompile Include="Wrongway.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Ugg.cpp" />
@@ -135,6 +137,8 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Sam.h" />
+    <ClInclude Include="Slick.h" />
     <ClInclude Include="Wrongway.h" />
     <ClInclude Include="Ugg.h" />
     <ClInclude Include="Overlay.h" />
