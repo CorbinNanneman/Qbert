@@ -149,6 +149,7 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 	}
 }
 
+#include <iostream>
 
 __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 {
@@ -156,7 +157,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 	__int8 retVal = 0; // See Glossary At end of function.
 	jumpTimer += 1 / ( 60 / fpsScale );
 
-	// Character is jumpcing
+	// Character is jumping
 	if( jumpState < 11 )
 	{
 		// Character continues jumping
@@ -176,9 +177,9 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 				retVal = 1;
 		}
 		// Character completes jump
-		else
+		if( jumpTimer > 0.5f && jumpTimer < 0.6f )
 		{
-			// Charcater succesfully lands on block
+			// Character succesfully lands on block
 			if( !OOB )
 			{
 				moveAnimate( jumpState + 4 );
@@ -186,11 +187,15 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 				setVX( 0 );
 				setVY( 0 );
 				setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
-				setY( scale * ( row * 24 + 34 ) );
+				setY( scale * ( row * 24 + 34 ) );	
+				setZ( getRow( ) + 1 );
 				// Stop Moving
 				jumpState = 11;
 				retVal = 2;
 			}
+			// Character falls OOB 
+			else if( getRow( ) < 6 )
+				setZ( -1 );
 		} // endif( jumpTimer > 0.5 )
 	} // endif( jumpState != 5 )
 

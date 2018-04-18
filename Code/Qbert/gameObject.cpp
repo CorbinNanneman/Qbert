@@ -7,9 +7,9 @@ GameObject::GameObject( float scale )
 	y = 0;
 	vX = 0;
 	vY = 0;
+	z = 0;
 	texWidth = 0;
 	texHeight = 0;
-	zIndex = 0;
 	animFrame = 0;
 	sprite.setScale( scale, scale );
 }
@@ -46,7 +46,7 @@ bool GameObject::isOffScreen( __int16 screenWidth, __int16 screenHeight, float s
 	__int16 halfTexWidth = texWidth * scale / 2,
 			halfTexHeight = texHeight * scale / 2;
 	return x + halfTexWidth < 0 || x - halfTexWidth > screenWidth || 
-		y + halfTexHeight < 0 || y + halfTexHeight  > screenHeight;
+		y + halfTexHeight < 0 || y - halfTexHeight  > screenHeight;
 }
 
 
@@ -100,15 +100,15 @@ float GameObject::getVY( )
 }
 
 
-__int8 GameObject::getZ( )
+__int16 GameObject::getZ( )
 {
-	return zIndex;
+	return z;
 }
 
 
-void GameObject::setZ( __int8 newZ )
+void GameObject::setZ( __int16 newZ )
 {
-	zIndex = newZ;
+	z = newZ;
 }
 
 

@@ -21,13 +21,13 @@ public:
 	void setY( float newY );
 	void setVX( float newVX );
 	void setVY( float newVY );
-	void setZ( __int8 newZ );
+	void setZ( __int16 newZ );
 
 	float getX( );
 	float getY( );
 	float getVX( );
 	float getVY( );
-	__int8 getZ( );
+	__int16 getZ( );
 
 	void cycleAnimation( );
 
@@ -35,10 +35,9 @@ public:
 protected:
 	
 private:
-	float x, y, vX, vY;
+	float x, y, vX, vY, z;
 	__int16 texWidth, texHeight;
 	sf::Texture texture;
 	sf::Sprite sprite;
-	__int8 animFrame, totalAnimFrames, animTimer, animDelay,
-		   zIndex;
+	__int8 animFrame, totalAnimFrames, animTimer, animDelay;
 };

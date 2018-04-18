@@ -122,7 +122,6 @@ void StateManager::update( )
 }
 
 
-// FIX ME
 void StateManager::display( )
 {
 	if( windowLoaded )
@@ -149,23 +148,29 @@ void StateManager::display( )
 		// Sort frontChars by zIndex
 		if( characters.size( ) > 1 )
 		{
-			unsigned __int8 i = 0, fCSize = frontChars.size( ), lockedEls = 0;
-			while( i < fCSize )
+			unsigned __int8 i, fCSize = frontChars.size( ), lockedEls = 0;
+			while( fCSize - lockedEls > 1 )
 			{
-				if( frontChars.at( i )->getZ( ) > frontChars.at( fCSize - lockedEls - 1 )->getZ( ) )
+				__int8 lastElI = fCSize - lockedEls - 1;
+				i = 0;
+				while( i < lastElI )
 				{
-
-				}
-				else
+					if( frontChars.at( i )->getZ( ) > frontChars.at( lastElI )->getZ( ) )
+					{
+						// Swap Elements
+						Character *swap = frontChars.at( i );
+						frontChars.at( i ) = frontChars.at( lastElI );
+						frontChars.at( lastElI ) = swap;
+					}
 					i++;
+				}
+				lockedEls++;
 			}
 		}
 
 		// Draw characters that are in front of map
 		for( unsigned __int8 i = 0; i < frontChars.size( ); i++ )
-		{
 			window.draw( *frontChars.at( i )->getSpritePtr( ) );
-		}
 
 		// Draw overlay
 		std::vector< GameObject * > &elements = overlay.getElements( );
@@ -328,7 +333,6 @@ void StateManager::stateUpdate( )
 				case 3: // Character fell off world
 					if( curChar == q )
 					{
-						paused = true;
 						respawning = true;
 						timers.addTimer( "respawn", false );
 					}
@@ -338,7 +342,8 @@ void StateManager::stateUpdate( )
 				}
 			} // End character updates
 		} // End !paused
-		else if( respawning )
+
+		if( respawning )
 		{
 			if( timers.checkTimer( "respawn" ) > 2.f )
 			{
