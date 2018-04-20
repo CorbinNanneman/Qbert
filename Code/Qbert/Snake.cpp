@@ -5,10 +5,12 @@ Snake::Snake(float scale, __int16 screenWidth, float jumpCD, Qbert *q)
 	: Character(1, rand() % 2, scale, screenWidth, jumpCD)
 {
 	isEgg = true;
-	setTexture("./images/snakeEgg.png", 16, 16);
+	setTexture("./images/snakeEgg.png", 16, 13);
 	setTexRect( 1, 0 );
 
 	setY( -14 * scale );
+	setYOffset( 3 * scale );
+
 	jumpState = 4;
 	id = 1;
 	qbert = q;
@@ -17,6 +19,7 @@ Snake::Snake(float scale, __int16 screenWidth, float jumpCD, Qbert *q)
 
 Snake::~Snake( )
 { }
+
 
 __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 {
@@ -27,6 +30,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 		if( retVal == 2 && getRow( ) == 6 )
 		{
 			setTexture( "./images/snake.png", 16, 32 );
+			setYOffset( -3 * scale );
 			isEgg = false;
 		}
 		else if (jumpTimer > jumpCDTime)

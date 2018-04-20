@@ -5,6 +5,7 @@
 #include "Wrongway.h"
 #include "Slick.h"
 #include "Sam.h"
+#include "MagicBall.h"
 
 StateManager::StateManager( )
 {
@@ -281,7 +282,7 @@ void StateManager::stateUpdate( )
 			}
 			if( timers.checkTimer( "spawn" ) > 4.3f )
 			{
-				createCharacter( rand() % 2 + 6 );
+				createCharacter( 5 );
 				timers.resetTimer( "spawn" );
 			}
 	// Character updates
@@ -460,6 +461,7 @@ Character* StateManager::createCharacter( __int8 characID )
 		c = new RedBall( scale, screenWidth, 1.1f );
 		break;
 	case 5: // Magic Ball
+		c = new MagicBall( scale, screenWidth, 1.0f );
 		break;
 	case 6: // Slick
 		c = new Slick( scale, screenWidth, 0.75f, scale * fpsScale );

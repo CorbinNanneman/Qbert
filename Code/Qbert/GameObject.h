@@ -22,12 +22,18 @@ public:
 	void setVX( float newVX );
 	void setVY( float newVY );
 	void setZ( __int16 newZ );
-
+	
 	float getX( );
 	float getY( );
 	float getVX( );
 	float getVY( );
 	__int16 getZ( );
+
+	// Allows children to adjust position of parent's inherited movemnt patterns
+	void setXOffset( float nexXOffset );
+	void setYOffset( float newYOffset );
+	float getXOffset( );
+	float getYOffset( );
 
 	void cycleAnimation( );
 
@@ -35,7 +41,7 @@ public:
 protected:
 	
 private:
-	float x, y, vX, vY, z;
+	float x, y, vX, vY, z, xOffset, yOffset;
 	__int16 texWidth, texHeight;
 	sf::Texture texture;
 	sf::Sprite sprite;

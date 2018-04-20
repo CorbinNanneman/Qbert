@@ -167,7 +167,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 		if( jumpTimer < 0.5f || OOB )
 		{
 			// Apply gravity
-			if( jumpState < 5 ) // Normaal characters
+			if( jumpState < 5 ) // Normal characters
 				setVY( getVY( ) + 9.8f * scale * fpsScale * fpsScale / 60 );
 			else if( jumpState < 8 ) // RtL Monkey
 				setVX( getVX( ) - 9.8f * scale * fpsScale * fpsScale / 60 );

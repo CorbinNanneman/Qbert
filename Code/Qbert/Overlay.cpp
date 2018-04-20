@@ -91,6 +91,7 @@ void Overlay::update( float timerIncVal, __int8 gState, void const **sArgs )
 		elements.at( 4 )->update( timerIncVal );
 		break;
 	default:
+		break;
 	}
 }
 

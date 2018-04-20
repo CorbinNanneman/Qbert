@@ -8,6 +8,9 @@ GameObject::GameObject( float scale, __int8 tAFrames, float aDelay )
 	vX = 0;
 	vY = 0;
 	z = 0;
+	xOffset = 0;
+	yOffset = 0;
+
 	texWidth = 0;
 	texHeight = 0;
 	animFrame = 0;
@@ -54,14 +57,14 @@ bool GameObject::isOffScreen( __int16 screenWidth, __int16 screenHeight, float s
 
 void GameObject::setX( float newX )
 {
-	x = newX;
+	x = newX + xOffset;
 	sprite.setPosition( x, y );
 }
 
 
 void GameObject::setY( float newY )
 {
-	y = newY;
+	y = newY + yOffset;
 	sprite.setPosition( x, y );
 }
 
@@ -80,13 +83,13 @@ void GameObject::setVY( float newVY )
 
 float GameObject::getX( )
 {
-	return x;
+	return x + xOffset;
 }
 
 
 float GameObject::getY( )
 {
-	return y;
+	return y + yOffset;
 }
 
 
@@ -111,6 +114,31 @@ __int16 GameObject::getZ( )
 void GameObject::setZ( __int16 newZ )
 {
 	z = newZ;
+}
+
+
+// Allows children to adjust position of parent's inherited movemnt patterns
+void GameObject::setXOffset( float newXOffset )
+{
+	xOffset = newXOffset;
+}
+
+
+void GameObject::setYOffset( float newYOffset )
+{
+	yOffset = newYOffset;
+}
+
+
+float GameObject::getXOffset( )
+{
+	return xOffset;
+}
+
+
+float GameObject::getYOffset( )
+{
+	return yOffset;
 }
 
 
