@@ -1,7 +1,7 @@
 #include "GameObject.h"
 #include <SFML/Graphics/Rect.hpp>
 
-GameObject::GameObject( float scale )
+GameObject::GameObject( float scale, __int8 tAFrames, float aDelay )
 {
 	x = 0;
 	y = 0;
@@ -11,6 +11,8 @@ GameObject::GameObject( float scale )
 	texWidth = 0;
 	texHeight = 0;
 	animFrame = 0;
+	totalAnimFrames = tAFrames;
+	animDelay = aDelay;
 	sprite.setScale( scale, scale );
 }
 
@@ -144,5 +146,5 @@ void GameObject::cycleAnimation( )
 	// Animations are expected in a LtR format
 	if( ++animFrame >= totalAnimFrames )
 		animFrame = 0;
-	setTexRect( animFrame * texWidth, 0 );
+	setTexRect( animFrame, 0 );
 }

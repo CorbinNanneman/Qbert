@@ -23,11 +23,12 @@ public:
 private:
 	void startGame( ); // Line 32
 	void reset( ); // Line 49
-
+	
 	void checkEvents( ); // Line 77
 	void stateUpdate( );
-	bool checkCollision( Character *c1, Character *c2 ); // Line 270
+	void transitionState( __int8 newState );
 
+	bool checkCollision( Character *c1, Character *c2 ); // Line 270
 	Character* createCharacter( __int8 characID );
 	void destroyCharacter( Character *c ); // Line 287
 
@@ -50,7 +51,7 @@ private:
 					 fps = targetFps;
 	float fpsScale = targetFps * 1.f / fps;
 	sf::Clock fpsClock;
-
+	
 	// Window
 	__int16 screenWidth,
 			screenHeight;
@@ -69,4 +70,6 @@ private:
 	std::vector< Character * > characters;
 	bool respawning;
 	Overlay overlay;
+	int score;
+	__int8 lives;
 };

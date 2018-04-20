@@ -17,7 +17,7 @@ Qbert::~Qbert( )
 
 void Qbert::move( __int8 direction, float scale, float fpsScale )
 {
-	Character::move( direction, scale, fpsScale );
+	Character::move( direction, scale * fpsScale );
 	lastY = getY( );
 	lastX = getX( );
 

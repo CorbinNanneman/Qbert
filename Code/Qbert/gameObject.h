@@ -6,7 +6,7 @@
 class GameObject
 {
 public:
-	GameObject( float scale = 1 );
+	GameObject( float scale = 1, __int8 tAFrames = 0, float aDelay = 0.f );
 
 	void update( float incVal );
 	virtual void update( );
@@ -39,5 +39,6 @@ private:
 	__int16 texWidth, texHeight;
 	sf::Texture texture;
 	sf::Sprite sprite;
-	__int8 animFrame, totalAnimFrames, animTimer, animDelay;
+	__int8 animFrame, totalAnimFrames;
+	float animTimer, animDelay;
 };

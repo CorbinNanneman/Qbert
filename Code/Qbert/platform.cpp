@@ -11,7 +11,7 @@ Platform::~Platform( )
 
 
 // When only 2 cube textures are needed, newTexStrings[1] is set to NULL
-void Platform::createMap( char* newTexStrings[3], __int16 screenWidth, float scale )
+void Platform::createMap( char const *newTexStrings[3], __int16 screenWidth, float scale )
 {
 	texStrings[ 0 ] = newTexStrings[ 0 ];
 	texStrings[ 1 ] = newTexStrings[ 1 ];
@@ -136,4 +136,3 @@ bool Platform::isComplete( )
 				wrongCubeFound = true;
 	return !wrongCubeFound;
 }
-

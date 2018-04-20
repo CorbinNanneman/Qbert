@@ -39,48 +39,52 @@ Character::~Character()
 
 *Spawn In exists to allow an animation when a character is spawned
 */
-void Character::move( __int8 direction, float scale, float fpsScale )
+void Character::move( __int8 direction, float movementScale )
 {
+	// Movement scale is precomputed value of scale * fpsScale
 	if( jumpTimer > jumpCDTime && !OOB )
 	{
 		moveAnimate( direction );
 		switch( direction ) // Set jump velocities
 		{
+			//scale * fpsscale
 		// Up Right
 		case 0:
-			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVX( 16 * movementScale / 30 );
+			setVY( -96 * movementScale / 30 );
 			break;
 		// Down Right
 		case 1:
-			setVX( 16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -46 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVX( 16 * movementScale / 30 );
+			setVY( -46 * movementScale / 30 );
 			break;
 		// Down Left
 		case 2:
-			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -46 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVX( -16 * movementScale / 30 );
+			setVY( -46 * movementScale / 30 );
 			break;
 		// Up Left
 		case 3:
-			setVX( -16 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -96 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVX( -16 * movementScale / 30 );
+			setVY( -96 * movementScale / 30 );
 			break;
 		// RtL Up Left
 		case 5:
-			setVX( 56 * scale / ( ( 60 / fpsScale ) / 2 ) );
-			setVY( -24 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVX( 56 * movementScale / 30 );
+			setVY( -24 * movementScale / 30 );
 			break;
-		// LtR
+		// RtL Left
 		case 6:
-			setVX( 40 * scale / ( ( 60 / fpsScale ) / 2 ) );
+			setVX( 40 * movementScale / 30 );
 			break;
-		case 8:
-			setVX(-56 * scale / ((60 / fpsScale) / 2));
-			setVY(-24 * scale / ((60 / fpsScale) / 2));
+		// LtR Up Right
+		case 8: 
+			setVX(-56 * movementScale / 30 );
+			setVY(-24 * movementScale / 30 );
 			break;
+		// LtR Right
 		case 9:
-			setVX(-40 * scale / ((60 / fpsScale) / 2));
+			setVX(-40 * movementScale / 30 );
 			break;
 		default:
 			break;
@@ -149,13 +153,12 @@ void Character::move( __int8 direction, float scale, float fpsScale )
 	}
 }
 
-#include <iostream>
 
 __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 {
 	GameObject::update( );
-	__int8 retVal = 0; // See Glossary At end of function.
-	jumpTimer += 1 / ( 60 / fpsScale );
+	__int8 retVal = 0; // See Glossary at end of function.
+	jumpTimer += fpsScale / 60;
 
 	// Character is jumping
 	if( jumpState < 11 )
@@ -165,11 +168,11 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 		{
 			// Apply gravity
 			if( jumpState < 5 ) // Normaal characters
-				setVY( getVY( ) + 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
+				setVY( getVY( ) + 9.8f * scale * fpsScale * fpsScale / 60 );
 			else if( jumpState < 8 ) // RtL Monkey
-				setVX( getVX( ) - 9.8f * fpsScale * scale / ( 60 / fpsScale ) );
+				setVX( getVX( ) - 9.8f * scale * fpsScale * fpsScale / 60 );
 			else if( jumpState < 11 ) // LtR Monkey
-				setVX( getVX() + 9.8f * fpsScale * scale / (60 / fpsScale));
+				setVX( getVX( ) + 9.8f * scale * fpsScale * fpsScale / 60 );
 
 			if( OOB && isOffScreen( screenWidth, screenWidth, scale ) )
 				retVal = 3;

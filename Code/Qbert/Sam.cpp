@@ -1,21 +1,32 @@
 #include "Sam.h"
 #include "time.h"
 
-Sam::Sam(float scale, __int16 screenWidth, float jumpCD)
+Sam::Sam(float scale, __int16 screenWidth, float jumpCD, float movementScale)
 	: Character(1, rand() % 2, scale, screenWidth, jumpCD)
 {
-	setTexture("./images/greenDude.png", 13, 16);
-	setTexRect(1, 0);
-	// setX( 32 * scale * ( getRow( ) * -.5 + getIndex( ) ) + screenWidth / 2 );
-	setY(-32 * scale);
+	setTexture("./images/sam.png", 11, 16);
+	setY(-14 * scale);
 
-	jumpState = 4;
-	id = 6;
+	if( getIndex( ) == 0 )
+	{
+		setTexRect( 5, 0 );
+		setX( getX( ) - 16 * scale );
+		setVX( 16 * movementScale / 30 );
+		jumpState = 1;
+	}
+	else
+	{
+		setTexRect( 1, 0 );
+		setX( getX( ) + 16 * scale );
+		setVX( -16 * movementScale / 30 );
+		jumpState = 2;
+	}
+	id = 7;
 }
 
 
 Sam::~Sam()
-{}
+{ }
 
 
 __int8 Sam::update(float fpsScale, __int16 screenWidth, float scale)
@@ -23,7 +34,7 @@ __int8 Sam::update(float fpsScale, __int16 screenWidth, float scale)
 	__int8 retVal = Character::update(fpsScale, screenWidth, scale);
 
 	if (jumpTimer > jumpCDTime)
-		Character::move(rand() % 2 + 1, scale, fpsScale);
+		Character::move(rand() % 2 + 1, scale * fpsScale);
 
 	return retVal;
 }
@@ -46,6 +57,5 @@ void Sam::moveAnimate(__int8 state)
 	case 6: // Down Left Land
 		setTexRect(0, 0);
 		break;
-
 	}
 }

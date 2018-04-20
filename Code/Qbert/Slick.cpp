@@ -1,21 +1,32 @@
 #include "Slick.h"
 #include "time.h"
 
-Slick::Slick(float scale, __int16 screenWidth, float jumpCD)
+Slick::Slick(float scale, __int16 screenWidth, float jumpCD, float movementScale )
 	: Character(1, rand() % 2, scale, screenWidth, jumpCD)
 {
-	setTexture("./images/greenNerd.png", 14, 16);
-	setTexRect(1, 0);
-	// setX( 32 * scale * ( getRow( ) * -.5 + getIndex( ) ) + screenWidth / 2 );
-	setY(-32 * scale);
-
-	jumpState = 4;
+	setTexture("./images/slick.png", 12, 16);
+	setY(-14 * scale);
+	
+	if( getIndex( ) == 0 )
+	{
+		setTexRect( 5, 0 );
+		setX( getX( ) - 16 * scale );
+		setVX( 16 * movementScale / 30 );
+		jumpState = 1;
+	}
+	else
+	{
+		setTexRect( 1, 0 );
+		setX( getX( ) + 16 * scale );
+		setVX( -16 * movementScale / 30 );
+		jumpState = 2;
+	}
 	id = 6;
 }
 
 
 Slick::~Slick()
-{}
+{ }
 
 
 __int8 Slick::update(float fpsScale, __int16 screenWidth, float scale)
@@ -23,7 +34,7 @@ __int8 Slick::update(float fpsScale, __int16 screenWidth, float scale)
 	__int8 retVal = Character::update(fpsScale, screenWidth, scale);
 
 	if (jumpTimer > jumpCDTime)
-		Character::move(rand() % 2 + 1, scale, fpsScale);
+		Character::move(rand() % 2 + 1, scale * fpsScale);
 
 	return retVal;
 }

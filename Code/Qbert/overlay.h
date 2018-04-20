@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GameObject.h"
-#include "TimerManager.h"
 #include <vector>
 
 class Overlay
@@ -9,9 +8,9 @@ class Overlay
 public:
 	Overlay( );
 
-	void createObjects( __int8 player, __int8 lives, __int32 score, __int8 round, __int8 level, 
-		float scale, __int16 screenWidth );
-	void update( __int32 score, float timerIncVal );
+	//void ptr later
+	void createObjects( float scale, __int16 screenWidth, __int8 gState, void const **sArgs );
+	void update( float timerIncVal, __int8 gState, const void **sArgs );
 	void clearObjects( );
 
 	std::vector< GameObject * > &getElements( );
@@ -20,9 +19,8 @@ public:
 
 private:
 	void addElement( float scale, const char* texPath, __int16 texWidth, __int16 texHeight, 
-		__int16 x, __int16 y );
+		__int16 x, __int16 y, __int8 tAFrames = 0, float aDelay = 0.f );
 
 	std::vector< GameObject * > elements;
 	bool vanished;
-	TimerManager timers;
 };

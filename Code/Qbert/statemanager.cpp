@@ -3,8 +3,8 @@
 #include "Ugg.h"
 #include "Snake.h"
 #include "Wrongway.h"
-
-#include <iostream>
+#include "Slick.h"
+#include "Sam.h"
 
 StateManager::StateManager( )
 {
@@ -42,12 +42,27 @@ void StateManager::startGame( )
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
 	timers.erase( );
+	overlay.clearObjects( );
 
-	// Objects
+	// Create Map
 	q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
-	char* texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
+	const char *texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
 		"./images/blueYellow.png" };
 	platform.createMap( texStrings, screenWidth, scale );
+
+	// Create Overlay
+	void const *args[ 6 ];
+	const __int8 player = 1, lives = 3, round = 1, level = 1;
+	const __int32 score = 0;
+	const char *targetTexStr = "./images/blueYellowTarget.png";
+
+	args[ 0 ] = &player;
+	args[ 1 ] = &lives;
+	args[ 2 ] = &score;
+	args[ 3 ] = &round;
+	args[ 4 ] = &level;
+	args[ 5 ] = targetTexStr;
+	overlay.createObjects( scale, screenWidth, game, args );
 
 	// Data
 	state = game;
@@ -57,10 +72,6 @@ void StateManager::startGame( )
 	respawning = false;
 	paused = false;
 	pauseKeyHeld = false;
-
-	overlay.createObjects( 1, 3, 0, 0, 0, scale, screenWidth );
-
-	system( "CLS" );
 }
 
 
@@ -104,8 +115,9 @@ void StateManager::update( )
 		frame = 0;
 		fpsClock.restart( );
 	}
-
 	timers.updateTimers( 1.f / fps, paused );
+
+	//overlay.update( 0, 1.f / fps );
 
 	if( windowLoaded )
 	{
@@ -148,14 +160,19 @@ void StateManager::display( )
 		// Sort frontChars by zIndex
 		if( characters.size( ) > 1 )
 		{
-			unsigned __int8 i, fCSize = frontChars.size( ), lockedEls = 0;
+			size_t fCSize = frontChars.size( );
+			unsigned __int8 i, lockedEls = 0;
 			while( fCSize - lockedEls > 1 )
 			{
 				__int8 lastElI = fCSize - lockedEls - 1;
 				i = 0;
 				while( i < lastElI )
 				{
-					if( frontChars.at( i )->getZ( ) > frontChars.at( lastElI )->getZ( ) )
+					// Check if current elment Z is greater than last element Z, 
+					// if Z's are equal check if current element Y is greater than last element Y
+					if( frontChars.at( i )->getZ( ) > frontChars.at( lastElI )->getZ( ) || 
+						( frontChars.at( i )->getZ( ) == frontChars.at( lastElI )->getZ( ) &&
+							frontChars.at( i )->getY( ) > frontChars.at( lastElI )->getY( ) ) )
 					{
 						// Swap Elements
 						Character *swap = frontChars.at( i );
@@ -248,13 +265,13 @@ void StateManager::checkEvents( )
 */
 void StateManager::stateUpdate( )
 {
+	overlay.update( 1.f / fps, game, NULL );
 	switch( state )
 	{
 // Game
 	case game:
 		if( !paused )
 		{
-			overlay.update( 0, 1.f / fps );
 	// Spawns
 			if( timers.checkTimer( "snakeSpawn" ) > 4.0f )
 			{
@@ -264,7 +281,7 @@ void StateManager::stateUpdate( )
 			}
 			if( timers.checkTimer( "spawn" ) > 4.3f )
 			{
-				createCharacter( rand() % 2 + 2 );
+				createCharacter( rand() % 2 + 6 );
 				timers.resetTimer( "spawn" );
 			}
 	// Character updates
@@ -274,7 +291,9 @@ void StateManager::stateUpdate( )
 			{
 				// Shortened character handle
 				Character *curChar = characters.at( i );
-
+				
+				if( curChar != nullptr )
+				{
 				__int8 charReturn = curChar->update( fpsScale, screenWidth, scale);
 				if( curChar == q )
 					qReturn = charReturn;
@@ -285,32 +304,41 @@ void StateManager::stateUpdate( )
 				case 0: // Character does nothing
 					break;
 				case 1: // Character is jumping
-					collided = false;
-					if( curChar != q )
+					if( !q->isOOB( ) )
 					{
-						if( !q->isOOB( ) && checkCollision( q, curChar ) )
-							collided = true;
-					}
-					else
-					{
-						if( !q->isOOB( ) )
+						collided = false;
+						Character *collidedChar = curChar;
+						// Collision check for non-Qbert characters
+						if( curChar != q )
+						{
+							if( checkCollision( q, curChar ) )
+								collided = true;
+						}
+						// Collision check for Qbert
+						else
 						{
 							for( unsigned int i = 0; !collided && i < characters.size( ); i++ )
+							{
 								if( q != characters.at( i ) && checkCollision( q, characters.at( i ) ) )
+								{
 									collided = true;
+									collidedChar = characters.at( i );
+								}
+							}
 						}
-					}
 
-					if( collided )
-					{
-						if( curChar->getID( ) < 5 )
+						// Qbert collided w/ enemy
+						if( collided )
 						{
-							paused = true;
-							respawning = true;
-							timers.addTimer( "respawn", false );
+							if( collidedChar->getID( ) < 5 )
+							{
+								paused = true;
+								respawning = true;
+								timers.addTimer( "respawn", false );
+							}
+							else
+								destroyCharacter( collidedChar );
 						}
-						else
-							destroyCharacter( curChar );
 					}
 					break;
 				case 2: // Character completes jump
@@ -318,14 +346,14 @@ void StateManager::stateUpdate( )
 					{
 					case 0: // Qbert
 						platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
-
 						if( platform.isComplete( ) )
-						{
-							state = victory;
-							timers.addTimer( "flash", true );
-							flashChange = 0;
-						}
+							transitionState( victory );
 						break;
+					case 6: // Slick
+						platform.changeCube( curChar->getRow( ), curChar->getIndex( ), 2, 1 );
+						break;
+					case 7: // Sam
+						platform.changeCube( curChar->getRow( ), curChar->getIndex( ), 1, 1 );
 					default:
 						break;
 					}
@@ -341,6 +369,7 @@ void StateManager::stateUpdate( )
 					break;
 				}
 			} // End character updates
+			}
 		} // End !paused
 
 		if( respawning )
@@ -376,17 +405,36 @@ void StateManager::stateUpdate( )
 }
 
 
+void StateManager::transitionState( __int8 newState )
+{
+	switch( newState )
+	{
+	case game:
+		break;
+	case victory:
+		timers.addTimer( "flash", true );
+		flashChange = 0;
+		state = victory;
+		break;
+	default:
+		break;
+	}
+}
+
+
 bool StateManager::checkCollision( Character *c1, Character *c2 )
 {
 	bool collision = false;
 	
-	float xDist = c1->getX( ) - c2->getX( ), 
-		yDist = c1->getY( ) - c2->getY( ),
-		boundsFactor = 8 * scale;
-	if( xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && 
-		yDist < boundsFactor )
-		collision = true;
-
+	if( c1 != c2 )
+	{
+		float xDist = c1->getX( ) - c2->getX( ), 
+			yDist = c1->getY( ) - c2->getY( ),
+			boundsFactor = 8 * scale;
+		if( xDist > -boundsFactor && xDist < boundsFactor && yDist > -boundsFactor && 
+			yDist < boundsFactor )
+			collision = true;
+	}
 	return collision;
 }
 
@@ -414,8 +462,10 @@ Character* StateManager::createCharacter( __int8 characID )
 	case 5: // Magic Ball
 		break;
 	case 6: // Slick
+		c = new Slick( scale, screenWidth, 0.75f, scale * fpsScale );
 		break;
 	case 7: // Sam
+		c = new Sam( scale, screenWidth, 0.75f, scale * fpsScale );
 		break;
 	default:
 		break;

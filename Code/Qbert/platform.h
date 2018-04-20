@@ -7,7 +7,7 @@ class Platform
 public:
 	Platform( );
 
-	void createMap( char* newTexStrings[ 3 ], __int16 screenWidth, float scale );
+	void createMap( char const *newTexStrings[ 3 ], __int16 screenWidth, float scale );
 	void deleteMap( );
 
 	Cube** getCubes( );
@@ -18,6 +18,6 @@ public:
 
 private:
 	Cube** map;
-	char* texStrings[3]; // File paths for appropriate textures
+	char const *texStrings[3]; // File paths for appropriate textures
 	bool deleted = false;
 };

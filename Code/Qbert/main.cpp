@@ -2,7 +2,7 @@
 	
 int main()
 {
-	srand( time( NULL ) );
+	srand( (size_t)time( NULL ) );
 
 	StateManager game;
 

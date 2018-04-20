@@ -9,7 +9,7 @@ public:
 		float jumpCD );
 
 	virtual __int8 update( float fpsScale, __int16 screenWidth, float scale );
-	virtual void move( __int8 direction, float scale, float fpsScale );
+	virtual void move( __int8 direction, float movementScale );
 
 	virtual void moveAnimate( __int8 state ) = 0;
 

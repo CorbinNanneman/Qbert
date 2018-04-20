@@ -30,7 +30,7 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 			isEgg = false;
 		}
 		else if (jumpTimer > jumpCDTime)
-			Character::move(rand() % 2 + 1, scale, fpsScale);
+			Character::move(rand() % 2 + 1, scale * fpsScale);
 	}
 	// Hatched snake movement AI
 	else if( retVal == 0 || retVal == 2 )
@@ -40,21 +40,21 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 		if ( targetY < getY())
 		{
 			if (targetX == getX())
-				move(rand() % 2 * 3, scale, fpsScale);
+				move(rand() % 2 * 3, scale * fpsScale);
 			else if (targetX > getX())
-				move(0, scale, fpsScale);
+				move(0, scale * fpsScale);
 			else
-				move(3, scale, fpsScale);
+				move(3, scale * fpsScale);
 		}
 		// Target below snake
 		else if ( targetY > getY())
 		{
 			if (targetX == getX())
-				move(rand() % 2 + 1, scale, fpsScale);
+				move(rand() % 2 + 1, scale * fpsScale);
 			else if (targetX > getX())
-				move(1, scale, fpsScale);
+				move(1, scale * fpsScale);
 			else
-				move(2, scale, fpsScale);
+				move(2, scale * fpsScale);
 		}
 		// Target on same row as snake
 		else
@@ -67,35 +67,35 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 				{
 					// Actual qbert target y above snake y
 					if( qbert->getTY( ) < getY( ) )
-						move( 0, scale, fpsScale );
+						move( 0, scale * fpsScale );
 					// Actual qbert target y below snake y
 					else if( qbert->getTY( ) > getY( ) )
-						move( 1, scale, fpsScale );
+						move( 1, scale * fpsScale );
 					// Actual qbert target y equal to snake y
 					else
-						move( rand( ) % 2, scale, fpsScale );
+						move( rand( ) % 2, scale * fpsScale );
 				}
 				// Target is left of qbert
 				else
 				{
 					// Actual qbert target y above snake y
 					if( qbert->getTY( ) < getY( ) )
-						move( 3, scale, fpsScale );
+						move( 3, scale * fpsScale );
 					// Actual qbert target y below snake y
 					else if( qbert->getTY( ) > getY( ) )
-						move( 2, scale, fpsScale );
+						move( 2, scale * fpsScale );
 					// Actual qbert target y equal to snake y
 					else
-						move( rand( ) % 2 + 2, scale, fpsScale );
+						move( rand( ) % 2 + 2, scale * fpsScale );
 				}
 			}
 			// Target on bottom row
 			else
 			{
 				if( targetX > getX( ) )
-					move( 0, scale, fpsScale );
+					move( 0, scale * fpsScale );
 				else
-					move( 3, scale, fpsScale );
+					move( 3, scale * fpsScale );
 			}	
 		}
 	}
