@@ -39,6 +39,28 @@ void Platform::createMap( char const *newTexStrings[3], __int16 screenWidth, flo
 			map[row][index].setY( y );
 		}
 	}
+
+	for (int i = 0; i < 3/* <- # of disk */; i++)
+	{
+		disks.push_back(new Disk(scale));
+
+		bool occupied;
+		do
+		{
+			disks.at(i)->randomizePos();
+
+			occupied = false;
+			for (int j = 0; !occupied && j < disks.size() - 1; j++)
+				if (disks.at(i)->getIndex() == disks.at(j)->getIndex()
+					&& disks.at(i)->getRow() == disks.at(j)->getRow())
+					occupied = true;
+		} while (occupied);
+
+		// create disk
+		// are positions equal to positions other disks?
+		//YES: you must die, and be recreated
+		//NO: carry on then
+	}
 }
 
 
@@ -51,8 +73,16 @@ void Platform::deleteMap()
 		for ( int i = 0; i < 7; i++ )
 			delete[] map[i];
 		delete[] map;
+
+		for (int i = 0; i < disks.size(); i++)
+			delete disks.at(i);
+		
+
 		deleted = true;
 	}
+
+
+
 }
 
 
@@ -125,6 +155,8 @@ Cube** Platform::getCubes( )
 {
 	return map;
 }
+
+//make a get disks function
 
 
 bool Platform::isComplete( )

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Cube.h"
+#include "Disk.h"
 
 class Platform
 {
@@ -17,6 +18,7 @@ public:
 	~Platform();
 
 private:
+	std::vector<Disk*> disks;
 	Cube** map;
 	char const *texStrings[3]; // File paths for appropriate textures
 	bool deleted = false;

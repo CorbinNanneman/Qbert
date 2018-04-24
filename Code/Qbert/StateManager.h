@@ -7,6 +7,7 @@
 #include "Platform.h"
 #include "Qbert.h"
 #include "Overlay.h"
+#include "Disk.h"
 
 enum State
 {
@@ -31,6 +32,8 @@ public:
 	~StateManager( ); // Line 25
 
 private:
+	Disk *d = nullptr;
+
 	void startGame( ); // Line 32
 	void reset( ); // Line 49
 	

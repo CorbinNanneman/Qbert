@@ -49,6 +49,7 @@
     <ClCompile Include="MagicBall.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="Disk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Wrongway.h">
@@ -96,6 +97,7 @@
     <ClInclude Include="MagicBall.h">
       <Filter>Header Files\Characters</Filter>
     </ClInclude>
+    <ClInclude Include="Disk.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

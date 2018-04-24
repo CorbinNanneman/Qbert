@@ -38,8 +38,7 @@ StateManager::~StateManager( )
 void StateManager::startGame( )
 {
 	// Deallocate any old memory
-	if( platform.getCubes( ) != nullptr )
-		platform.deleteMap( );
+	platform.deleteMap();
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
 	timers.erase( );
@@ -47,6 +46,10 @@ void StateManager::startGame( )
 
 	// Create Map
 	q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
+	d = new Disk(scale);
+	d->setX(60);
+	d->setY(360);
+	
 	const char *texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
 		"./images/blueYellow.png" };
 	platform.createMap( texStrings, screenWidth, scale );
@@ -71,6 +74,7 @@ void StateManager::reset( )
 {
 	// Objects
 	delete q;
+	delete d;
 	while( characters.size( ) != 0 )
 		destroyCharacter( characters.at( 0 ) );
 	platform.deleteMap( );
@@ -183,6 +187,8 @@ void StateManager::display( )
 		// Draw overlay
 		for( unsigned int i = 0; i < overlay.size( ); i++ )
 			window.draw( *overlay.at( i )->getSpritePtr( ) );
+
+		window.draw(*d->getSpritePtr());
 	}
 	window.display( );
 }
@@ -262,6 +268,7 @@ void StateManager::stateUpdate( )
 		if( !paused )
 		{
 	// Spawns
+			d->update(1.f / fps);
 			if( timers.checkTimer( "snakeSpawn" ) > 4.0f )
 			{
 				createCharacter( 1 );
@@ -411,6 +418,9 @@ void StateManager::transitionState( State newState )
 	switch( newState )
 	{
 	case game:
+		
+
+
 		break;
 	case victory:
 		timers.addTimer( "flash", true );
