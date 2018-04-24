@@ -41,17 +41,17 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 	{
 		findTarget( );
 		// Target above snake
-		if ( targetY < getY())
+		if ( targetY < getY( ) - getYOffset( ) )
 		{
 			if (targetX == getX())
-				move(rand() % 2 * 3, scale * fpsScale);
-			else if (targetX > getX())
+				move(rand( ) % 2 * 3, scale * fpsScale);
+			else if (targetX > getX( ) )
 				move(0, scale * fpsScale);
 			else
 				move(3, scale * fpsScale);
 		}
 		// Target below snake
-		else if ( targetY > getY())
+		else if ( targetY > getY( ) - getYOffset( ) )
 		{
 			if (targetX == getX())
 				move(rand() % 2 + 1, scale * fpsScale);
@@ -70,10 +70,10 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 				if( targetX > getX( ) )
 				{
 					// Actual qbert target y above snake y
-					if( qbert->getTY( ) < getY( ) )
+					if( qbert->getTY( ) < getY( ) - getYOffset( ) )
 						move( 0, scale * fpsScale );
 					// Actual qbert target y below snake y
-					else if( qbert->getTY( ) > getY( ) )
+					else if( qbert->getTY( ) > getY( ) - getYOffset( ) )
 						move( 1, scale * fpsScale );
 					// Actual qbert target y equal to snake y
 					else
@@ -83,10 +83,10 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 				else
 				{
 					// Actual qbert target y above snake y
-					if( qbert->getTY( ) < getY( ) )
+					if( qbert->getTY( ) < getY( ) - getYOffset( ) )
 						move( 3, scale * fpsScale );
 					// Actual qbert target y below snake y
-					else if( qbert->getTY( ) > getY( ) )
+					else if( qbert->getTY( ) > getY( ) - getYOffset( ) )
 						move( 2, scale * fpsScale );
 					// Actual qbert target y equal to snake y
 					else
@@ -149,6 +149,7 @@ void Snake::moveAnimate(__int8 state)
 	}
 }
 
+
 void Snake::findTarget( )
 {
 	if( !qbert->isOOB( ) && !qbert->isJumping( ) )
@@ -159,7 +160,7 @@ void Snake::findTarget( )
 	else
 	{
 		// If Snake isn't on Q's last pos
-		if( getX( ) != qbert->getLX( ) || getY( ) != qbert->getLY( ) )
+		if( getX( ) - getXOffset( ) != qbert->getLX( ) || getY( ) - getYOffset( ) != qbert->getLY( ) )
 		{
 			targetX = qbert->getLX( );
 			targetY = qbert->getLY( );

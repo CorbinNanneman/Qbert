@@ -83,13 +83,13 @@ void GameObject::setVY( float newVY )
 
 float GameObject::getX( )
 {
-	return x + xOffset;
+	return x;
 }
 
 
 float GameObject::getY( )
 {
-	return y + yOffset;
+	return y;
 }
 
 

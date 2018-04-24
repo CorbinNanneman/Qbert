@@ -53,7 +53,7 @@ void Overlay::createObjects( float scale, __int16 screenWidth, __int8 gState, vo
 		addElement( scale, "./images/level.png", 28, 5,
 			screenWidth / 2 + static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 37 * scale ) );
 		// Level Num
-		addElement( scale, "./images/numGreen.png", 6, 6,
+		addElement( scale, "./images/numOrange.png", 6, 6,
 			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), static_cast< __int16 >( 37 * scale ) );
 		elements.at( 8 )->setTexRect( *static_cast< const __int8 * >( sArgs[ 4 ] ), 0 );
 		// Round:

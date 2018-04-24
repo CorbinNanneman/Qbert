@@ -43,7 +43,7 @@ void StateManager::startGame( )
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
 	timers.erase( );
-	overlay.clearObjects( );
+	clearOverlay( );
 
 	// Create Map
 	q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
@@ -51,22 +51,12 @@ void StateManager::startGame( )
 		"./images/blueYellow.png" };
 	platform.createMap( texStrings, screenWidth, scale );
 
-	// Create Overlay
-	void const *args[ 6 ];
-	const __int8 player = 1, lives = 3, round = 1, level = 1;
-	const __int32 score = 0;
-	const char *targetTexStr = "./images/blueYellowTarget.png";
-
-	args[ 0 ] = &player;
-	args[ 1 ] = &lives;
-	args[ 2 ] = &score;
-	args[ 3 ] = &round;
-	args[ 4 ] = &level;
-	args[ 5 ] = targetTexStr;
-	overlay.createObjects( scale, screenWidth, game, args );
+	level = 1;
+	player = 1;
 
 	// Data
 	state = game;
+	transitionState( game );
 
 	timers.addTimer( "snakeSpawn", true );
 	
@@ -165,7 +155,7 @@ void StateManager::display( )
 			unsigned __int8 i, lockedEls = 0;
 			while( fCSize - lockedEls > 1 )
 			{
-				__int8 lastElI = fCSize - lockedEls - 1;
+				__int8 lastElI = static_cast< __int8 >( fCSize ) - lockedEls - 1;
 				i = 0;
 				while( i < lastElI )
 				{
@@ -191,9 +181,8 @@ void StateManager::display( )
 			window.draw( *frontChars.at( i )->getSpritePtr( ) );
 
 		// Draw overlay
-		std::vector< GameObject * > &elements = overlay.getElements( );
-		for( unsigned int i = 0; i < elements.size( ); i++ )
-			window.draw( *elements.at( i )->getSpritePtr( ) );
+		for( unsigned int i = 0; i < overlay.size( ); i++ )
+			window.draw( *overlay.at( i )->getSpritePtr( ) );
 	}
 	window.display( );
 }
@@ -266,7 +255,6 @@ void StateManager::checkEvents( )
 */
 void StateManager::stateUpdate( )
 {
-	overlay.update( 1.f / fps, game, NULL );
 	switch( state )
 	{
 // Game
@@ -280,12 +268,26 @@ void StateManager::stateUpdate( )
 				timers.removeTimer( "snakeSpawn" );
 				timers.addTimer( "spawn", true );
 			}
-			if( timers.checkTimer( "spawn" ) > 4.3f )
+			if( timers.checkTimer( "spawn" ) > 3.7f )
 			{
-				createCharacter( 5 );
+				createCharacter( rand( ) % 6 + 2 );
 				timers.resetTimer( "spawn" );
 			}
-	// Character updates
+	// Overlay Updates
+			for( unsigned __int8 i = 0; i < overlay.size( ); i++ )
+			{
+				switch( i )
+				{
+				case 0:
+				case 4:
+					overlay.at( i )->update( 1.f / fps );
+					break;
+				default:
+					overlay.at( i )->update( );
+					break;
+				}
+			}
+	// Character Updates
 			static __int8 qReturn;
 			bool collided;
 			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
@@ -327,7 +329,6 @@ void StateManager::stateUpdate( )
 								}
 							}
 						}
-
 						// Qbert collided w/ enemy
 						if( collided )
 						{
@@ -399,14 +400,13 @@ void StateManager::stateUpdate( )
 			}
 		}
 		break;
-
 	default:
 		break;
 	}
 }
 
 
-void StateManager::transitionState( __int8 newState )
+void StateManager::transitionState( State newState )
 {
 	switch( newState )
 	{
@@ -420,6 +420,79 @@ void StateManager::transitionState( __int8 newState )
 	default:
 		break;
 	}
+	createOverlay( );
+	state = newState;
+}
+
+
+void StateManager::createOverlay( )
+{
+	switch( state )
+	{
+	case game:
+		if( player == 1 )
+			addOverlayEl( "./images/player1.png", 51, 7,
+				screenWidth / 2 - static_cast< __int16 >( 87 * scale ), static_cast< __int16 >( 10 * scale ),
+				6, 0.08f );
+		else
+			addOverlayEl( "./images/player2.png", 51, 7,
+				screenWidth / 2 - static_cast< __int16 >( 87 * scale ), static_cast< __int16 >( 10 * scale ),
+				6, 0.08f );
+		// Player #
+		addOverlayEl( "./images/playerNum.png", 8, 11,
+			screenWidth / 2 - static_cast< __int16 >( 52 * scale ), static_cast< __int16 >( 10 * scale ) );
+		overlay.at( 1 )->setTexRect( player - 1, 0 );
+		// Score
+		overlay.push_back( new GameObject( ) );
+		// Change To:
+		addOverlayEl( "./images/changeTo.png", 47, 5,
+			screenWidth / 2 - static_cast< __int16 >( 89 * scale ), static_cast< __int16 >( 37 * scale ) );
+		// Target Arrows
+		addOverlayEl( "./images/arrows.png", 48, 7,
+			screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ),
+			3, 0.6f );
+		// Target Cube
+		addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+			screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+		// Lives Counter
+		overlay.push_back( new GameObject( ) );
+		// Level:
+		addOverlayEl( "./images/level.png", 28, 5,
+			screenWidth / 2 + static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 37 * scale ) );
+		// Level Num
+		addOverlayEl( "./images/numOrange.png", 6, 6,
+			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), static_cast< __int16 >( 37 * scale ) );
+		overlay.at( 8 )->setTexRect( level, 0 );
+		// Round:
+		addOverlayEl( "./images/round.png", 30, 5,
+			screenWidth / 2 + static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 47 * scale ) );
+		// Round Num
+		addOverlayEl( "./images/numOrange.png", 6, 6,
+			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), static_cast< __int16 >( 47 * scale ) );
+		overlay.at( 10 )->setTexRect( level, 0 );
+		break;
+	default:
+		break;
+	}
+}
+
+
+void StateManager::addOverlayEl( const char* texPath, __int16 texWidth, __int16 texHeight,
+	__int16 x, __int16 y, __int8 tAFrames, float aDelay )
+{
+	GameObject *g = new GameObject( scale, tAFrames, aDelay );
+	g->setTexture( texPath, texWidth, texHeight );
+	g->setX( x );
+	g->setY( y );
+	overlay.push_back( g );
+}
+
+
+void StateManager::clearOverlay( )
+{
+	for( unsigned int i = 0; i < overlay.size( ); i++ )
+		delete overlay.at( i );
+	overlay.clear( );
 }
 
 
