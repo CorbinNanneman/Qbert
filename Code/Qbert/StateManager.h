@@ -6,7 +6,6 @@
 
 #include "Platform.h"
 #include "Qbert.h"
-#include "Overlay.h"
 
 enum State
 {
@@ -32,7 +31,7 @@ public:
 
 private:
 	void startGame( ); // Line 32
-	void reset( ); // Line 49
+	void clMem( ); // Line 49
 	
 	void checkEvents( ); // Line 77
 	void stateUpdate( );
@@ -52,10 +51,9 @@ private:
 	__int8 player, level;
 
 	// FPS Tracking
-	__int8 targetFps = 60;
-	unsigned __int16 frame = 0,
-					 fps = targetFps;
-	float fpsScale = targetFps * 1.f / fps;
+	__int8 targetFps;
+	unsigned __int16 frame, fps;
+	float fpsScale;
 	sf::Clock fpsClock;
 	
 	// Window

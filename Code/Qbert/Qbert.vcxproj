@@ -126,7 +126,6 @@
     <ClCompile Include="Wrongway.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Ugg.cpp" />
-    <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Qbert.cpp" />
     <ClCompile Include="RedBall.cpp" />
@@ -143,7 +142,6 @@
     <ClInclude Include="Slick.h" />
     <ClInclude Include="Wrongway.h" />
     <ClInclude Include="Ugg.h" />
-    <ClInclude Include="Overlay.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Qbert.h" />
     <ClInclude Include="RedBall.h" />

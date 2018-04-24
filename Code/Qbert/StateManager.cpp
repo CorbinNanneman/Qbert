@@ -28,10 +28,7 @@ StateManager::StateManager( )
 
 StateManager::~StateManager( )
 {
-	platform.deleteMap( );
-	while( characters.size( ) > 0 )
-		destroyCharacter( characters.at( 0 ) );
-	timers.erase( );
+	clMem( );
 }
 
 
@@ -66,22 +63,17 @@ void StateManager::startGame( )
 }
 
 
-// Reset all data to initial states
-void StateManager::reset( )
+void StateManager::clMem( )
 {
-	// Objects
-	delete q;
 	while( characters.size( ) != 0 )
 		destroyCharacter( characters.at( 0 ) );
 	platform.deleteMap( );
-
-	// Timers
 	timers.erase( );
-
-	startGame( );
+	clearOverlay( );
 }
 
 
+#pragma region Base Game Loop
 bool StateManager::isOpen( )
 {
 	return window.isOpen( );
@@ -107,8 +99,6 @@ void StateManager::update( )
 		fpsClock.restart( );
 	}
 	timers.updateTimers( 1.f / fps, paused );
-
-	//overlay.update( 0, 1.f / fps );
 
 	if( windowLoaded )
 	{
@@ -186,6 +176,7 @@ void StateManager::display( )
 	}
 	window.display( );
 }
+#pragma endregion
 
 
 void StateManager::checkEvents( )
