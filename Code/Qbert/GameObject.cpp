@@ -5,8 +5,8 @@ GameObject::GameObject( float scale, __int8 tAFrames, float aDelay )
 {
 	x = 0;
 	y = 0;
-	vX = 0;
-	vY = 0;
+	targetVX = 0;
+	targetVY = 0;
 	z = 0;
 	xOffset = 0;
 	yOffset = 0;
@@ -25,7 +25,7 @@ GameObject::~GameObject( )
 
 
 // Update for auto-animated objects
-void GameObject::update( float incVal )
+void GameObject::update( float fpsScale, float incVal )
 {
 	animTimer += incVal;
 	if( animTimer > animDelay )
@@ -33,14 +33,15 @@ void GameObject::update( float incVal )
 		cycleAnimation( );
 		animTimer = 0.f;
 	}
-	update( );
+	update( fpsScale );
 }
 
 
-void GameObject::update( )
+void GameObject::update( float fpsScale )
 {
-	x += vX;
-	y += vY;
+	// Target VX is modified to account for fps
+	x += targetVX * fpsScale;
+	y += targetVY * fpsScale;
 	sprite.setPosition( x, y );
 }
 
@@ -71,13 +72,13 @@ void GameObject::setY( float newY )
 
 void GameObject::setVX( float newVX )
 {
-	vX = newVX;
+	targetVX = newVX;
 }
 
 
 void GameObject::setVY( float newVY )
 {
-	vY = newVY;
+	targetVY = newVY;
 }
 
 
@@ -95,13 +96,13 @@ float GameObject::getY( )
 
 float GameObject::getVX( )
 {
-	return vX;
+	return targetVX;
 }
 
 
 float GameObject::getVY( )
 {
-	return vY;
+	return targetVY;
 }
 
 

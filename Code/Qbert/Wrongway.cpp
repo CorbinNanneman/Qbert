@@ -20,7 +20,7 @@ __int8 Wrongway::update(float fpsScale, __int16 screenWidth, float scale)
 	__int8 retVal = Character::update(fpsScale, screenWidth, scale);
 
 	if (jumpTimer > jumpCDTime)
-		move(rand() % 2 + 8, scale * fpsScale);
+		move(rand() % 2 + 8, scale );
 
 	return retVal;
 }

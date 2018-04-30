@@ -22,7 +22,7 @@ __int8 RedBall::update( float fpsScale, __int16 screenWidth, float scale)
 	__int8 retVal = Character::update( fpsScale, screenWidth, scale);
 
 	if( jumpTimer > jumpCDTime )
-		Character::move( rand() % 2 + 1, scale * fpsScale );
+		Character::move( rand() % 2 + 1, scale );
 
 	return retVal;
 }

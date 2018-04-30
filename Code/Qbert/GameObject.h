@@ -8,8 +8,8 @@ class GameObject
 public:
 	GameObject( float scale = 1, __int8 tAFrames = 0, float aDelay = 0.f );
 
-	void update( float incVal );
-	virtual void update( );
+	void update( float fpsScale, float incVal );
+	virtual void update( float fpsScale );
 
 	bool isOffScreen( __int16 screenWidth, __int16 screenHeight, float scale );
 
@@ -41,7 +41,7 @@ public:
 protected:
 	
 private:
-	float x, y, vX, vY, z, xOffset, yOffset;
+	float x, y, targetVX, targetVY, z, xOffset, yOffset;
 	__int16 texWidth, texHeight;
 	sf::Texture texture;
 	sf::Sprite sprite;

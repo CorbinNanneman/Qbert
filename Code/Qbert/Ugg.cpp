@@ -22,7 +22,7 @@ __int8 Ugg::update(float fpsScale, __int16 screenWidth, float scale)
 	__int8 retVal = Character::update( fpsScale, screenWidth, scale);
 
 	if( jumpTimer > jumpCDTime )
-		move( rand( ) % 2 + 5, scale * fpsScale );	
+		move( rand( ) % 2 + 5, scale );	
 
 	return retVal;
 }

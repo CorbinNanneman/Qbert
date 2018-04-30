@@ -11,9 +11,8 @@ StateManager::StateManager( )
 {
 	// FPS Tracking
 	targetFps = 60;
-	frame = 0;
 	fps = targetFps;
-	fpsScale = targetFps * 1.f / fps;
+	fpsScale = targetFps / fps;
 
 	// Window
 	screenWidth = 800;
@@ -22,7 +21,9 @@ StateManager::StateManager( )
 	window.create( sf::VideoMode( screenWidth, screenHeight ), "Q*Bert" );
 	window.setFramerateLimit( 120 );
 
-	timers.addTimer( "windowLoaded", false );
+	windowLoaded = true;
+	startGame( );
+	//timers.addTimer( "windowLoaded", false );
 }
 
 
@@ -88,30 +89,14 @@ void StateManager::clear( )
 
 void StateManager::update( )
 {
-	// FPS Tracking
-	frame++;
-	if( fpsClock.getElapsedTime( ).asMilliseconds( ) > 999 )
-	{
-		fps = frame;
-		// Determines adjustment needed to match proper frame rate
-		fpsScale = static_cast< float >( targetFps ) / fps;
-		frame = 0;
-		fpsClock.restart( );
-	}
+	fps = 1.f / fpsClock.getElapsedTime( ).asSeconds( );
+	fpsClock.restart( );
+	fpsScale = targetFps / fps;
+
 	timers.updateTimers( 1.f / fps, paused );
 
-	if( windowLoaded )
-	{
-		checkEvents( );
-		stateUpdate( );
-	}
-	// This is done to stabilize framerate after window is created.
-	else if( timers.checkTimer( "windowLoaded" ) > 5.f )
-	{
-		windowLoaded = true;
-		timers.removeTimer( "windowLoaded" );
-		startGame( );
-	}
+	checkEvents( );
+	stateUpdate( );
 }
 
 
@@ -132,11 +117,10 @@ void StateManager::display( )
 
 		// Draw map
 		Cube** map = platform.getCubes( );
-		for( int row = 0; row < 7; row++ )
-		{
-			for( int index = 0; index < row + 1; index++ )
-				window.draw( *map[ row ][ index ].getSpritePtr( ) );
-		}
+		if( map != nullptr ) // Safety
+			for( int row = 0; row < 7; row++ )
+				for( int index = 0; index < row + 1; index++ )
+					window.draw( *map[ row ][ index ].getSpritePtr( ) );
 
 		// Sort frontChars by zIndex
 		if( characters.size( ) > 1 )
@@ -202,19 +186,19 @@ void StateManager::checkEvents( )
 				break;
 			case sf::Keyboard::D:
 				if( state == game && !paused )
-					q->move( 0, scale, fpsScale );
+					q->move( 0, scale );
 				break;
 			case sf::Keyboard::C:
 				if( state == game && !paused )
-					q->move( 1, scale, fpsScale );
+					q->move( 1, scale );
 				break;
 			case sf::Keyboard::Z:
 				if( state == game && !paused )
-					q->move( 2, scale, fpsScale );
+					q->move( 2, scale );
 				break;
 			case sf::Keyboard::S:
 				if( state == game && !paused )
-					q->move( 3, scale, fpsScale );
+					q->move( 3, scale );
 				break;
 			case sf::Keyboard::P:
 				if( !pauseKeyHeld && !respawning )
@@ -253,13 +237,13 @@ void StateManager::stateUpdate( )
 		if( !paused )
 		{
 	// Spawns
-			if( timers.checkTimer( "snakeSpawn" ) > 4.0f )
+			if( !frozen && timers.checkTimer( "snakeSpawn" ) > 4.0f )
 			{
 				createCharacter( 1 );
 				timers.removeTimer( "snakeSpawn" );
 				timers.addTimer( "spawn", true );
 			}
-			if( timers.checkTimer( "spawn" ) > 3.7f )
+			if( !frozen && timers.checkTimer( "spawn" ) > 3.7f )
 			{
 				createCharacter( rand( ) % 6 + 2 );
 				timers.resetTimer( "spawn" );
@@ -271,17 +255,17 @@ void StateManager::stateUpdate( )
 				{
 				case 0:
 				case 4:
-					overlay.at( i )->update( 1.f / fps );
+					overlay.at( i )->update( fpsScale, 1.f / fps );
 					break;
 				default:
-					overlay.at( i )->update( );
+					overlay.at( i )->update( fpsScale );
 					break;
 				}
 			}
 	// Character Updates
-			static __int8 qReturn;
+			__int8 qReturn;
 			bool collided;
-			for( unsigned __int8 i = 0; i < characters.size( ); i++ )
+			for( unsigned __int8 i = 0; (!frozen || i == 0 ) && i < characters.size( ); i++ )
 			{
 				// Shortened character handle
 				Character *curChar = characters.at( i );
@@ -330,7 +314,14 @@ void StateManager::stateUpdate( )
 								timers.addTimer( "respawn", false );
 							}
 							else
+							{
+								if( collidedChar->getID( ) == 5 )
+								{
+									frozen = true;
+									timers.addTimer( "freeze", true );
+								}
 								destroyCharacter( collidedChar );
+							}
 						}
 					}
 					break;
@@ -372,6 +363,11 @@ void StateManager::stateUpdate( )
 				timers.removeTimer( "respawn" );
 				startGame( );
 			}
+		}
+		if( frozen && timers.checkTimer( "freeze" ) > 4.f )
+		{
+			frozen = false;
+			timers.removeTimer( "freeze" );
 		}
 		break;
 // Victory
@@ -528,10 +524,10 @@ Character* StateManager::createCharacter( __int8 characID )
 		c = new MagicBall( scale, screenWidth, 1.0f );
 		break;
 	case 6: // Slick
-		c = new Slick( scale, screenWidth, 0.75f, scale * fpsScale );
+		c = new Slick( scale, screenWidth, 0.75f );
 		break;
 	case 7: // Sam
-		c = new Sam( scale, screenWidth, 0.75f, scale * fpsScale );
+		c = new Sam( scale, screenWidth, 0.75f );
 		break;
 	default:
 		break;

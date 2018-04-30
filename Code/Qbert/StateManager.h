@@ -52,7 +52,8 @@ private:
 
 	// FPS Tracking
 	__int8 targetFps;
-	unsigned __int16 frame, fps;
+	unsigned __int16 frame;
+	float fps;
 	float fpsScale;
 	sf::Clock fpsClock;
 	
@@ -77,4 +78,5 @@ private:
 	bool respawning;
 	int score;
 	__int8 lives;
+	bool frozen;
 };
