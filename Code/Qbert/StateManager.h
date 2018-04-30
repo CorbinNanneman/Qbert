@@ -48,7 +48,7 @@ private:
 
 	// Temp
 	__int8 flashChange;
-	__int8 player, level;
+	__int8 player, level, round;
 
 	// FPS Tracking
 	__int8 targetFps;

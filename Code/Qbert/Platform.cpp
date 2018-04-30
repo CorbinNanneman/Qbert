@@ -3,6 +3,7 @@
 Platform::Platform( )
 { 
 	map = nullptr;
+	deleted = true;
 }
 
 
@@ -11,11 +12,9 @@ Platform::~Platform( )
 
 
 // When only 2 cube textures are needed, newTexStrings[1] is set to NULL
-void Platform::createMap( char const *newTexStrings[3], __int16 screenWidth, float scale )
+void Platform::createMap( __int8 level, __int8 round, __int16 screenWidth, float scale )
 {
-	texStrings[ 0 ] = newTexStrings[ 0 ];
-	texStrings[ 1 ] = newTexStrings[ 1 ];
-	texStrings[ 2 ] = newTexStrings[ 2 ];
+	setTextures( level, round );
 
 	// Allocate map storage
 	map = new Cube*[7];
@@ -117,6 +116,58 @@ void Platform::changeCube( __int8 row, __int8 index, __int8 changeType, __int8 l
 	{
 		map[row][index].setTexture( texStrings[cubeState], 32, 32 );
 		map[row][index].setState( cubeState );
+	}
+}
+
+
+void Platform::setTextures( __int8 level, __int8 round )
+{
+	switch( level * round )
+	{
+	default:
+	case 1: // Level 1 Round 1
+		texStrings[ 0 ] = "./images/blueBlue.png";
+		texStrings[ 1 ] = "./images/bluePink.png";
+		texStrings[ 2 ] = "./images/blueYellow.png";
+		break;
+	case 2:// Level 1 Round 2
+		break;
+	case 3:// Level 1 Round 3
+		break;
+	case 4:// Level 1 Round 4
+		break;
+	case 5:// Level 2 Round 1
+		break;
+	case 6:// Level 2 Round 2
+		break;
+	case 7:// Level 2 Round 3
+		break;
+	case 8:// Level 2 Round 4
+		break;
+	case 9:// Level 3 Round 1
+		break;
+	case 10:// Level 3 Round 2
+		break;
+	case 11:// Level 3 Round 3
+		break;
+	case 12:// Level 3 Round 4
+		break;
+	case 13:// Level 4 Round 1
+		break;
+	case 14:// Level 4 Round 2
+		break;
+	case 15:// Level 4 Round 3
+		break;
+	case 16:// Level 4 Round 4
+		break;
+	case 17:// Level 5 Round 1
+		break;
+	case 18:// Level 5 Round 2
+		break;
+	case 19:// Level 5 Round 3
+		break;
+	case 20:// Level 5 Round 4
+		break;
 	}
 }
 

@@ -23,7 +23,6 @@ StateManager::StateManager( )
 
 	windowLoaded = true;
 	startGame( );
-	//timers.addTimer( "windowLoaded", false );
 }
 
 
@@ -35,32 +34,9 @@ StateManager::~StateManager( )
 
 void StateManager::startGame( )
 {
-	// Deallocate any old memory
-	if( platform.getCubes( ) != nullptr )
-		platform.deleteMap( );
-	while( characters.size( ) > 0 )
-		destroyCharacter( characters.at( 0 ) );
-	timers.erase( );
-	clearOverlay( );
+	clMem( );
 
-	// Create Map
-	q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
-	const char *texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
-		"./images/blueYellow.png" };
-	platform.createMap( texStrings, screenWidth, scale );
-
-	level = 1;
-	player = 1;
-
-	// Data
-	state = game;
 	transitionState( game );
-
-	timers.addTimer( "snakeSpawn", true );
-	
-	respawning = false;
-	paused = false;
-	pauseKeyHeld = false;
 }
 
 
@@ -75,6 +51,7 @@ void StateManager::clMem( )
 
 
 #pragma region Base Game Loop
+
 bool StateManager::isOpen( )
 {
 	return window.isOpen( );
@@ -83,7 +60,13 @@ bool StateManager::isOpen( )
 
 void StateManager::clear( )
 {
-	window.clear( sf::Color::Black );
+	if( frozen && timers.checkTimer( "freeze" ) < 1.f )
+	{
+		window.clear( sf::Color( 0, 1.f - timers.checkTimer( "freeze" ) * 255, 
+			1.f - timers.checkTimer( "freeze" ) * 255 ) );
+	}
+	else
+		window.clear( sf::Color::Black );
 }
 
 
@@ -102,62 +85,61 @@ void StateManager::update( )
 
 void StateManager::display( )
 {
-	if( windowLoaded )
+	std::vector< Character * > frontChars;
+
+	// Draw characters that are behind map
+	for( unsigned __int8 i = 0; i < characters.size( ); i++ )
 	{
-		std::vector< Character * > frontChars;
-
-		// Draw characters that are behind map
-		for( unsigned __int8 i = 0; i < characters.size( ); i++ )
-		{
-			if( characters.at( i )->getZ( ) < 0 )
-				window.draw( *characters.at( i )->getSpritePtr( ) );
-			else
-				frontChars.push_back( characters.at( i ) );
-		}
-
-		// Draw map
-		Cube** map = platform.getCubes( );
-		if( map != nullptr ) // Safety
-			for( int row = 0; row < 7; row++ )
-				for( int index = 0; index < row + 1; index++ )
-					window.draw( *map[ row ][ index ].getSpritePtr( ) );
-
-		// Sort frontChars by zIndex
-		if( characters.size( ) > 1 )
-		{
-			size_t fCSize = frontChars.size( );
-			unsigned __int8 i, lockedEls = 0;
-			while( fCSize - lockedEls > 1 )
-			{
-				__int8 lastElI = static_cast< __int8 >( fCSize ) - lockedEls - 1;
-				i = 0;
-				while( i < lastElI )
-				{
-					// Check if current elment Z is greater than last element Z, 
-					// if Z's are equal check if current element Y is greater than last element Y
-					if( frontChars.at( i )->getZ( ) > frontChars.at( lastElI )->getZ( ) || 
-						( frontChars.at( i )->getZ( ) == frontChars.at( lastElI )->getZ( ) &&
-							frontChars.at( i )->getY( ) > frontChars.at( lastElI )->getY( ) ) )
-					{
-						// Swap Elements
-						Character *swap = frontChars.at( i );
-						frontChars.at( i ) = frontChars.at( lastElI );
-						frontChars.at( lastElI ) = swap;
-					}
-					i++;
-				}
-				lockedEls++;
-			}
-		}
-
-		// Draw characters that are in front of map
-		for( unsigned __int8 i = 0; i < frontChars.size( ); i++ )
-			window.draw( *frontChars.at( i )->getSpritePtr( ) );
-
-		// Draw overlay
-		for( unsigned int i = 0; i < overlay.size( ); i++ )
-			window.draw( *overlay.at( i )->getSpritePtr( ) );
+		if( characters.at( i )->getZ( ) < 0 &&  characters.at( i )->getID( ) != 2 &&
+			characters.at( i )->getID( ) != 3 )
+			window.draw( *characters.at( i )->getSpritePtr( ) );
+		else
+			frontChars.push_back( characters.at( i ) );
 	}
+
+	// Draw map
+	Cube** map = platform.getCubes( );
+	if( map != nullptr ) // Safety
+		for( int row = 0; row < 7; row++ )
+			for( int index = 0; index < row + 1; index++ )
+				window.draw( *map[ row ][ index ].getSpritePtr( ) );
+
+	// Sort frontChars by zIndex
+	if( characters.size( ) > 1 )
+	{
+		size_t fCSize = frontChars.size( );
+		unsigned __int8 i, lockedEls = 0;
+		while( fCSize - lockedEls > 1 )
+		{
+			__int8 lastElI = static_cast< __int8 >( fCSize ) - lockedEls - 1;
+			i = 0;
+			while( i < lastElI )
+			{
+				// Check if current elment Z is greater than last element Z, 
+				// if Z's are equal check if current element Y is greater than last element Y
+				if( frontChars.at( i )->getZ( ) > frontChars.at( lastElI )->getZ( ) || 
+					( frontChars.at( i )->getZ( ) == frontChars.at( lastElI )->getZ( ) &&
+						frontChars.at( i )->getY( ) > frontChars.at( lastElI )->getY( ) ) )
+				{
+					// Swap Elements
+					Character *swap = frontChars.at( i );
+					frontChars.at( i ) = frontChars.at( lastElI );
+					frontChars.at( lastElI ) = swap;
+				}
+				i++;
+			}
+			lockedEls++;
+		}
+	}
+
+	// Draw characters that are in front of map
+	for( unsigned __int8 i = 0; i < frontChars.size( ); i++ )
+		window.draw( *frontChars.at( i )->getSpritePtr( ) );
+
+	// Draw overlay
+	for( unsigned int i = 0; i < overlay.size( ); i++ )
+		window.draw( *overlay.at( i )->getSpritePtr( ) );
+
 	window.display( );
 }
 #pragma endregion
@@ -383,7 +365,7 @@ void StateManager::stateUpdate( )
 			if( ++flashChange > 14 )
 			{
 				timers.removeTimer( "flash" );
-				startGame( );
+				transitionState( game );
 			}
 		}
 		break;
@@ -398,17 +380,30 @@ void StateManager::transitionState( State newState )
 	switch( newState )
 	{
 	case game:
+		// Create Map
+		q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
+		platform.createMap( level, round, screenWidth, scale );
+
+		level = 1;
+		player = 1;
+		respawning = false;
+		paused = false;
+		pauseKeyHeld = false;
+
+		timers.addTimer( "snakeSpawn", true );
 		break;
 	case victory:
 		timers.addTimer( "flash", true );
+		level++;
+		round++;
 		flashChange = 0;
 		state = victory;
 		break;
 	default:
 		break;
 	}
-	createOverlay( );
 	state = newState;
+	createOverlay( );
 }
 
 

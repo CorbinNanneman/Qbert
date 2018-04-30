@@ -31,6 +31,9 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 		{
 			setTexture( "./images/snake.png", 16, 32 );
 			setYOffset( -3 * scale );
+			// Re-set position for offset
+			setX( 32 * scale * ( getRow( ) * -.5f + getIndex( ) ) + screenWidth / 2 );
+			setY( scale * ( getRow( ) * 24 + 34 ) );
 			isEgg = false;
 		}
 		else if (jumpTimer > jumpCDTime)
@@ -93,13 +96,35 @@ __int8 Snake::update(float fpsScale, __int16 screenWidth, float scale)
 						move( rand( ) % 2 + 2, scale );
 				}
 			}
-			// Target on bottom row
+			// Snake/target are on bottom row
 			else
 			{
 				if( targetX > getX( ) )
 					move( 0, scale );
-				else
+				else if( targetX < getX( ) )
 					move( 3, scale );
+				// Snake is on target position
+				else
+				{
+					// Qbert actually right of snake
+					if( getX( ) > qbert->getX( ) )
+					{
+						if( qbert->getTY( ) < getY( ) - getYOffset( ) )
+							move( 0, scale );
+						else
+							move( 1, scale );
+					}
+					// Qbert actually left of snake
+					else
+					{
+						if( qbert->getTY( ) < getY( ) - getYOffset( ) )
+							move( 3, scale );
+						else
+							move( 2, scale );
+					}
+
+				}
+
 			}	
 		}
 	}

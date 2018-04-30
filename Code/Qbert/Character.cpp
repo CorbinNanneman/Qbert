@@ -189,7 +189,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 				setVX( 0 );
 				setVY( 0 );
 				setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
-				setY( scale * ( row * 24 + 34 ) );	
+				setY( scale * ( row * 24 + 34 ) );
 				setZ( getRow( ) + 1 );
 				// Stop Moving
 				jumpState = 11;

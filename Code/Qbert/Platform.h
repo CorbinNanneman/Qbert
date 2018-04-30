@@ -7,7 +7,7 @@ class Platform
 public:
 	Platform( );
 
-	void createMap( char const *newTexStrings[ 3 ], __int16 screenWidth, float scale );
+	void createMap( __int8 level, __int8 round, __int16 screenWidth, float scale );
 	void deleteMap( );
 
 	Cube** getCubes( );
@@ -17,6 +17,8 @@ public:
 	~Platform();
 
 private:
+	void setTextures( __int8 level, __int8 round );
+
 	Cube** map;
 	char const *texStrings[3]; // File paths for appropriate textures
 	bool deleted = false;
