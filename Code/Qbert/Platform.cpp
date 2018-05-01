@@ -3,7 +3,6 @@
 Platform::Platform( )
 { 
 	map = nullptr;
-	deleted = true;
 }
 
 
@@ -11,7 +10,6 @@ Platform::~Platform( )
 { }
 
 
-// When only 2 cube textures are needed, newTexStrings[1] is set to NULL
 void Platform::createMap( __int8 level, __int8 round, __int16 screenWidth, float scale )
 {
 	setTextures( level, round );
@@ -43,14 +41,11 @@ void Platform::createMap( __int8 level, __int8 round, __int16 screenWidth, float
 
 void Platform::deleteMap()
 {
-	// Avoid doing bad things
-	if( !deleted )
+	if( map != nullptr )
 	{
-		// Deallocate map storage
 		for ( int i = 0; i < 7; i++ )
 			delete[] map[i];
 		delete[] map;
-		deleted = true;
 	}
 }
 
@@ -131,6 +126,9 @@ void Platform::setTextures( __int8 level, __int8 round )
 		texStrings[ 2 ] = "./images/blueYellow.png";
 		break;
 	case 2:// Level 1 Round 2
+		texStrings[ 0 ] = "./images/greyGrey.png";
+		texStrings[ 1 ] = "./images/greyBlue.png";
+		texStrings[ 2 ] = "./images/greyWhite.png";
 		break;
 	case 3:// Level 1 Round 3
 		break;

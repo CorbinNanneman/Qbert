@@ -21,7 +21,10 @@ StateManager::StateManager( )
 	window.create( sf::VideoMode( screenWidth, screenHeight ), "Q*Bert" );
 	window.setFramerateLimit( 120 );
 
-	windowLoaded = true;
+	level = 1;
+	round = 1;
+	player = 1;
+
 	startGame( );
 }
 
@@ -35,7 +38,6 @@ StateManager::~StateManager( )
 void StateManager::startGame( )
 {
 	clMem( );
-
 	transitionState( game );
 }
 
@@ -60,11 +62,9 @@ bool StateManager::isOpen( )
 
 void StateManager::clear( )
 {
-	if( frozen && timers.checkTimer( "freeze" ) < 1.f )
-	{
+	if( timers.checkTimer( "freeze" ) != -1.f && timers.checkTimer( "freeze" ) < 1.f )
 		window.clear( sf::Color( 0, 1.f - timers.checkTimer( "freeze" ) * 255, 
 			1.f - timers.checkTimer( "freeze" ) * 255 ) );
-	}
 	else
 		window.clear( sf::Color::Black );
 }
@@ -76,7 +76,7 @@ void StateManager::update( )
 	fpsClock.restart( );
 	fpsScale = targetFps / fps;
 
-	timers.updateTimers( 1.f / fps, paused );
+	timers.updateTimers( 1.f / fps, pauseLevel );
 
 	checkEvents( );
 	stateUpdate( );
@@ -131,7 +131,6 @@ void StateManager::display( )
 			lockedEls++;
 		}
 	}
-
 	// Draw characters that are in front of map
 	for( unsigned __int8 i = 0; i < frontChars.size( ); i++ )
 		window.draw( *frontChars.at( i )->getSpritePtr( ) );
@@ -157,7 +156,7 @@ void StateManager::checkEvents( )
 			break;
 
 		case sf::Event::LostFocus:
-			paused = true;
+			pauseLevel = 3;
 			break;
 
 		case sf::Event::KeyPressed:
@@ -167,24 +166,24 @@ void StateManager::checkEvents( )
 				window.close( );
 				break;
 			case sf::Keyboard::D:
-				if( state == game && !paused )
+				if( state == game && pauseLevel < 2 )
 					q->move( 0, scale );
 				break;
 			case sf::Keyboard::C:
-				if( state == game && !paused )
+				if( state == game && pauseLevel < 2 )
 					q->move( 1, scale );
 				break;
 			case sf::Keyboard::Z:
-				if( state == game && !paused )
+				if( state == game && pauseLevel < 2 )
 					q->move( 2, scale );
 				break;
 			case sf::Keyboard::S:
-				if( state == game && !paused )
+				if( state == game && pauseLevel < 2 )
 					q->move( 3, scale );
 				break;
 			case sf::Keyboard::P:
 				if( !pauseKeyHeld && !respawning )
-					paused = !paused;
+					pauseLevel = pauseLevel * -1 + 3;
 				pauseKeyHeld = true;
 				break;
 			default:
@@ -216,18 +215,18 @@ void StateManager::stateUpdate( )
 	{
 // Game
 	case game:
-		if( !paused )
+		if( pauseLevel < 3 )
 		{
 	// Spawns
-			if( !frozen && timers.checkTimer( "snakeSpawn" ) > 4.0f )
+			if( pauseLevel < 1 && timers.checkTimer( "snakeSpawn" ) > 4.0f )
 			{
 				createCharacter( 1 );
 				timers.removeTimer( "snakeSpawn" );
-				timers.addTimer( "spawn", true );
+				timers.addTimer( "spawn", 1 );
 			}
-			if( !frozen && timers.checkTimer( "spawn" ) > 3.7f )
+			if( pauseLevel < 1 && timers.checkTimer( "spawn" ) > 3.7f )
 			{
-				createCharacter( rand( ) % 6 + 2 );
+				createCharacter( /*rand( ) % 6 + 2J*/5 );
 				timers.resetTimer( "spawn" );
 			}
 	// Overlay Updates
@@ -247,7 +246,7 @@ void StateManager::stateUpdate( )
 	// Character Updates
 			__int8 qReturn;
 			bool collided;
-			for( unsigned __int8 i = 0; (!frozen || i == 0 ) && i < characters.size( ); i++ )
+			for( unsigned __int8 i = 0; pauseLevel != 2 && ( pauseLevel == 0 || i == 0 ) && i < characters.size( ); i++ )
 			{
 				// Shortened character handle
 				Character *curChar = characters.at( i );
@@ -291,16 +290,17 @@ void StateManager::stateUpdate( )
 						{
 							if( collidedChar->getID( ) < 5 )
 							{
-								paused = true;
+								pauseLevel = 2;
 								respawning = true;
-								timers.addTimer( "respawn", false );
+								timers.addTimer( "respawn", 3 );
 							}
 							else
 							{
 								if( collidedChar->getID( ) == 5 )
 								{
-									frozen = true;
-									timers.addTimer( "freeze", true );
+									pauseLevel = 1;
+									if( !timers.addTimer( "freeze", 2 ) )
+										timers.resetTimer( "freeze" );
 								}
 								destroyCharacter( collidedChar );
 							}
@@ -311,24 +311,24 @@ void StateManager::stateUpdate( )
 					switch( curChar->getID( ) )
 					{
 					case 0: // Qbert
-						platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
+						platform.changeCube( q->getRow( ), q->getIndex( ), 0, level );
 						if( platform.isComplete( ) )
 							transitionState( victory );
 						break;
 					case 6: // Slick
-						platform.changeCube( curChar->getRow( ), curChar->getIndex( ), 2, 1 );
+						platform.changeCube( curChar->getRow( ), curChar->getIndex( ), 2, level );
 						break;
 					case 7: // Sam
-						platform.changeCube( curChar->getRow( ), curChar->getIndex( ), 1, 1 );
+						platform.changeCube( curChar->getRow( ), curChar->getIndex( ), 1, level );
 					default:
 						break;
 					}
 					break;
-				case 3: // Character fell off world
+				case 3: // Character fell off screen
 					if( curChar == q )
 					{
 						respawning = true;
-						timers.addTimer( "respawn", false );
+						timers.addTimer( "respawn", 3 );
 					}
 					else
 						destroyCharacter( curChar );
@@ -338,17 +338,15 @@ void StateManager::stateUpdate( )
 			}
 		} // End !paused
 
-		if( respawning )
+		if( respawning && timers.checkTimer( "respawn" ) > 2.f )
 		{
-			if( timers.checkTimer( "respawn" ) > 2.f )
-			{
-				timers.removeTimer( "respawn" );
-				startGame( );
-			}
+			timers.removeTimer( "respawn" );
+			transitionState( game );
 		}
-		if( frozen && timers.checkTimer( "freeze" ) > 4.f )
+
+		if( pauseLevel == 1 && timers.checkTimer( "freeze" ) > 4.f )
 		{
-			frozen = false;
+			pauseLevel = 0;
 			timers.removeTimer( "freeze" );
 		}
 		break;
@@ -380,35 +378,53 @@ void StateManager::transitionState( State newState )
 	switch( newState )
 	{
 	case game:
-		// Create Map
-		q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
-		platform.createMap( level, round, screenWidth, scale );
+		if( state == game )
+		{
+			while( characters.size( ) != 1 )
+				destroyCharacter( characters.at( 1 ) );
+			timers.erase( );
 
-		level = 1;
-		player = 1;
+			q->setVX( 0 );
+			q->setVY( 0 );
+			q->setRow( q->getLRow( ), scale, screenWidth );
+			q->setIndex( q->getLIndex( ), scale, screenWidth );
+		}
+		else
+		{
+			clMem( );
+			q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
+			platform.createMap( level, round, screenWidth, scale );
+		}
+
 		respawning = false;
-		paused = false;
+		pauseLevel = 0;
 		pauseKeyHeld = false;
 
-		timers.addTimer( "snakeSpawn", true );
+		timers.addTimer( "snakeSpawn", 1 );
 		break;
 	case victory:
-		timers.addTimer( "flash", true );
-		level++;
-		round++;
+		if( ++round > 4 )
+		{
+			level++;
+			round = 1;
+		}
+
+		pauseLevel = 2;
+		timers.addTimer( "flash", 3 );
 		flashChange = 0;
-		state = victory;
 		break;
 	default:
 		break;
 	}
 	state = newState;
-	createOverlay( );
+	if( state != victory )
+		createOverlay( );
 }
 
 
 void StateManager::createOverlay( )
 {
+	clearOverlay( );
 	switch( state )
 	{
 	case game:
@@ -434,8 +450,90 @@ void StateManager::createOverlay( )
 			screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ),
 			3, 0.6f );
 		// Target Cube
-		addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
-			screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+		switch( level * round )
+		{
+		default:
+		case 1: // Level 1 Round 1
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 2:// Level 1 Round 2
+			addOverlayEl( "./images/greyWhiteTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 3:// Level 1 Round 3
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 4:// Level 1 Round 4
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 5:// Level 2 Round 1
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 6:// Level 2 Round 2
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 7:// Level 2 Round 3
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 8:// Level 2 Round 4
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 9:// Level 3 Round 1
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 10:// Level 3 Round 2
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 11:// Level 3 Round 3
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 12:// Level 3 Round 4
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 13:// Level 4 Round 1
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 14:// Level 4 Round 2
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 15:// Level 4 Round 3
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 16:// Level 4 Round 4
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 17:// Level 5 Round 1
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 18:// Level 5 Round 2
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 19:// Level 5 Round 3
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		case 20:// Level 5 Round 4
+			addOverlayEl( "./images/blueYellowTarget.png", 14, 12,
+				screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ) );
+			break;
+		}
 		// Lives Counter
 		overlay.push_back( new GameObject( ) );
 		// Level:
@@ -451,7 +549,7 @@ void StateManager::createOverlay( )
 		// Round Num
 		addOverlayEl( "./images/numOrange.png", 6, 6,
 			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), static_cast< __int16 >( 47 * scale ) );
-		overlay.at( 10 )->setTexRect( level, 0 );
+		overlay.at( 10 )->setTexRect( round, 0 );
 		break;
 	default:
 		break;

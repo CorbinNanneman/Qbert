@@ -13,6 +13,9 @@ public:
 
 	virtual void moveAnimate( __int8 state ) = 0;
 
+	void setRow( __int8 newRow, float scale, __int16 screenWidth );
+	void setIndex( __int8 newIndex, float scale, __int16 screenWidth );
+
 	__int8 getRow( );
 	__int8 getIndex( );
 	__int8 getID( );

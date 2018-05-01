@@ -17,9 +17,12 @@ Qbert::~Qbert( )
 
 void Qbert::move( __int8 direction, float scale )
 {
-	Character::move( direction, scale );
+	lastRow = getRow( );
+	lastIndex = getIndex( );
 	lastY = getY( );
 	lastX = getX( );
+
+	Character::move( direction, scale );
 
 	switch( direction )
 	{
@@ -98,4 +101,16 @@ float Qbert::getLX( )
 float Qbert::getLY( )
 {
 	return lastY;
+}
+
+
+__int8 Qbert::getLRow( )
+{
+	return lastRow;
+}
+
+
+__int8 Qbert::getLIndex( )
+{
+	return lastIndex;
 }

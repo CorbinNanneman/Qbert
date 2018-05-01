@@ -14,8 +14,11 @@ public:
 	float getTY( );
 	float getLX( );
 	float getLY( );
+	__int8 getLRow( );
+	__int8 getLIndex( );
 
 	~Qbert( );
 private:
 	float targetX, lastX, targetY, lastY;
+	__int8 lastRow, lastIndex;
 };

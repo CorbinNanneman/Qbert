@@ -11,10 +11,10 @@ TimerManager::~TimerManager( )
 }
 
 
-void TimerManager::updateTimers( float incVal, bool paused )
+void TimerManager::updateTimers( float incVal, unsigned __int8 pauseLevel )
 {
 	for( unsigned __int8 i = 0; i < timers.size( ); i++ )
-		if( !paused || !timers.at( i )->pauses )
+		if( timers.at( i )->pauseLevel > pauseLevel )
 			timers.at( i )->time += incVal;
 }
 
@@ -26,7 +26,7 @@ void TimerManager::erase( )
 }
 
 
-bool TimerManager::addTimer( char *timerName, bool pauses )
+bool TimerManager::addTimer( char *timerName, unsigned __int8 pauseLevel = 0 )
 {
 	bool created = false;
 	// Create Timer if not already created
@@ -35,7 +35,7 @@ bool TimerManager::addTimer( char *timerName, bool pauses )
 		NamedTimer *t = new NamedTimer;
 		t->name = timerName;
 		t->time = 0.f;
-		t->pauses = pauses;
+		t->pauseLevel = pauseLevel;
 		timers.push_back( t );
 		created = true;
 	}

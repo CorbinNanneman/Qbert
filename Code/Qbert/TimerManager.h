@@ -10,10 +10,10 @@ class TimerManager
 public:
 	TimerManager( );
 
-	void updateTimers( float incVal, bool paused );
+	void updateTimers( float incVal, unsigned __int8 pauseLevel );
 	void erase( );
 
-	bool addTimer( char *timerName, bool pauses );
+	bool addTimer( char *timerName, unsigned __int8 pauseLevel );
 	float checkTimer( char *timerName );
 	void resetTimer( char *timerName );
 	void removeTimer( char *timerName );
@@ -25,7 +25,7 @@ private:
 	{
 		float time;
 		char *name;
-		bool pauses;
+		unsigned __int8 pauseLevel;
 	} NamedTimer;
 
 	std::vector< NamedTimer * > timers;

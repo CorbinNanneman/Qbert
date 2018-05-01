@@ -64,9 +64,8 @@ private:
 	sf::RenderWindow window;
 
 	// Game Events
-	bool paused, 
-		 pauseKeyHeld,
-		 windowLoaded;
+	unsigned __int8 pauseLevel;
+	bool pauseKeyHeld;
 	TimerManager timers;
 	State state;
 

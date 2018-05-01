@@ -21,5 +21,4 @@ private:
 
 	Cube** map;
 	char const *texStrings[3]; // File paths for appropriate textures
-	bool deleted = false;
 };

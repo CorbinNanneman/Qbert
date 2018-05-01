@@ -213,6 +213,28 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 }
 
 
+void Character::setRow( __int8 newRow, float scale, __int16 screenWidth )
+{
+	row = newRow;
+	setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
+	setY( scale * ( row * 24 + 34 ) );
+	setZ( getRow( ) + 1 );
+	jumpState = 11;
+	OOB = false;
+}
+
+
+void Character::setIndex( __int8 newIndex, float scale, __int16 screenWidth )
+{
+	index = newIndex;
+	setX( 32 * scale * ( row * -.5f + index ) + screenWidth / 2 );
+	setY( scale * ( row * 24 + 34 ) );
+	setZ( getRow( ) + 1 );
+	jumpState = 11;
+	OOB = false;
+}
+
+
 __int8 Character::getRow( )
 {
 	return row;
