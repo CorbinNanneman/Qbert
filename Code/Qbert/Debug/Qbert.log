@@ -1,6 +1,0 @@
-﻿  StateManager.cpp
-  Disk.cpp
-c:\users\19cjn01\documents\github\qbert\code\qbert\disk.cpp(7): warning C4305: 'argument': truncation from 'double' to 'float'
-  Generating Code...
-  Qbert.vcxproj -> C:\Users\19cjn01\Documents\GitHub\Qbert\Code\Debug\Qbert.exe
-  Qbert.vcxproj -> C:\Users\19cjn01\Documents\GitHub\Qbert\Code\Debug\Qbert.pdb (Partial PDB)

@@ -4,6 +4,7 @@
 Disk::Disk(float scale) : GameObject(scale, 4, .2)
 {
 	setTexture("./images/diskBlue.png", 16, 10);
+	setYOffset(-8.f * scale);
 }
 
 

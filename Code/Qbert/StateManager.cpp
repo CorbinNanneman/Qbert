@@ -7,6 +7,9 @@
 #include "Sam.h"
 #include "MagicBall.h"
 
+
+#include <iostream>
+
 StateManager::StateManager( )
 {
 	// FPS Tracking
@@ -28,7 +31,8 @@ StateManager::StateManager( )
 
 StateManager::~StateManager( )
 {
-	platform.deleteMap( );
+	
+		platform.deleteMap( );
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
 	timers.erase( );
@@ -38,7 +42,8 @@ StateManager::~StateManager( )
 void StateManager::startGame( )
 {
 	// Deallocate any old memory
-	platform.deleteMap();
+	if (platform.getCubes() != nullptr)
+		platform.deleteMap();
 	while( characters.size( ) > 0 )
 		destroyCharacter( characters.at( 0 ) );
 	timers.erase( );
@@ -46,9 +51,7 @@ void StateManager::startGame( )
 
 	// Create Map
 	q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
-	d = new Disk(scale);
-	d->setX(60);
-	d->setY(360);
+	
 	
 	const char *texStrings[ 3 ] = { "./images/blueBlue.png", "./images/bluePink.png", 
 		"./images/blueYellow.png" };
@@ -74,7 +77,7 @@ void StateManager::reset( )
 {
 	// Objects
 	delete q;
-	delete d;
+	
 	while( characters.size( ) != 0 )
 		destroyCharacter( characters.at( 0 ) );
 	platform.deleteMap( );
@@ -151,6 +154,8 @@ void StateManager::display( )
 			for( int index = 0; index < row + 1; index++ )
 				window.draw( *map[ row ][ index ].getSpritePtr( ) );
 		}
+		for (int i = 0; i < platform.getDisks().size(); i++)
+			window.draw(*platform.getDisks().at(i)->getSpritePtr());
 
 		// Sort frontChars by zIndex
 		if( characters.size( ) > 1 )
@@ -188,7 +193,7 @@ void StateManager::display( )
 		for( unsigned int i = 0; i < overlay.size( ); i++ )
 			window.draw( *overlay.at( i )->getSpritePtr( ) );
 
-		window.draw(*d->getSpritePtr());
+		
 	}
 	window.display( );
 }
@@ -268,7 +273,7 @@ void StateManager::stateUpdate( )
 		if( !paused )
 		{
 	// Spawns
-			d->update(1.f / fps);
+			
 			if( timers.checkTimer( "snakeSpawn" ) > 4.0f )
 			{
 				createCharacter( 1 );
@@ -294,6 +299,10 @@ void StateManager::stateUpdate( )
 					break;
 				}
 			}
+	// Platform Updates
+			for (int i = 0; i < platform.getDisks().size(); i++)
+				platform.getDisks().at(i)->update(1.f / fps);
+
 	// Character Updates
 			static __int8 qReturn;
 			bool collided;
@@ -304,9 +313,20 @@ void StateManager::stateUpdate( )
 				
 				if( curChar != nullptr )
 				{
-				__int8 charReturn = curChar->update( fpsScale, screenWidth, scale);
-				if( curChar == q )
-					qReturn = charReturn;
+				__int8 charReturn;
+				if (curChar == q)
+				{
+					bool diskbound = false;
+					for (int i = 0; i < platform.getDisks().size(); i++)
+						if (q->getIndex() == platform.getDisks().at(i)->getIndex())
+							if (q->getRow() == platform.getDisks().at(i)->getRow())
+								diskbound = true;
+
+					qReturn = charReturn = 
+						dynamic_cast< Qbert * >(curChar)->update(fpsScale, screenWidth, scale, diskbound, fps);
+				}
+				else
+					charReturn = curChar->update(fpsScale, screenWidth, scale);
 
 				switch( charReturn )
 				{
@@ -354,9 +374,46 @@ void StateManager::stateUpdate( )
 					switch( curChar->getID( ) )
 					{
 					case 0: // Qbert
-						platform.changeCube( q->getRow( ), q->getIndex( ), 0, 1 );
-						if( platform.isComplete( ) )
-							transitionState( victory );
+						if (!q->isSpinning())
+						{
+							// Check disks
+							for (int i = 0; i < platform.getDisks().size(); i++)
+							{
+								Disk *curDisk = platform.getDisks().at(i);
+								if (q->getIndex() == curDisk->getIndex())
+									if (q->getRow() == curDisk->getRow())
+									{
+										if (curDisk->getIndex() == -1)
+										{
+											q->setVX(1.f);
+											curDisk->setVX(1.f);
+										}
+										else
+										{
+											q->setVX(-1.f);
+											curDisk->setVX(-1.f);
+										}
+										q->setVY(-1.5f);
+										curDisk->setVY(-1.5f);
+
+									}
+							}
+						}
+
+						if (!q->isOOB())
+						{
+							platform.changeCube(q->getRow(), q->getIndex(), 0, 1);
+							if (platform.isComplete())
+								transitionState(victory);
+						}
+						else
+						{
+							if (q->getY() < 10)
+							{
+								q->setVX(0);
+								q->setVY(1);
+							}
+						}
 						break;
 					case 6: // Slick
 						platform.changeCube( curChar->getRow( ), curChar->getIndex( ), 2, 1 );

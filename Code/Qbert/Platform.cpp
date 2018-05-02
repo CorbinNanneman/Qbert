@@ -3,6 +3,7 @@
 Platform::Platform( )
 { 
 	map = nullptr;
+	
 }
 
 
@@ -40,11 +41,12 @@ void Platform::createMap( char const *newTexStrings[3], __int16 screenWidth, flo
 		}
 	}
 
-	for (int i = 0; i < 3/* <- # of disk */; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		disks.push_back(new Disk(scale));
 
 		bool occupied;
+		// Randomize Disk position until it find unique spot
 		do
 		{
 			disks.at(i)->randomizePos();
@@ -56,10 +58,12 @@ void Platform::createMap( char const *newTexStrings[3], __int16 screenWidth, flo
 					occupied = true;
 		} while (occupied);
 
-		// create disk
-		// are positions equal to positions other disks?
-		//YES: you must die, and be recreated
-		//NO: carry on then
+		// Set disk pos
+		float x = 32 * scale * (disks.at(i)->getRow() * -.5f + disks.at(i)->getIndex()) + screenWidth / 2,
+			y = disks.at(i)->getRow() * scale * 32 * .75f + 50 * scale;
+
+		disks.at(i)->setX(x);
+		disks.at(i)->setY(y);
 	}
 }
 
@@ -72,10 +76,11 @@ void Platform::deleteMap()
 		// Deallocate map storage
 		for ( int i = 0; i < 7; i++ )
 			delete[] map[i];
+
 		delete[] map;
 
-		for (int i = 0; i < disks.size(); i++)
-			delete disks.at(i);
+		for (int j = 0; j < disks.size(); j++)
+			delete disks.at(j);
 		
 
 		deleted = true;
@@ -167,4 +172,10 @@ bool Platform::isComplete( )
 			if( map[ row ][ index ].getState( ) != 2 )
 				wrongCubeFound = true;
 	return !wrongCubeFound;
+}
+
+
+std::vector<Disk*> Platform::getDisks()
+{
+	return disks;
 }

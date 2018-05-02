@@ -32,7 +32,7 @@ public:
 	~StateManager( ); // Line 25
 
 private:
-	Disk *d = nullptr;
+	
 
 	void startGame( ); // Line 32
 	void reset( ); // Line 49

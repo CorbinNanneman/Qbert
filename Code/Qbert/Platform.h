@@ -14,7 +14,7 @@ public:
 	Cube** getCubes( );
 	void changeCube( __int8 row, __int8 index, __int8 changeType, __int8 level );
 	bool isComplete( );
-
+	std::vector<Disk*> getDisks();
 	~Platform();
 
 private:

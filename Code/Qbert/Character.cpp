@@ -180,7 +180,7 @@ __int8 Character::update( float fpsScale, __int16 screenWidth, float scale)
 				retVal = 1;
 		}
 		// Character completes jump
-		if( jumpTimer > 0.5f && jumpTimer < 0.6f )
+		if( jumpTimer > 0.5f/* && jumpTimer < 0.6f */)
 		{
 			// Character succesfully lands on block
 			if( !OOB )
