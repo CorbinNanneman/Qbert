@@ -15,6 +15,35 @@ Qbert::~Qbert( )
 { }
 
 
+__int8 Qbert::update( float fpsScale, __int16 screenWidth, float scale, bool diskbound, 
+	float fps )
+{
+	__int8 retVal = Character::update( fpsScale, screenWidth, scale );
+	if( diskbound && jumpTimer > 0.5f )
+	{
+		spinning = true;
+		retVal = 2;
+		setZ( 1 );
+	}
+
+	if( spinning )
+	{
+		spinTimer += 1.f / fps;
+		if( spinTimer > 0.2f )
+		{
+			static __int8 rotJumpState = jumpState + 4;
+			if( ++rotJumpState == 8 )
+				rotJumpState = 4;
+			moveAnimate( rotJumpState );
+
+			spinTimer = 0.f;
+		}
+	}
+
+	return retVal;
+}
+
+
 void Qbert::move( __int8 direction, float scale )
 {
 	lastRow = getRow( );
@@ -113,4 +142,26 @@ __int8 Qbert::getLRow( )
 __int8 Qbert::getLIndex( )
 {
 	return lastIndex;
+}
+
+
+bool Qbert::isSpinning( )
+{
+	return spinning;
+}
+
+
+__int8 Qbert::getDiskIndex( )
+{
+	return diskIndex;
+}
+
+void Qbert::setSpin( bool isSpin )
+{
+	spinning = isSpin;
+}
+
+void Qbert::setDiskIndex( __int8 newDIndex )
+{
+	diskIndex = newDIndex;
 }
