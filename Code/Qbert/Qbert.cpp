@@ -9,6 +9,8 @@ Qbert::Qbert( float scale = 0, __int16 screenWidth = 0 )
 	jumpState = 11;
 	id = 0;
 	spinning = false;
+
+	diskIndex = 0;
 }
 
 
@@ -133,4 +135,20 @@ float Qbert::getLY( )
 bool Qbert::isSpinning()
 {
 	return spinning;
+}
+
+
+__int8 Qbert::getDiskIndex()
+{
+	return diskIndex;
+}
+
+void Qbert::setSpin(bool isSpin)
+{
+	spinning = isSpin;
+}
+
+void Qbert::setDiskIndex(__int8 newDIndex)
+{
+	diskIndex = newDIndex;
 }

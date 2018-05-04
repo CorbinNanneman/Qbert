@@ -15,11 +15,17 @@ public:
 	float getTY( );
 	float getLX( );
 	float getLY( );
+	
 	bool isSpinning();
+	__int8 getDiskIndex();
+	void setDiskIndex(__int8 newDIndex);
+	void setSpin(bool);
+	
 
 	~Qbert( );
 private:
 	float targetX, lastX, targetY, lastY;
+	__int8 diskIndex;
 
 	bool spinning;
 	float spinTimer;

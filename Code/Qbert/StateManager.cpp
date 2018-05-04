@@ -373,45 +373,70 @@ void StateManager::stateUpdate( )
 				case 2: // Character completes jump
 					switch( curChar->getID( ) )
 					{
-					case 0: // Qbert
-						if (!q->isSpinning())
+					case 0: // Qbert			
+						// Check disks
+						for (int i = 0; i < platform.getDisks().size(); i++)
 						{
-							// Check disks
-							for (int i = 0; i < platform.getDisks().size(); i++)
-							{
-								Disk *curDisk = platform.getDisks().at(i);
-								if (q->getIndex() == curDisk->getIndex())
-									if (q->getRow() == curDisk->getRow())
+							Disk *curDisk = platform.getDisks().at(i);
+							if (q->getIndex() == curDisk->getIndex())
+								if (q->getRow() == curDisk->getRow())
+								{
+									q->setDiskIndex(curDisk->getIndex());
+									if (q->getDiskIndex() == -1)
 									{
-										if (curDisk->getIndex() == -1)
-										{
-											q->setVX(1.f);
-											curDisk->setVX(1.f);
-										}
-										else
-										{
-											q->setVX(-1.f);
-											curDisk->setVX(-1.f);
-										}
-										q->setVY(-1.5f);
-										curDisk->setVY(-1.5f);
-
+										q->setVX(1.f);
+										curDisk->setVX(1.f);
 									}
-							}
+									else
+									{
+										q->setVX(-1.f);
+										curDisk->setVX(-1.f);
+									}
+									q->setVY(-1.5f);
+									curDisk->setVY(-1.5f);
+								}
 						}
-
+						// Check Cubes
 						if (!q->isOOB())
 						{
 							platform.changeCube(q->getRow(), q->getIndex(), 0, 1);
 							if (platform.isComplete())
 								transitionState(victory);
 						}
-						else
+						// Qbert ridin the disc
+						else if( q->isSpinning( ) )
 						{
-							if (q->getY() < 10)
+							if( q->getY() < 10 * scale)
+							{
+								for (int i = 0; i < platform.getDisks().size(); i++)
+								{
+									Disk *curDisk = platform.getDisks().at(i);
+									if (q->getIndex() == curDisk->getIndex())
+										if (q->getRow() == curDisk->getRow())
+										{
+											if (q->getDiskIndex() == -1)
+											{
+												q->setVX(1);
+												curDisk->setVX(1);
+											}
+											else
+											{
+												q->setVX(-1);
+												curDisk->setVX(-1);
+											}
+											q->setVY(0);
+											curDisk->setVY(0);
+										}
+								}
+							}
+							if ((q->getDiskIndex() == -1 && q->getX( ) > screenWidth / 2) ||
+								(q->getDiskIndex() > -1 && q->getX() < screenWidth / 2))
 							{
 								q->setVX(0);
-								q->setVY(1);
+								q->setSpin(false);
+
+
+
 							}
 						}
 						break;
