@@ -20,20 +20,20 @@ enum State
 class StateManager
 {
 public:
-	StateManager( ); // Line 6
+	StateManager( );
 
-	bool isOpen( ); // Line 65
-	void clear( ); // Line 71
-	void update( ); // Line 127
-	void display( ); // Line 242
+	bool isOpen( );
+	void clear( );
+	void update( );
+	void display( );
 
-	~StateManager( ); // Line 25
+	~StateManager( );
 
 private:
-	void startGame( ); // Line 32
-	void clMem( ); // Line 49
+	void startGame( );
+	void clMem( );
 	
-	void checkEvents( ); // Line 77
+	void checkEvents( );
 	void stateUpdate( );
 	void transitionState( State newState );
 
@@ -42,14 +42,12 @@ private:
 		__int16 x, __int16 y, __int8 tAFrames = 0, float aDelay = 0. );
 	void clearOverlay( );
 
-	bool checkCollision( Character *c1, Character *c2 ); // Line 270
+	bool checkCollision( Character *c1, Character *c2 );
 	Character* createCharacter( __int8 characID );
-	void destroyCharacter( Character *c ); // Line 287
+	void destroyCharacter( Character *c );
 
-	// Temp
 	__int8 flashChange;
-	__int8 player, level, round;
-
+	
 	// FPS Tracking
 	__int8 targetFps;
 	unsigned __int16 frame;
@@ -76,6 +74,6 @@ private:
 	std::vector< GameObject * > overlay;
 	bool respawning;
 	int score;
-	__int8 lives;
+	__int8 player, level, round, lives;
 	bool frozen;
 };

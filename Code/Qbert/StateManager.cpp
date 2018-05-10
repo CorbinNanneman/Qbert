@@ -224,9 +224,9 @@ void StateManager::stateUpdate( )
 				timers.removeTimer( "snakeSpawn" );
 				timers.addTimer( "spawn", 1 );
 			}
-			if( pauseLevel < 1 && timers.checkTimer( "spawn" ) > 3.7f )
+			if( pauseLevel < 1 && timers.checkTimer( "spawn" ) > 3.0f )
 			{
-				createCharacter( /*rand( ) % 6 + 2J*/5 );
+				createCharacter( rand( ) % 6 + 2 );
 				timers.resetTimer( "spawn" );
 			}
 	// Overlay Updates
@@ -380,14 +380,21 @@ void StateManager::transitionState( State newState )
 	case game:
 		if( state == game )
 		{
-			while( characters.size( ) != 1 )
-				destroyCharacter( characters.at( 1 ) );
-			timers.erase( );
+			if( --lives == 0 )
+			{
+				window.close( );
+			}
+			else
+			{
+				while( characters.size( ) != 1 )
+					destroyCharacter( characters.at( 1 ) );
+				timers.erase( );
 
-			q->setVX( 0 );
-			q->setVY( 0 );
-			q->setRow( q->getLRow( ), scale, screenWidth );
-			q->setIndex( q->getLIndex( ), scale, screenWidth );
+				q->setVX( 0 );
+				q->setVY( 0 );
+				q->setRow( q->getLRow( ), scale, screenWidth );
+				q->setIndex( q->getLIndex( ), scale, screenWidth );
+			}
 		}
 		else
 		{
@@ -395,6 +402,9 @@ void StateManager::transitionState( State newState )
 			q = dynamic_cast< Qbert* >( createCharacter( 0 ) );
 			platform.createMap( level, round, screenWidth, scale );
 		}
+
+		if( state != game && state != victory )
+			lives = 4;
 
 		respawning = false;
 		pauseLevel = 0;
@@ -430,24 +440,29 @@ void StateManager::createOverlay( )
 	case game:
 		if( player == 1 )
 			addOverlayEl( "./images/player1.png", 51, 7,
-				screenWidth / 2 - static_cast< __int16 >( 87 * scale ), static_cast< __int16 >( 10 * scale ),
+				screenWidth / 2 - static_cast< __int16 >( 87 * scale ), 
+				static_cast< __int16 >( 10 * scale ),
 				6, 0.08f );
 		else
 			addOverlayEl( "./images/player2.png", 51, 7,
-				screenWidth / 2 - static_cast< __int16 >( 87 * scale ), static_cast< __int16 >( 10 * scale ),
+				screenWidth / 2 - static_cast< __int16 >( 87 * scale ), 
+				static_cast< __int16 >( 10 * scale ),
 				6, 0.08f );
 		// Player #
 		addOverlayEl( "./images/playerNum.png", 8, 11,
-			screenWidth / 2 - static_cast< __int16 >( 52 * scale ), static_cast< __int16 >( 10 * scale ) );
+			screenWidth / 2 - static_cast< __int16 >( 52 * scale ), 
+			static_cast< __int16 >( 10 * scale ) );
 		overlay.at( 1 )->setTexRect( player - 1, 0 );
 		// Score
 		overlay.push_back( new GameObject( ) );
 		// Change To:
 		addOverlayEl( "./images/changeTo.png", 47, 5,
-			screenWidth / 2 - static_cast< __int16 >( 89 * scale ), static_cast< __int16 >( 37 * scale ) );
+			screenWidth / 2 - static_cast< __int16 >( 89 * scale ), 
+			static_cast< __int16 >( 37 * scale ) );
 		// Target Arrows
 		addOverlayEl( "./images/arrows.png", 48, 7,
-			screenWidth / 2 - static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 49 * scale ),
+			screenWidth / 2 - static_cast< __int16 >( 88 * scale ), 
+			static_cast< __int16 >( 49 * scale ),
 			3, 0.6f );
 		// Target Cube
 		switch( level * round )
@@ -535,20 +550,27 @@ void StateManager::createOverlay( )
 			break;
 		}
 		// Lives Counter
-		overlay.push_back( new GameObject( ) );
+		addOverlayEl( "./images/littleQ.png", 8, 46,
+			screenWidth / 2 - static_cast< __int16 >( 110 * scale ),
+			static_cast< __int16 >( 90 * scale ) );
+		overlay.at( 6 )->setTexRect( lives - 1, 0 );
 		// Level:
 		addOverlayEl( "./images/level.png", 28, 5,
-			screenWidth / 2 + static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 37 * scale ) );
+			screenWidth / 2 + static_cast< __int16 >( 88 * scale ), 
+			static_cast< __int16 >( 37 * scale ) );
 		// Level Num
 		addOverlayEl( "./images/numOrange.png", 6, 6,
-			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), static_cast< __int16 >( 37 * scale ) );
+			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), 
+			static_cast< __int16 >( 37 * scale ) );
 		overlay.at( 8 )->setTexRect( level, 0 );
 		// Round:
 		addOverlayEl( "./images/round.png", 30, 5,
-			screenWidth / 2 + static_cast< __int16 >( 88 * scale ), static_cast< __int16 >( 47 * scale ) );
+			screenWidth / 2 + static_cast< __int16 >( 88 * scale ), 
+			static_cast< __int16 >( 47 * scale ) );
 		// Round Num
 		addOverlayEl( "./images/numOrange.png", 6, 6,
-			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), static_cast< __int16 >( 47 * scale ) );
+			screenWidth / 2 + static_cast< __int16 >( 110 * scale ), 
+			static_cast< __int16 >( 47 * scale ) );
 		overlay.at( 10 )->setTexRect( round, 0 );
 		break;
 	default:

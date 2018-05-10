@@ -17,12 +17,20 @@ Qbert::~Qbert( )
 
 void Qbert::move( __int8 direction, float scale )
 {
-	lastRow = getRow( );
-	lastIndex = getIndex( );
-	lastY = getY( );
-	lastX = getX( );
+	__int8 lastRow = getRow( ),
+	       lastIndex = getIndex( );
+	double lastY = getY( ),
+	       lastX = getX( );
 
 	Character::move( direction, scale );
+
+	if( !isOOB( ) )
+	{
+		this->lastRow = lastRow;
+		this->lastIndex = lastIndex;
+		this->lastY = lastY;
+		this->lastX = lastX;
+	}
 
 	switch( direction )
 	{
