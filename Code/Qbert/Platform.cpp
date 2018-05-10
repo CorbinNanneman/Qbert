@@ -36,32 +36,6 @@ void Platform::createMap( __int8 level, __int8 round, __int16 screenWidth, float
 			map[row][index].setY( y );
 		}
 	}
-
-	// Create Disks
-	for( int i = 0; i < 2; i++ )
-	{
-		disks.push_back( new Disk( scale ) );
-
-		bool occupied;
-		// Randomize Disk position until it find unique spot
-		do
-		{
-			disks.at( i )->randomizePos( );
-
-			occupied = false;
-			for( int j = 0; !occupied && j < disks.size( ) - 1; j++ )
-				if( disks.at( i )->getIndex( ) == disks.at( j )->getIndex( )
-					&& disks.at( i )->getRow( ) == disks.at( j )->getRow( ) )
-					occupied = true;
-		} while( occupied );
-
-		// Set disk pos
-		float x = 32 * scale * ( disks.at( i )->getRow( ) * -.5f + disks.at( i )->getIndex( ) ) + screenWidth / 2,
-			y = disks.at( i )->getRow( ) * scale * 32 * .75f + 50 * scale;
-
-		disks.at( i )->setX( x );
-		disks.at( i )->setY( y );
-	}
 }
 
 
@@ -196,6 +170,12 @@ void Platform::setTextures( __int8 level, __int8 round )
 }
 
 
+Cube** Platform::getCubes( )
+{
+	return map;
+}
+
+
 bool Platform::isComplete( )
 {
 	bool wrongCubeFound = false;
@@ -204,16 +184,4 @@ bool Platform::isComplete( )
 			if( map[ row ][ index ].getState( ) != 2 )
 				wrongCubeFound = true;
 	return !wrongCubeFound;
-}
-
-
-std::vector<Disk*> Platform::getDisks( )
-{
-	return disks;
-}
-
-
-Cube** Platform::getCubes( )
-{
-	return map;
 }
